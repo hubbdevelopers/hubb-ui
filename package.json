@@ -1,0 +1,40 @@
+{
+  "name": "hubb-ui",
+  "version": "1.0.0",
+  "description": "Nuxt.js project",
+  "author": "kimura.m <k422756@gmail.com>",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
+    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/bulma": "^1.2.1",
+    "@nuxtjs/dotenv": "^1.3.0",
+    "@nuxtjs/pwa": "^2.6.0",
+    "firebase": "^5.7.0",
+    "moment": "^2.23.0",
+    "nuxt": "^2.3.4",
+    "uniqid": "^5.0.3",
+    "uuid": "^3.3.2",
+    "vue-autosuggest": "^1.7.3",
+    "vue-croppa": "^1.3.8",
+    "vue2-editor": "^2.6.6",
+    "vuelidate": "^0.7.4"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.15.0",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-vue": "^4.0.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0"
+  }
+}
