@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports = {
   mode: "spa",
   /*
@@ -26,13 +28,13 @@ module.exports = {
     '~/plugins/auth',
     '~/plugins/croppa',
     '~/plugins/moment',
-    '~/plugins/fcm'
+    //'~/plugins/fcm'
   ],
 
   modules: [
     '@nuxtjs/bulma',
     '@nuxtjs/dotenv',
-    ['@nuxtjs/axios', {baseURL: 'http://localhost:8080'}],
+    ['@nuxtjs/axios', {baseURL: process.env.BASE_URL || 'http://localhost:8080'}],
     ['@nuxtjs/pwa', { icon: false }]
   ],
 
@@ -56,7 +58,6 @@ module.exports = {
     postcss: {
       plugins: {
         'postcss-preset-env': {
-
         }
       }
     },
@@ -84,8 +85,8 @@ module.exports = {
 
   workbox: {
     importScripts: [
-      'firebase-messaging-sw.js'
+      //'firebase-messaging-sw.js'
     ],
-  }
+  },
 }
 

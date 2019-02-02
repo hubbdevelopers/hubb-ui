@@ -12,5 +12,5 @@ dist
 
 .env
 *.cache
-
+.firebaserc
 sw.*
