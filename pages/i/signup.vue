@@ -4,7 +4,7 @@
 
       <div class="columns is-centered">
         <div class="column is-half box">
-          <h2 class="title">sign up</h2>
+          <h2 class="title  has-text-centered">Signup To Hubb!</h2>
 
           <div class="field">
             <label class="label">メールアドレス</label>
@@ -21,11 +21,8 @@
             </div>
           </div>
 
-          <div class="field">
-            <div class="control">
-              <button class="button is-link" id="submit" @click='signup' v-bind:disabled="$v.email.$invalid || $v.password.$invalid">Submit</button>
-              <nuxt-link class="button is-link" to="/">Back</nuxt-link>
-            </div>
+          <div class="has-text-centered">
+            <button class="button is-primary" id="submit" @click='signup' v-bind:disabled="$v.email.$invalid || $v.password.$invalid">Submit</button>
           </div>
 
         </div>
@@ -93,12 +90,7 @@ export default {
       minLength: minLength(8),
       maxLength: maxLength(20)
     }
-  },
-  // computed: {
-  //   isValidEmail: function () {
-  //     return { "is-danger": is_valid_email }
-  //   }
-  // }
+  }
 }
 </script>
 

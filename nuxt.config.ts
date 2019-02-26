@@ -42,11 +42,10 @@ module.exports = {
     '@fortawesome/fontawesome-free-webfonts',
     '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css',
     '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css',
-    '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css',
+    '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css'
   ],
 
   router: {
-    middleware: 'auth'
    // middleware: 'checkInit'
   },  
 
@@ -62,19 +61,6 @@ module.exports = {
       }
     },
 
-    /*
-    ** Run ESLint on save
-    */
-    extend(config) {
-      if (process.server && process.browser) {
-        config.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules)/
-        })
-      }
-    },
   },
 
   manifest: {

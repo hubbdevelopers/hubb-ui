@@ -67,7 +67,7 @@
 </template>
 <script>
 import NewCommunityPageModal from '~/components/modal/NewCommunityPageModal'
-import firebase from 'firebase/app'
+// import firebase from 'firebase/app'
 import { db } from '~/plugins/firebase'
 import SuggestForm from '~/components/SuggestForm.vue'
 import UserBox from '~/components/user/UserBox'

@@ -419,6 +419,10 @@ export const getters = {
       return state.accountId
     },
 
+    getImage : state => {
+      return state.image ? state.image: 'https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg'
+    },
+
     isCommunityMember: state => community_id => {
       return Boolean(state.communities.filter(community => community.ID == community_id).length)
     },

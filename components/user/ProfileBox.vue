@@ -1,7 +1,10 @@
 <template>
 <div class="box">
-	<figure class="image is-128x128" v-if="user && user.Image">
+	<!--figure class="image is-128x128" v-if="user && user.Image">
 		<img class="is-rounded" :src="user.Image">
+	</figure-->
+	<figure class="image is-128x128">
+		<img class="is-rounded" :src="image">
 	</figure>
 	<div v-if="user">
 		<div>
@@ -94,8 +97,11 @@ export default {
 		isFollowingUser: function () {
 			return this.$store.getters['user/isFollowingUser'](this.accountId)
 		},
+		image: function () {
+			return this.$store.getters['user/getImage']
+		},
 		birthday: function () {
-			return moment(this.user.Birthday).format('YYYY/MM/DD')
+			return this.user.Birthday ? moment(this.user.Birthday).format('YYYY/MM/DD') : ''
 		}
 	}
 }

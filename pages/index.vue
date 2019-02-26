@@ -1,22 +1,16 @@
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title">
-        Hello World
-      </h1> 
-      <p class="subtitle">
-        My first website with <strong>Bulma</strong>!
-      </p>
 
       <div class="columns">
 
-        <div class="column is-one-quarter">
+        <div class="column is-one-quarter is-hidden-mobile">
           <profile-box :accountId="accountId" v-if="isLogin && accountId" />
           <login-box v-else />
         </div>
-        <div class="column box">
+        <div class="column">
           <div class="columns is-multiline">
-            <div v-for="page in timeline" :key="page.ID" class="column is-one-third">
+            <div v-for="page in timeline" :key="page.ID" class="column is-three-fifths is-offset-one-fifth">
               <page-box :pageId="page.ID.toString()" />
             </div>
           </div> 
@@ -60,5 +54,4 @@ export default {
   }
 }
 </script>
-
 

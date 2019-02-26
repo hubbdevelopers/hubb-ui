@@ -2,7 +2,7 @@
 <nav class="navbar is-transparent">
   <div class="navbar-brand">
     <nuxt-link class="navbar-item" to="/">
-      <img src="https://bulma.io/images/bulma-logo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28">
+      <img src="~/assets/images/logo.png" alt="Bulma: a modern CSS framework based on Flexbox">
     </nuxt-link>
     <div class="navbar-burger burger" @click="showNav = !showNav" :class="{ 'is-active': showNav }" data-target="navbarExampleTransparentExample">
       <span></span>
@@ -11,24 +11,22 @@
     </div>
   </div>
 
-
   <div id="navbarExampleTransparentExample" class="navbar-menu" :class="{ 'is-active': showNav }">
     <div class="navbar-start">
-      <nuxt-link class="navbar-item" :to="'/' + $store.state.user.accountId" v-if="isLogin">マイページ</nuxt-link>
-      <nuxt-link class="navbar-item" to="/i/notification" v-if="isLogin">通知</nuxt-link>
+      <nuxt-link class="navbar-item" :to="'/' + $store.state.user.accountId" v-if="isLogin">
+        <img class="is-rounded" :src="image"> <span>{{$store.state.user.user.Name}}</span>
+      </nuxt-link>
       <nuxt-link class="navbar-item" to="/i/user">ユーザー一覧</nuxt-link>
       <nuxt-link class="navbar-item" to="/i/community">コミュニティ一覧</nuxt-link>
     </div>
+
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="field is-grouped">
           <p class="control">
-            <button v-if="isLogin" class="button is-danger" @click='logout'>
-              <span class="icon">
-                <i class="fas fa-sign-out-alt"></i>
-              </span>
-              <span>Logout</span>
-            </button>
+            <nuxt-link v-if="!isLogin" class="button is-primary" to="/i/signup">新規登録</nuxt-link>
+            <nuxt-link v-if="!isLogin" class="button is-light" to="/i/login">ログイン</nuxt-link>
+            <button v-if="isLogin" class="button is-danger" @click='logout'>ログアウト</button>
           </p>
         </div>
       </div>
@@ -56,7 +54,10 @@ export default {
   computed: {
     isLogin: function() {
       return this.$store.getters['user/isLogin']
-    }
+    },
+		image: function () {
+			return this.$store.getters['user/getImage']
+		}
   }
 }
 </script>
