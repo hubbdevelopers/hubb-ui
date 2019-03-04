@@ -1,12 +1,20 @@
 <template>
-  <div v-if="page">
+  <div>
     <div class="columns is-centered" v-if="page.Image">
 			<div class="column is-half">
 				<page-main-image :image="page.Image" />
 			</div>
 		</div>
 		<page-title>{{page.Name}}</page-title>
-		<page-owner-info :owner="owner" :page="page" :is-user="isUser" :is-community="isCommunity"/>
+
+    <div class="columns is-mobile is-vcentered">
+      <div class="column is-three-quarters">
+        <page-owner-info :owner="owner" :page="page" :is-user="isUser" :is-community="isCommunity"/>
+      </div>
+      <div class="column" v-if="canEdit">
+        <app-ellipsis @click="clickEllipsis()"/>
+      </div>
+    </div>
 		<page-content class="content" :content="page.Content"/>
 		
     <div class="columns is-mobile is-vcentered">
@@ -25,19 +33,21 @@ import PageMainImage from '~/components/atoms/PageMainImage'
 import PageContent from '~/components/atoms/PageContent'
 import PageLike from '~/components/atoms/PageLike'
 import PageTitle from '~/components/atoms/PageTitle'
+import AppEllipsis from '~/components/atoms/AppEllipsis'
 
 export default {
+  components: {
+    PageOwnerInfo,
+		PageMainImage,
+		PageContent,
+		PageLike,
+    PageTitle,
+    AppEllipsis
+  },
   data() {
     return {
       likeCount: 0
     }
-  },
-  components: {
-		PageOwnerInfo,
-		PageMainImage,
-		PageContent,
-		PageLike,
-		PageTitle
   },
   props: {
     page: {
@@ -55,6 +65,10 @@ export default {
     isCommunity: {
       type: Boolean,
       default: false
+    },
+    canEdit: {
+      type: Boolean,
+      required: true
     }
   },
 	async created() {
@@ -74,7 +88,10 @@ export default {
       }).catch(err => {
 				window.alert("いいね取り消しに失敗しました")
 			})
-		},
+    },
+    clickEllipsis() {
+      this.$emit('click-ellipsis')
+    }
   },
   computed: {
 		isLiked: function () {
