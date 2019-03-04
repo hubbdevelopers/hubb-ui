@@ -3,7 +3,7 @@
 	<!--figure class="image is-128x128" v-if="user && user.Image">
 		<img class="is-rounded" :src="user.Image">
 	</figure-->
-	<figure class="image is-128x128">
+	<figure class="image container is-128x128">
 		<img class="is-rounded" :src="image">
 	</figure>
 	<div v-if="user">

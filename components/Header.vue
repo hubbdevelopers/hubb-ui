@@ -13,7 +13,7 @@
 
   <div id="navbarExampleTransparentExample" class="navbar-menu" :class="{ 'is-active': showNav }">
     <div class="navbar-start">
-      <nuxt-link class="navbar-item" :to="'/' + $store.state.user.accountId" v-if="isLogin">
+      <nuxt-link class="navbar-item" :to="'/' + $store.state.user.id" v-if="isLogin">
         <img class="is-rounded" :src="image"> <span>{{$store.state.user.user.Name}}</span>
       </nuxt-link>
       <nuxt-link class="navbar-item" to="/i/user">ユーザー一覧</nuxt-link>

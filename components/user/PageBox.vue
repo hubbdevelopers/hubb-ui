@@ -1,24 +1,11 @@
 <template>
 <article class="is-clearfix page-box is-mobile has-shadow">
   
-  <div class="is-pulled-left is-two-thirds" v-if="user && page">
+  <div class="is-pulled-left is-two-thirds">
     <n-link :to="link">
       <h1 class="is-size-4">{{page.Name}}</h1>
     </n-link>
-    <div>
-      <div class="is-inline-block">
-        <n-link :to="'/'+user.AccountId">
-          <figure class="image is-32x32 rounded">
-            <img v-if="page.Image" v-bind:src="user.Image" alt="ページ画像">
-            <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png" alt="ユーザー画像">
-          </figure>
-        </n-link>
-      </div>
-      <div class="is-inline-block">
-        <div>{{user.Name}}</div>
-        <div>{{howManyDaysAgo(page.CreatedAt)}}</div>
-      </div>
-    </div>
+    <page-owner-info :owner="user" :page="page" :isUser="true"/>
   </div>
   <div class="is-pulled-right">
       <figure class="image is-64x64">
@@ -38,8 +25,12 @@
 
 <script>
 import dateMixin from '~/mixins/dateMixin'
+import PageOwnerInfo from '~/components/molecules/PageOwnerInfo.vue'
 export default {
   mixins: [dateMixin],
+  components: {
+    PageOwnerInfo
+  },
   data() {
     return {
       page: {},
@@ -54,8 +45,10 @@ export default {
   async created() {
     try {
       this.page = (await this.$axios.$get(`pages/${this.pageId}`)).data
-      if(this.page.OwnerType === 'users') {
+      if (this.page.OwnerType === 'users') {
         this.user = (await this.$axios.$get(`users/${this.page.OwnerId}`)).data
+      } else if(this.page.OwnerType === 'communities'){
+        // TODO
       }
 			this.comments = (await this.$axios.$get(`comments?pageid=${this.pageId}`)).data
 			this.likes = (await this.$axios.$get(`likes?pageid=${this.pageId}`)).data

@@ -1,8 +1,8 @@
 <template>
-	<page :canEdit="isOwner" :page="page" :isDeleting="isDeleting" @deletePage="deletePage"/>
+	<page v-if="page" :canEdit="isOwner" :page="page" :isDeleting="isDeleting" @deletePage="deletePage"/>
 </template>
 <script>
-import Page from '~/components/Page.vue'
+import Page from '~/components/templates/Page.vue'
 
 export default {
 	components: {
@@ -10,7 +10,7 @@ export default {
 	},
 	data() {
 		return {
-			page: '',
+			page: null,
 			isDeleting: false
 		}
 	},

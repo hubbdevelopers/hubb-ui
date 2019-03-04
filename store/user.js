@@ -420,7 +420,7 @@ export const getters = {
     },
 
     getImage : state => {
-      return state.image ? state.image: 'https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg'
+      return state.user.Image ? state.user.Image: 'https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg'
     },
 
     isCommunityMember: state => community_id => {

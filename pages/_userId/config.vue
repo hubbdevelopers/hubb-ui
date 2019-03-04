@@ -110,7 +110,7 @@ export default {
       }
 
       this.$store.dispatch('user/updateProfile', param).then(res => {
-        this.$router.push('/' + this.$store.state.user.accountId )
+        this.$router.push('/' + this.$store.state.user.id )
       }).catch(err => {
         window.alert("error")
       })
@@ -122,7 +122,7 @@ export default {
         if(!blob) { return }
 
         this.$store.dispatch('user/updateImage', blob).then(res => {
-          this.$router.push('/' + this.$store.state.user.accountId )
+          this.$router.push('/' + this.$store.state.user.id )
         }).catch(err => {
           window.alert("error")
         })

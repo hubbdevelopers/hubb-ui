@@ -34,7 +34,6 @@
 </article>
 </template>
 <script>
-import { db, storage } from '~/plugins/firebase'
 import moment from 'moment'
 
 export default {

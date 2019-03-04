@@ -100,7 +100,7 @@ export default {
 	},
 	async created() {
 
-		this.user = (await this.$axios.$get(`users?accountid=${this.$route.params.accountId}`)).data
+		this.user = (await this.$axios.$get(`users/${this.$route.params.userId}`)).data
 		this.pages = (await this.$axios.$get(`pages?userid=${this.user.ID}`)).data
 		this.communities = (await this.$axios.$get(`communities?userid=${this.user.ID}`)).data
 
@@ -123,7 +123,7 @@ export default {
 	},
 	computed: {
 		isOwner: function () {
-			return this.$store.getters['user/isMyAccountId'](this.$route.params.accountId)
+			return this.$store.getters['user/isMyId'](this.$route.params.userId)
 		}
 	}
 }

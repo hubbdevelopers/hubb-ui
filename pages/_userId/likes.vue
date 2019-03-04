@@ -38,13 +38,14 @@ export default {
 		}
 	},
 	created() {
-		this.$axios.$get(`/likes?${this.$route.params.accountId}`).then(res => {
-			this.likes = res.data
-		})
+		// TODO
+		// this.$axios.$get(`/likes?${this.$route.params.accountId}`).then(res => {
+		// 	this.likes = res.data
+		// })
 	},
 	computed: {
 		isOwner: function () {
-			return this.$store.getters['user/isMyAccountId'](this.$route.params.accountId)
+			return this.$store.getters['user/isMyId'](this.$route.params.userId)
 		}
 	}
 }

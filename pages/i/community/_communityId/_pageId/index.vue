@@ -2,8 +2,7 @@
 	<page :canEdit="isMember" :page="page" :isDeleting="isDeleting" @deletePage="deletePage"/>
 </template>
 <script>
-import { db } from '~/plugins/firebase'
-import Page from '~/components/Page.vue'
+import Page from '~/components/templates/Page.vue'
 
 export default {
 	components: {
