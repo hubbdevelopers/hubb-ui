@@ -35,8 +35,15 @@ module.exports = {
     '@nuxtjs/bulma',
     '@nuxtjs/dotenv',
     ['@nuxtjs/axios', {baseURL: process.env.BASE_URL || 'http://localhost:8080'}],
-    ['@nuxtjs/pwa', { icon: false }]
+    ['@nuxtjs/pwa', { icon: false }],
+    '@nuxtjs/style-resources',
   ],
+
+  styleResources: {
+    sass: [
+      '~assets/css/main.scss',
+    ],
+  },
 
   css: [
     '@fortawesome/fontawesome-free-webfonts',
