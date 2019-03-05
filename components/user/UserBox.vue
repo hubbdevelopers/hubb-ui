@@ -2,7 +2,7 @@
 <div>
   <div class="card">
     <div class="card-image">
-      <nuxt-link :to="'/' + user.AccountId">
+      <nuxt-link :to="'/' + user.ID">
       <figure class="image is-4by3">
         <img v-if="user.Image" v-bind:src="user.Image" alt="ユーザー画像">
         <img v-else src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">

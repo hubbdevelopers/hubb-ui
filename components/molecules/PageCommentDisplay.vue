@@ -1,32 +1,17 @@
 <template>
 <article class="media" v-if="comment">
-  <figure class="media-left">
-    <p class="image is-64x64">
-			<img v-if="user.image" :src="user.image">
-      <img v-else src="https://bulma.io/images/placeholders/128x128.png">
-    </p>
-  </figure>
+  <image-icon-link class="media-left" :ownerId="user.ID" :image="user.Image" :isUser="true" :isCommunity="false"/>
+
   <div class="media-content">
     <div class="content">
       <p>
-        <strong>{{user.Name}}</strong> <small>@{{user.AccountId}}</small> <small>{{dateago}}</small>
+        <strong>{{user.Name}}</strong>
         <br>
         {{comment.Text}}
+        <br>
+        <text-how-many-time-ago :date="comment.CreatedAt"/>
       </p>
     </div>
-    <!--nav class="level is-mobile">
-      <div class="level-left">
-        <a class="level-item">
-          <span class="icon is-small"><i class="fas fa-reply"></i></span>
-        </a>
-        <a class="level-item">
-          <span class="icon is-small"><i class="fas fa-retweet"></i></span>
-        </a>
-        <a class="level-item">
-          <span class="icon is-small"><i class="fas fa-heart"></i></span>
-        </a>
-      </div>
-    </nav-->
   </div>
   <div class="media-right" v-if="isMyComment">
     <button class="delete" @click="$emit('deleteComment', comment.ID)"></button>
@@ -34,9 +19,14 @@
 </article>
 </template>
 <script>
-import moment from 'moment'
+import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
+import TextHowManyTimeAgo from '~/components/atoms/TextHowManyTimeAgo.vue'
 
 export default {
+  components: {
+    ImageIconLink,
+    TextHowManyTimeAgo
+  },
   props: {
     comment: {
       required: true
@@ -53,9 +43,6 @@ export default {
     })
 	},
 	computed: {
-		dateago: function() {
-			return moment(this.comment.CreatedAt).fromNow()
-		},
 		isMyComment: function() {
 			return this.$store.getters['user/isMyAccountId'](this.user.AccountId)
 		}

@@ -1,7 +1,7 @@
 <template>
   <div class="is-inline-block">
   <n-link :to="link">
-    <figure class="image is-32x32 rounded">
+    <figure class="image is-64x64 rounded">
       <img class="is-rounded" :src="imageSrc" alt="ユーザー画像">
     </figure>
   </n-link>

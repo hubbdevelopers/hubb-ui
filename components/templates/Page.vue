@@ -1,17 +1,11 @@
 <template>
   <section class="section" v-if="owner">
     <div class="container">
-			<div v-if="canEdit">
-				<p>編集可能です。</p>
-				<div><nuxt-link to="edit" append>編集ページへ</nuxt-link></div>
-				<button class="button is-primary" @click="deletePage" v-bind:disabled="isDeleting">削除</button>
-			</div>
-
 			<page-main :page="page" :owner="owner" :is-user="true" :can-edit="canEdit" @click-ellipsis="showConfigModal"/>
 
 			<page-comment :is-login="isLogin" :comments="comments" />
 		</div>
-		<page-config-modal :is-active="isActiveConfigModal" @close="closeConfigModal" @delete-page="deletePage"/>
+		<page-config-modal :is-active="isActiveConfigModal" @close="closeConfigModal" @delete-page="deletePage" v-if="canEdit"/>
   </section>
 </template>
 <script>
