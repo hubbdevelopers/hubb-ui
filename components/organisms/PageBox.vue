@@ -1,6 +1,6 @@
 <template>
-<article class="is-clearfix page-box is-mobile has-shadow">
-  <div class="is-pulled-left is-two-thirds">
+<article class="is-clearfix page-box">
+  <div class="is-pulled-left">
     <n-link :to="link">
       <h1 class="is-size-4">{{page.Name}}</h1>
     </n-link>
@@ -18,7 +18,6 @@
         <span><i class="far fa-comment"></i> {{comments.length}}</span>
       </div>
   </div>
-
 </article>
 </template>
 

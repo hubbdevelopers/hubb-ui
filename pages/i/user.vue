@@ -2,23 +2,22 @@
   <section class="section">
     <div class="container">
       <h1 class="title">
-        Users
+        ユーザー一覧
       </h1>
-			<div class="columns is-multiline">
-				<div v-for="user in users" :key="user.ID" class="column is-one-quarter">
-					<user-box :user="user"></user-box>
+			<div class="columns is-multiline is-centered">
+				<div v-for="user in users" :key="user.ID" class="column is-half">
+					<list-user-box :user="user"></list-user-box>
 				</div>
 			</div>
     </div>
   </section>
 </template>
 <script>
-import { db } from '~/plugins/firebase'
-import UserBox from '~/components/user/UserBox'
+import ListUserBox from '~/components/molecules/ListUserBox'
 
 export default {
 	components: {
-		UserBox
+		ListUserBox
 	},
 	data() {
 		return {

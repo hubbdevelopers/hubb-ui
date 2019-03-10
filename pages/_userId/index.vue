@@ -1,93 +1,18 @@
 <template>
-<section class="section">
-<div class="container">
-	<div v-if="isOwner">
-		<p>このページの所有者です</p>
-		<new-page-modal :showModal="showNewPageModal" @closeModal="closeModal"></new-page-modal>
-		<new-community-modal :showModal="showNewCommunityModal" @closeModal="closeModal"></new-community-modal>
-	</div>
-
-	<div class="columns">
-
-	<div class="column is-one-third">
-		<user-profile v-if="user" :user="user" />
-	</div>
-
-	<div class="column">
-		<h2 class="is-size-3">ページ一覧</h2>
-		<div class="columns is-multiline">
-			<div v-for="page in pages" :key="page.ID" class="column is-one-third">
-				<!--nuxt-link :to="page.id" append>{{page.data.name}}</nuxt-link-->
-				<div class="card">
-					<div class="card-image">
-						<nuxt-link :to="page.ID.toString()" append>
-						<figure class="image is-4by3">
-							<img v-if="page.Image" :src="page.Image" alt="ページメイン画像">
-							<img v-else src="https://bulma.io/images/placeholders/1280x960.png" alt="ページメイン画像">
-						</figure>
-						</nuxt-link>
-					</div>
-					<div class="card-content">
-
-						<div class="content">
-							<p class="title">
-								{{page.Name}}
-							</p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-							Phasellus nec iaculis mauris.
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<h2 class="is-size-3">コミュニティ一覧</h2>
-		<div class="columns is-multiline">
-			<div v-for="community in communities" :key="community.id" class="column is-one-third">
-				<div class="card">
-					<div class="card-image">
-						<nuxt-link :to="'/i/community/' + community.ID">
-						<figure class="image is-4by3">
-							<img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
-						</figure>
-						</nuxt-link>
-					</div>
-					<div class="card-content">
-
-						<div class="content">
-							<p class="title">
-								{{community.Name}}
-							</p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-							Phasellus nec iaculis mauris.
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div v-if="isOwner">
-			<button class="button is-primary" @click="showNewPageModal = true">ページ追加</button>
-			<button class="button is-primary" @click="showNewCommunityModal = true">コミュニティ追加</button>
-			<button class="button is-primary" @click="goConfigPage">設定</button>
-			<button class="button is-danger" @click="withdraw">退会</button>
-		</div>
-	</div>
-	</div>
-</div>
-</section>
+	<mypage v-if="!loading" :user="user" :pages="pages" :communities="communities" />
 </template>
 <script>
-import { db } from '~/plugins/firebase'
 import NewPageModal from '~/components/modal/NewPageModal'
 import NewCommunityModal from '~/components/modal/NewCommunityModal'
 import UserProfile from '~/components/organisms/UserProfile'
+import Mypage from '~/components/templates/MyPage'
 
 export default {
 	components: {
 		NewPageModal,
 		NewCommunityModal,
-		UserProfile
+		UserProfile,
+		Mypage
 	},
 	data() {
 		return {
@@ -96,6 +21,7 @@ export default {
 			communities: [],
 			showNewPageModal: false,
 			showNewCommunityModal: false,
+			loading: true
 		}
 	},
 	async created() {
@@ -103,6 +29,8 @@ export default {
 		this.user = (await this.$axios.$get(`users/${this.$route.params.userId}`)).data
 		this.pages = (await this.$axios.$get(`pages?userid=${this.user.ID}`)).data
 		this.communities = (await this.$axios.$get(`communities?userid=${this.user.ID}`)).data
+
+		this.loading = false
 
 	},
 	methods: {

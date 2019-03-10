@@ -13,38 +13,54 @@
 	<div class="column">
 		<h1 class="title">フォロー中</h1>
 			<div class="columns is-multiline">
-				<div v-for="following in followings" :key="following.ID" class="column is-one-third">
-					<user-box v-if="following.FollowingType === 'user'" :userId="following.FollowingId"></user-box>
-					<community-box v-else :communityId="following.FollowingId"></community-box>
+				
+				<div v-for="following in followingUsers" :key="following.ID" class="column">
+					<list-user-box :user="following"></list-user-box>
+				</div>
+
+				<div v-for="following in followingCommunities" :key="following.ID" class="column">
+					<list-community-box :communityId="following.FollowingId"></list-community-box>
 				</div>
 			</div>
 		</div>
 	</div>
-
 </div>
 </section>
 </template>
 <script>
-import UserBox from '~/components/user/UserBox'
-import CommunityBox from '~/components/user/CommunityBox'
+import ListUserBox from '~/components/molecules/ListUserBox'
+import ListCommunityBox from '~/components/molecules/ListCommunityBox'
 import UserProfile from '~/components/organisms/UserProfile'
 
 export default {
 	components: {
-		UserBox,
-		CommunityBox,
+		ListUserBox,
+		ListCommunityBox,
 		UserProfile
 	},
 	data() {
 		return {
 			user: null,
 			followings: [],
+			followingUsers: [],
+			followingCommunities: []
 		}
 	},
 	async created() {
 		this.user = (await this.$axios.$get(`/users/${this.$route.params.userId}`)).data
-		this.$axios.$get(`/users/${this.user.ID}/followings`).then(res => {
-			this.followings = res.data
+		this.followings = (await this.$axios.$get(`/users/${this.user.ID}/followings`)).data
+
+		this.followings.forEach(following => {
+
+			if (following.FollowingType === 'user') {
+				this.$axios.$get(`/users/${following.FollowingId}`).then(res => {
+					this.followingUsers.push(res.data)
+				})
+			} else if (following.FollowingType === 'community') {
+				this.$axios.$get(`/communities/${following.FollowingId}`).then(res => {
+					this.followingCommunities.push(res.data)
+				})
+			}
 		})
 	},
 	computed: {

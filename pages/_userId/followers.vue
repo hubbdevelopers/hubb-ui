@@ -13,9 +13,8 @@
 	<div class="column">
 		<h1 class="title">フォロワー</h1>
 			<div class="columns is-multiline">
-				<!--div v-for="member in members" :key="member.id" class="column is-one-quarter"-->
-				<div v-for="follower in followers" :key="follower.ID" class="column is-one-third">
-					<user-box :userId="follower.UserId"></user-box>
+				<div v-for="follower in followerUsers" :key="follower.ID" class="column">
+					<list-user-box :user="follower"></list-user-box>
 				</div>
 			</div>
 	</div>
@@ -25,25 +24,30 @@
 </section>
 </template>
 <script>
-import UserBox from '~/components/user/UserBox'
+import ListUserBox from '~/components/molecules/ListUserBox'
 import UserProfile from '~/components/organisms/UserProfile'
 
 export default {
 	components: {
 		UserProfile,
-		UserBox
+		ListUserBox
 	},
 	data() {
 		return {
 			user: null,
 			followers: [],
+			followerUsers: []
 		}
 	},
 	async created() {
 		this.user = (await this.$axios.$get(`/users/${this.$route.params.userId}`)).data
+		this.followers = (await this.$axios.$get(`/users/${this.user.ID}/followers`)).data
 
-		this.$axios.$get(`/users/${this.user.ID}/followers`).then(res => {
-			this.followers = res.data
+		this.followers.forEach(follower => {
+			console.log(follower)
+			this.$axios.$get(`/users/${follower.UserId}`).then(res => {
+				this.followerUsers.push(res.data)
+			})
 		})
 	},
 	computed: {

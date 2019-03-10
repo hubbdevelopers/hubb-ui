@@ -38,7 +38,7 @@
 	<h1 class="title">メンバー一覧</h1>
 	<div class="columns is-multiline">
 		<div v-for="member in members" :key="member.id" class="column is-one-quarter">
-			<user-box :user="member"></user-box>
+			<list-user-box :user="member"></list-user-box>
 		</div>
 	</div>
 
@@ -70,14 +70,14 @@ import NewCommunityPageModal from '~/components/modal/NewCommunityPageModal'
 // import firebase from 'firebase/app'
 import { db } from '~/plugins/firebase'
 import SuggestForm from '~/components/SuggestForm.vue'
-import UserBox from '~/components/user/UserBox'
+import ListUserBox from '~/components/molecules/ListUserBox'
 import UserInvitationBox from '~/components/user/UserInvitationBox'
 
 export default {
 	components: {
 		SuggestForm,
 		NewCommunityPageModal,
-		UserBox,
+		ListUserBox,
 		UserInvitationBox
 	},
 	data() {

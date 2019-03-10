@@ -1,6 +1,6 @@
 <template>
-  <p>
-    <span class="icon has-text-dark" v-if="birthday">
+  <p v-if="birthday">
+    <span class="icon has-text-dark">
     <i class="fas fa-birthday-cake"></i>
     </span><span>{{displayBirthday}}</span>
   </p>
@@ -10,7 +10,6 @@ import moment from 'moment'
 export default {
   props: {
     birthday: {
-      type: String,
       required: true
     }
   },
