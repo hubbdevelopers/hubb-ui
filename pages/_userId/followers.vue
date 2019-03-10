@@ -7,8 +7,8 @@
 
 	<div class="columns">
 
-	<div class="column is-one-quarter">
-		<profile-box :accountId="$route.params.accountId"/>
+	<div class="column is-one-third">
+		<user-profile v-if="user" :user="user" />
 	</div>
 	<div class="column">
 		<h1 class="title">フォロワー</h1>
@@ -26,16 +26,16 @@
 </template>
 <script>
 import UserBox from '~/components/user/UserBox'
-import ProfileBox from '~/components/user/ProfileBox'
+import UserProfile from '~/components/organisms/UserProfile'
 
 export default {
 	components: {
-		ProfileBox,
+		UserProfile,
 		UserBox
 	},
 	data() {
 		return {
-			//user: null,
+			user: null,
 			followers: [],
 		}
 	},

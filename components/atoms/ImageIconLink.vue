@@ -1,7 +1,7 @@
 <template>
   <div class="is-inline-block">
   <n-link :to="link">
-    <figure class="image is-64x64 rounded">
+    <figure class="image is-48x48 rounded">
       <img class="is-rounded" :src="imageSrc" alt="ユーザー画像">
     </figure>
   </n-link>
@@ -36,7 +36,7 @@ export default {
       }
     },
     imageSrc() {
-      return this.image ? this.image : 'https://bulma.io/images/placeholders/128x128.png'
+      return this.image ? this.image : 'https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg'
     }
   }
 }

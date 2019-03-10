@@ -7,8 +7,8 @@
 
 	<div class="columns">
 
-	<div class=" column is-one-quarter">
-		<profile-box :accountId="$route.params.accountId"/>
+	<div class="column is-one-third">
+		<user-profile v-if="user" :user="user" />
 	</div>
 	<div class="column">
 		<h1 class="title">いいね</h1>
@@ -24,20 +24,22 @@
 </section>
 </template>
 <script>
-import ProfileBox from '~/components/user/ProfileBox'
 import PageBox from '~/components/user/PageBox'
+import UserProfile from '~/components/organisms/UserProfile'
 
 export default {
 	components: {
-		ProfileBox,
+		UserProfile,
 		PageBox
 	},
 	data() {
 		return {
+			user: null,
 			likes: [],
 		}
 	},
-	created() {
+	async created() {
+		this.user = (await this.$axios.$get(`/users/${this.$route.params.userId}`)).data
 		// TODO
 		// this.$axios.$get(`/likes?${this.$route.params.accountId}`).then(res => {
 		// 	this.likes = res.data

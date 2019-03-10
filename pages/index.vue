@@ -3,10 +3,8 @@
     <div class="container">
 
       <div class="columns">
-
-        <div class="column is-one-quarter is-hidden-mobile">
-          <profile-box :accountId="accountId" v-if="isLogin && accountId" />
-          <login-box v-else />
+        <div class="column is-one-third is-hidden-mobile">
+          <user-profile :user="$store.state.user.user" v-if="isLogin && accountId" />
         </div>
         <div class="column">
           <div class="columns is-multiline">
@@ -21,13 +19,13 @@
 </template>
 
 <script>
-import ProfileBox from '~/components/user/ProfileBox'
 import LoginBox from '~/components/user/LoginBox'
 import PageBox from '~/components/user/PageBox'
+import UserProfile from '~/components/organisms/UserProfile'
 
 export default {
   components: {
-    ProfileBox,
+    UserProfile,
     LoginBox,
     PageBox
   },

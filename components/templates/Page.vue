@@ -1,9 +1,13 @@
 <template>
   <section class="section" v-if="owner">
     <div class="container">
-			<page-main :page="page" :owner="owner" :is-user="true" :can-edit="canEdit" @click-ellipsis="showConfigModal"/>
+			<div class="columns is-centered">
+  			<div class="column is-half">
+					<page-main :page="page" :owner="owner" :is-user="true" :can-edit="canEdit" @click-ellipsis="showConfigModal"/>
 
-			<page-comment :is-login="isLogin" :comments="comments" />
+					<page-comment :is-login="isLogin" :comments="comments" />
+				</div>
+			</div>
 		</div>
 		<page-config-modal :is-active="isActiveConfigModal" @close="closeConfigModal" @delete-page="deletePage" v-if="canEdit"/>
   </section>
@@ -75,3 +79,8 @@ export default {
 	},
 }
 </script>
+<style lang="scss">
+.page {
+	max-width: 677px;
+}
+</style>

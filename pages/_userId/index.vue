@@ -9,8 +9,8 @@
 
 	<div class="columns">
 
-	<div class="column is-one-quarter">
-		<profile-box v-if="user" :accountId="user.AccountId"/>
+	<div class="column is-one-third">
+		<user-profile v-if="user" :user="user" />
 	</div>
 
 	<div class="column">
@@ -81,13 +81,13 @@
 import { db } from '~/plugins/firebase'
 import NewPageModal from '~/components/modal/NewPageModal'
 import NewCommunityModal from '~/components/modal/NewCommunityModal'
-import ProfileBox from '~/components/user/ProfileBox'
+import UserProfile from '~/components/organisms/UserProfile'
 
 export default {
 	components: {
 		NewPageModal,
 		NewCommunityModal,
-		ProfileBox
+		UserProfile
 	},
 	data() {
 		return {

@@ -7,8 +7,8 @@
 
 	<div class="columns">
 
-	<div class=" column is-one-quarter">
-		<profile-box :accountId="$route.params.accountId"/>
+	<div class="column is-one-third">
+		<user-profile v-if="user" :user="user" />
 	</div>
 	<div class="column">
 		<h1 class="title">フォロー中</h1>
@@ -27,13 +27,13 @@
 <script>
 import UserBox from '~/components/user/UserBox'
 import CommunityBox from '~/components/user/CommunityBox'
-import ProfileBox from '~/components/user/ProfileBox'
+import UserProfile from '~/components/organisms/UserProfile'
 
 export default {
 	components: {
 		UserBox,
 		CommunityBox,
-		ProfileBox
+		UserProfile
 	},
 	data() {
 		return {
@@ -43,7 +43,6 @@ export default {
 	},
 	async created() {
 		this.user = (await this.$axios.$get(`/users/${this.$route.params.userId}`)).data
-
 		this.$axios.$get(`/users/${this.user.ID}/followings`).then(res => {
 			this.followings = res.data
 		})

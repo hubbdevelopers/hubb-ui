@@ -265,7 +265,7 @@ export const actions = {
       })
     },
 
-    unFollowUser ({dispatch, state}, following_id) {
+    unfollowUser ({dispatch, state}, following_id) {
       return new Promise(async (resolve, reject) => {
         try {
           await this.$axios.$delete(`/users/${state.id}/follow/users/${following_id}`)

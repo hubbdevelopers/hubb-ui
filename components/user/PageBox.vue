@@ -1,6 +1,5 @@
 <template>
 <article class="is-clearfix page-box is-mobile has-shadow">
-  
   <div class="is-pulled-left is-two-thirds">
     <n-link :to="link">
       <h1 class="is-size-4">{{page.Name}}</h1>
