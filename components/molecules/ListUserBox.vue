@@ -1,16 +1,16 @@
 <template>
 <div class="user-box">
-  <div class="columns is-mobile">
-    <div class="column is-one-quarter">
+  <div class="is-clearfix main">
+    <div class="is-pulled-left">
       <image-icon-link :ownerId="user.ID" :image="user.Image" :isUser="true" :isCommunity="false"/>
     </div>
-    <div class="column is-one-quarter">
+    <div class="is-pulled-left name-area">
       <p class="is-size-6">{{user.Name}}</p>
       <p class="is-size-7 has-text-weight-light	">{{user.AccountId}}</p>
     </div>
-    <div class="column" v-if="!isOwner">
-      <button v-if="isFollowingUser" class="button is-primary" @click="unFollow">フォロー中</button>
-      <button v-else class="button is-primary is-outlined" @click="follow">フォローする</button>
+    <div class="is-pulled-right follow-button-area" v-if="!isOwner">
+      <button v-if="isFollowingUser" class="button is-primary follow-button" @click="unFollow">フォロー中</button>
+      <button v-else class="button is-primary is-outlined follow-button" @click="follow">フォローする</button>
     </div>
   </div>
 </div>
@@ -69,8 +69,17 @@ a:hover {
 
 .user-box {
   box-shadow: 1px 1px 2px gray;
-  margin-top: 1px;
-  padding: 5px 10px;
+  padding: 15px 10px;
+}
+
+.name-area {
+  margin: 0 10px;
+}
+
+.follow-button-area {
+  vertical-align:middle;
+  display:table-cell;
+  margin: 10px 0;
 }
 
 </style>
