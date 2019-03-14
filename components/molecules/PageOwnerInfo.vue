@@ -1,10 +1,10 @@
 <template>
-<div>
-  <div class="is-inline-block">
+<div class="is-clearfix">
+  <div class="is-inline-block is-pulled-left">
     <image-icon-link :ownerId="owner.ID" :image="owner.Image" :isUser="isUser" :isCommunity="isCommunity"/>
   </div>
-  <div class="is-inline-block">
-    {{owner.Name}}
+  <div class="is-inline-block is-pulled-left right-area">
+    <span>{{owner.Name}}</span>
     <text-how-many-time-ago :date="page.CreatedAt"/>
   </div>
 </div>
@@ -37,3 +37,9 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.right-area {
+  margin: 0 5px;
+  font-size: 12px;
+}
+</style>

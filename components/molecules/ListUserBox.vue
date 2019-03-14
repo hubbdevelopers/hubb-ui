@@ -1,7 +1,7 @@
 <template>
 <div class="user-box">
   <div class="is-clearfix main">
-    <div class="is-pulled-left">
+    <div class="is-pulled-left image-icon">
       <image-icon-link :ownerId="user.ID" :image="user.Image" :isUser="true" :isCommunity="false"/>
     </div>
     <div class="is-pulled-left name-area">
@@ -69,11 +69,15 @@ a:hover {
 
 .user-box {
   box-shadow: 1px 1px 2px gray;
-  padding: 15px 10px;
+  padding: 5px 10px;
+}
+
+.image-icon {
+  margin-top: 10px;
 }
 
 .name-area {
-  margin: 0 10px;
+  margin: 5px 10px 0;
 }
 
 .follow-button-area {

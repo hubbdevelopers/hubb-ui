@@ -1,24 +1,26 @@
 <template>
-<article class="is-clearfix page-box">
-  <div class="is-pulled-left">
-    <n-link :to="link">
-      <h1 class="is-size-4">{{page.Name}}</h1>
-    </n-link>
-    <page-owner-info :owner="user" :page="page" :isUser="true"/>
+<div class="is-clearfix page-box">
+  <div class="is-clearfix">
+    <div class="is-pulled-left">
+      <n-link :to="link">
+        <h1 class="is-size-4">{{page.Name}}</h1>
+      </n-link>
+      <page-owner-info class="page-owner-info" :owner="user" :page="page" :isUser="true"/>
+    </div>
+    <div class="is-pulled-right">
+        <figure class="image is-96x96">
+          <n-link :to="link">
+            <img v-if="page.Image" v-bind:src="page.Image" alt="ページ画像">
+            <img v-else src="https://bulma.io/images/placeholders/128x128.png" alt="ページ画像">
+          </n-link>
+        </figure>
+        <div class="likes-comments">
+          <span class="likes"><i class="far fa-heart"></i> {{likes.length}} </span>
+          <span class="comments"><i class="far fa-comment"></i> {{comments.length}}</span>
+        </div>
+    </div>
   </div>
-  <div class="is-pulled-right">
-      <figure class="image is-64x64">
-        <n-link :to="link">
-          <img v-if="page.Image" v-bind:src="page.Image" alt="ページ画像">
-          <img v-else src="https://bulma.io/images/placeholders/128x128.png" alt="ページ画像">
-        </n-link>
-      </figure>
-      <div>
-        <span><i class="far fa-heart"></i> {{likes.length}} </span>
-        <span><i class="far fa-comment"></i> {{comments.length}}</span>
-      </div>
-  </div>
-</article>
+</div>
 </template>
 
 <script>
@@ -80,9 +82,24 @@ a:hover {
 }
 
 .page-box {
+  max-width: 360px;
+  position: relative;
   box-shadow: 1px 1px 2px gray;
   margin-top: 1px;
   padding: 5px 10px;
 }
 
+.page-owner-info {
+  position: absolute;
+  bottom: 5px;
+}
+
+.likes-comments {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.likes {
+  margin-right: 5px;
+}
 </style>
