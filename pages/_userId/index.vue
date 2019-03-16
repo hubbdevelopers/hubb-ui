@@ -2,16 +2,10 @@
 	<mypage v-if="!loading" :user="user" :pages="pages" :communities="communities" />
 </template>
 <script>
-import NewPageModal from '~/components/modal/NewPageModal'
-import NewCommunityModal from '~/components/modal/NewCommunityModal'
-import UserProfile from '~/components/organisms/UserProfile'
 import Mypage from '~/components/templates/MyPage'
 
 export default {
 	components: {
-		NewPageModal,
-		NewCommunityModal,
-		UserProfile,
 		Mypage
 	},
 	data() {
