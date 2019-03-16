@@ -61,7 +61,7 @@ export default {
 	},
 	methods: {
 		goConfigPage() {
-			this.$router.push({ path: 'config', append: true })
+			this.$router.push({ path: 'profile', append: true })
 		},
 		closeModal() {
 			this.showNewPageModal = false

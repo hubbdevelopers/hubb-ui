@@ -7,7 +7,6 @@ export default {
   mixins: [dateMixin],
   props: {
     date: {
-      type: String,
       required: true
     }
   }

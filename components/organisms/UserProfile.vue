@@ -2,7 +2,7 @@
 <div class="box">
 	<div class="columns is-mobile is-vcentered">
 		<div class="column is-two-fifths"><profile-image :image="user.Image" /></div>
-		<div v-if="isOwner" class="column"><n-link class="button is-primary is-outlined is-rounded" :to="'/' + user.ID +'/config'">プロフィール編集</n-link></div>
+		<div v-if="isOwner" class="column"><n-link class="button is-primary is-outlined is-rounded" :to="`/${user.ID}/profile`">プロフィール編集</n-link></div>
 	</div>
 
 	<div v-if="user">

@@ -1,9 +1,9 @@
 <template>
 <nav class="navbar is-transparent">
   <div class="navbar-brand">
-    <nuxt-link class="navbar-item" to="/">
+    <n-link class="navbar-item" to="/">
       <img src="~/assets/images/logo.png" alt="Bulma: a modern CSS framework based on Flexbox">
-    </nuxt-link>
+    </n-link>      
     <div class="navbar-burger burger" @click="showNav = !showNav" :class="{ 'is-active': showNav }" data-target="navbarExampleTransparentExample">
       <span></span>
       <span></span>
@@ -12,20 +12,14 @@
   </div>
 
   <div id="navbarExampleTransparentExample" class="navbar-menu" :class="{ 'is-active': showNav }">
-    <div class="navbar-start">
-      <nuxt-link class="navbar-item" :to="'/' + $store.state.user.id" v-if="isLogin">
-        <img class="is-rounded" :src="image"> <span>{{$store.state.user.user.Name}}</span>
-      </nuxt-link>
-      <nuxt-link class="navbar-item" to="/i/user">ユーザー一覧</nuxt-link>
-      <nuxt-link class="navbar-item" to="/i/community">コミュニティ一覧</nuxt-link>
-    </div>
-
     <div class="navbar-end">
+      <n-link class="navbar-item" :to="'/' + $store.state.user.id" v-if="isLogin"><i class="fas fa-user"></i> マイページ</n-link>
+      <n-link class="navbar-item" :to="`/${$store.state.user.id}/settings`" v-if="isLogin"><i class="fas fa-sliders-h"></i> 設定</n-link>
       <div class="navbar-item">
         <div class="field is-grouped">
           <p class="control">
-            <nuxt-link v-if="!isLogin" class="button is-primary" to="/i/signup">新規登録</nuxt-link>
-            <nuxt-link v-if="!isLogin" class="button is-light" to="/i/login">ログイン</nuxt-link>
+            <n-link v-if="!isLogin" class="button is-primary" to="/i/signup">新規登録</n-link>
+            <n-link v-if="!isLogin" class="button is-light" to="/i/login">ログイン</n-link>
             <button v-if="isLogin" class="button is-danger" @click='logout'>ログアウト</button>
           </p>
         </div>
@@ -35,7 +29,11 @@
 </nav>
 </template>
 <script>
+import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
 export default {
+  components: {
+    ImageIconLink
+  },
   data() {
     return {
       showNav: false

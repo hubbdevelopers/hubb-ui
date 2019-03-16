@@ -17,7 +17,7 @@
           <div class="field">
             <div class="control">
               <button class="button is-danger" id="submit" @click='withdraw' v-bind:disabled="$v.password.$invalid">退会する</button>
-              <nuxt-link class="button is-link" :to="'/' + $store.state.user.accountId">Back</nuxt-link>
+              <n-link class="button is-link" :to="'/' + $store.state.user.id">Back</n-link>
             </div>
           </div>
 
