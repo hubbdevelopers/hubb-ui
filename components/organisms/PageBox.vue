@@ -1,10 +1,13 @@
 <template>
 <div class="is-clearfix page-box">
   <div class="is-clearfix">
-    <div class="is-pulled-left">
+    <div class="is-pulled-left left-area">
       <n-link :to="link">
         <h1 class="is-size-4">{{page.Name}}</h1>
       </n-link>
+      <div class="content">
+        <p>{{content}}</p>
+      </div>
       <page-owner-info class="page-owner-info" :owner="user" :page="page" :isUser="true"/>
     </div>
     <div class="is-pulled-right">
@@ -57,7 +60,7 @@ export default {
 		}
   },
   computed: {
-    link: function() {
+    link() {
       if(this.page.OwnerType === 'users') {
         return '/' + this.user.AccountId + '/' + this.page.ID
       }else if(this.page.OwnerType === 'communities'){
@@ -65,6 +68,11 @@ export default {
       }else {
         return '/'
       }
+    },
+    content() {
+      const temp = document.createElement("div");
+      temp.innerHTML = this.page.Content;
+      return temp.textContent || temp.innerText || "";
     }
   }
 }
@@ -89,6 +97,34 @@ a:hover {
   padding: 5px 10px;
 }
 
+.left-area {
+  width: 70%;
+}
+
+.content {
+  overflow: hidden;
+  width: 100%;
+  p {
+    font-size: 12px;
+    height: 12px * 1.2 * 2;
+    line-height: 1.2;
+    position: relative;
+    &:before,
+    &:after {
+      position: absolute;
+    }
+    &:after {
+      content: "";
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+.is-ellipsis-1 {
+  -webkit-line-clamp: 1;
+}
+
 .page-owner-info {
   position: absolute;
   bottom: 5px;
@@ -102,4 +138,5 @@ a:hover {
 .likes {
   margin-right: 5px;
 }
+
 </style>
