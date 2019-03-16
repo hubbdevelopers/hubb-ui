@@ -20,7 +20,7 @@
 
 <script>
 import LoginBox from '~/components/user/LoginBox'
-import PageBox from '~/components/organisms/PageBox'
+import PageBox from '~/components/molecules/PageBox'
 import UserProfile from '~/components/organisms/UserProfile'
 
 export default {

@@ -2,7 +2,6 @@
 <section class="section">
 <div class="container">
 	<div v-if="isOwner">
-		<p>このページの所有者です</p>
 		<new-page-modal :showModal="showNewPageModal" @closeModal="closeModal"></new-page-modal>
 		<new-community-modal :showModal="showNewCommunityModal" @closeModal="closeModal"></new-community-modal>
 	</div>
@@ -14,39 +13,9 @@
 	</div>
 
 	<div class="column">
-		<h2 class="is-size-3">ページ一覧</h2>
-		<div class="columns is-multiline">
-      <div v-for="page in pages" :key="page.ID" class="column is-three-fifths is-offset-one-fifth">
-        <page-box :pageId="page.ID.toString()" />
-      </div>
-		</div>
+		<mypage-tab-area  :user="user" :pages="pages" :communities="communities"/>
 
-		<h2 class="is-size-3">コミュニティ一覧</h2>
-		<div class="columns is-multiline">
-			<div v-for="community in communities" :key="community.id" class="column is-one-third">
-				<div class="card">
-					<div class="card-image">
-						<nuxt-link :to="'/i/community/' + community.ID">
-						<figure class="image is-4by3">
-							<img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
-						</figure>
-						</nuxt-link>
-					</div>
-					<div class="card-content">
-
-						<div class="content">
-							<p class="title">
-								{{community.Name}}
-							</p>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-							Phasellus nec iaculis mauris.
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div v-if="isOwner">
+		<div class="config" v-if="isOwner">
 			<button class="button is-primary" @click="showNewPageModal = true">ページ追加</button>
 			<button class="button is-primary" @click="showNewCommunityModal = true">コミュニティ追加</button>
 			<button class="button is-primary" @click="goConfigPage">設定</button>
@@ -61,7 +30,7 @@
 import NewPageModal from '~/components/modal/NewPageModal'
 import NewCommunityModal from '~/components/modal/NewCommunityModal'
 import UserProfile from '~/components/organisms/UserProfile'
-import PageBox from '~/components/organisms/PageBox'
+import MypageTabArea from '~/components/organisms/MypageTabArea'
 
 export default {
   props: {
@@ -82,7 +51,7 @@ export default {
 		NewPageModal,
 		NewCommunityModal,
     UserProfile,
-    PageBox
+    MypageTabArea
 	},
 	data() {
 		return {
@@ -113,3 +82,8 @@ export default {
 	}
 }
 </script>
+<style lang="scss" scoped>
+.config {
+  margin-top: 50px;
+}
+</style>
