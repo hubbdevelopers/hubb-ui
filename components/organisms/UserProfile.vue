@@ -13,7 +13,7 @@
 			</div>
 
 			<profile-s-n-s :homepage-url="user.Homepage" :twitter-id="user.Twitter" :instagram-id="user.Instagram" :facebook-id="user.Facebook"/>
-			<profile-description>aaaaaaaa:aaaaaa</profile-description>
+			<profile-description>{{user.Description}}</profile-description>
 
 			<profile-birthday :birthday="user.Birthday"></profile-birthday>
 

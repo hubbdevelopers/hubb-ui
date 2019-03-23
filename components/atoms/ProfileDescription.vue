@@ -1,3 +1,11 @@
 <template>
-  <div class="is-size-6"><slot></slot></div>
+  <div>
+    <slot></slot>
+  </div>
 </template>
+<style lang="scss" scoped>
+div {
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+</style>

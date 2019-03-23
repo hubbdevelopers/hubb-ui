@@ -19,7 +19,7 @@
           <div class="field">
             <label class="label">自己紹介</label>
             <div class="control">
-              <textarea class="textarea" v-model="description"></textarea>
+              <textarea class="textarea" v-model="description" ></textarea>
             </div>
           </div>
 
@@ -99,6 +99,10 @@ export default {
   },
   methods: {
     update() {
+      if(this.description_input.length > 100) {
+        window.alert("自己紹介は100文字までです")
+        return
+      }
       const param = {
         name: this.name_input,
         description: this.description_input,
