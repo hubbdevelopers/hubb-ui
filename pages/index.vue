@@ -1,19 +1,35 @@
 <template>
   <section class="section">
     <div class="container">
+      <template v-if="isLogin">
+        <div class="columns">
+          <div class="column is-one-third is-hidden-mobile">
+            <user-profile :user="$store.state.user.user" v-if="isLogin && accountId" />
+          </div>
+          <div class="column">
+            <div class="columns is-multiline">
+              <div v-for="page in timeline" :key="page.ID" class="column is-three-fifths is-offset-one-fifth">
+                <page-box :pageId="page.ID.toString()" />
+              </div>
+            </div> 
+          </div>
+        </div>
+      </template>
 
-      <div class="columns">
-        <div class="column is-one-third is-hidden-mobile">
-          <user-profile :user="$store.state.user.user" v-if="isLogin && accountId" />
+      <template v-else>
+        <div class="columns">
+          <div class="column is-one-third is-hidden-mobile">
+            <login-box />
+          </div>
+          <div class="column">
+            <div class="columns is-multiline">
+              <div v-for="page in notLoginTimeline" :key="page.ID" class="column is-three-fifths is-offset-one-fifth">
+                <page-box :pageId="page.ID.toString()" />
+              </div>
+            </div> 
+          </div>
         </div>
-        <div class="column">
-          <div class="columns is-multiline">
-            <div v-for="page in timeline" :key="page.ID" class="column is-three-fifths is-offset-one-fifth">
-              <page-box :pageId="page.ID.toString()" />
-            </div>
-          </div> 
-        </div>
-      </div>
+      </template>
     </div>
   </section>
 </template>
@@ -33,11 +49,16 @@ export default {
     return {
       email: "",
       password: "",
-      config: ""
+      config: "",
+      notLoginTimeline: []
     }
   },
-  methods: {
+  async created() {
+    if (this.isLogin) {
+      return
+    }
     
+    this.notLoginTimeline = (await this.$axios.$get(`/recentpages`)).data
   },
   computed: {
     isLogin: function() {

@@ -41,7 +41,7 @@ export const actions = {
             //dispatch('fetchNotifications')
             resolve()
           } else {
-            console.log('init error')
+            console.log('not login')
             reject()
           }
         })
