@@ -1,9 +1,6 @@
 <template>
 <section class="section">
 <div class="container">
-	<div v-if="isOwner">
-		<p>このページの所有者です</p>
-	</div>
 
 	<div class="columns">
 

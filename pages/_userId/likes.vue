@@ -1,20 +1,16 @@
 <template>
 <section class="section">
 <div class="container">
-	<div v-if="isOwner">
-		<p>このページの所有者です</p>
-	</div>
 
 	<div class="columns">
-
-	<div class="column is-one-third">
-		<user-profile v-if="user" :user="user" />
-	</div>
-	<div class="column">
-		<h1 class="title">いいね</h1>
+		<div class="column is-one-third">
+			<user-profile v-if="user" :user="user" />
+		</div>
+		<div class="column">
+			<h1 class="title">いいね</h1>
 			<div class="columns is-multiline">
-				<div v-for="like in likes" :key="like.ID" class="column is-one-third">
-					<page-box :pageId="like.PageId"></page-box>
+				<div v-for="page in pages" :key="page.ID" class="column is-three-fifths is-offset-one-fifth">
+					<page-box :pageId="page.ID.toString()" />
 				</div>
 			</div>
 		</div>
@@ -36,14 +32,18 @@ export default {
 		return {
 			user: null,
 			likes: [],
+			pages: []
 		}
 	},
 	async created() {
 		this.user = (await this.$axios.$get(`/users/${this.$route.params.userId}`)).data
-		// TODO
-		// this.$axios.$get(`/likes?${this.$route.params.accountId}`).then(res => {
-		// 	this.likes = res.data
-		// })
+		this.likes = (await this.$axios.$get(`/likes?userid=${this.$route.params.userId}`)).data
+
+		this.likes.forEach(async like => {
+			const page = (await this.$axios.$get(`/pages/${like.PageId}`)).data
+			this.pages.push(page)
+		})
+		
 	},
 	computed: {
 		isOwner: function () {
