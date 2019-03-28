@@ -15,6 +15,9 @@
 				<input class="input" type="password" v-model="password">
 			</div>
 		</div>
+    <div>
+      <n-link to="/i/login/forget">パスワードを忘れた方はこちら</n-link>
+    </div>
 
 		<div class="field">
 			<div class="control">

@@ -20,6 +20,9 @@
             </div>
           </div>
 
+          <div>
+            <n-link to="/i/login/forget">パスワードを忘れた方はこちら</n-link>
+          </div>
           <div class="has-text-centered">
               <button class="button is-primary is-medium" id="submit" @click='login' v-bind:disabled="$v.email.$invalid || $v.password.$invalid">ログイン</button>
           </div>
