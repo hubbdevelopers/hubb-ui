@@ -54,7 +54,7 @@ export default {
         await this.$store.dispatch('user/reauthenticate', {password: this.oldPassword})
         await this.$store.dispatch('user/updatePassword', {password: this.newPassword})
         window.alert('パスワードを変更しました')
-        this.$router.push('/' + this.$store.state.user.id )
+        this.$router.push(`/${this.$store.state.user.id}`)
       } catch (e) {
         console.log(e)
         if (e.code === 'auth/wrong-password') {

@@ -56,7 +56,7 @@ export default {
 				image: this.page.Image,
 			}
 			await this.$axios.$put(`/pages/${this.$route.params.pageId}`, param)
-			this.$router.push('/' + this.$store.state.user.accountId + '/' + this.page.ID)
+			this.$router.push(`/${this.$store.state.user.id}/${this.page.ID}`)
 		},
     handleImageAdded: function(file, Editor, cursorLocation, resetUploader) {
 			const storageRef = storage.ref();

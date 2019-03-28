@@ -33,7 +33,7 @@ export default {
 			}
 			this.isDeleting = true
 			this.$store.dispatch('user/deletePage', this.$route.params.pageId).then(res => {
-				this.$router.push('/' + this.$store.state.user.accountId )
+				this.$router.push(`/${this.$store.state.user.id}`)
 			}).catch(err => {
 				window.alert("削除に失敗しました")
 			}).finally(() => {

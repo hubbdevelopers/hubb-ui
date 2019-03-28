@@ -74,7 +74,7 @@ export default {
         if(result.additionalUserInfo.isNewUser) {
           this.$router.push('/i/init')
         } else {
-          this.$router.push('/' + this.$store.state.user.accountId )
+          this.$router.push(`/${this.$store.state.user.id}`)
         }
 
       }).catch(error => {
