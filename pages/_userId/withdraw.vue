@@ -43,29 +43,20 @@ export default {
     async withdraw() {
       this.err_msg = ''
 
-      const user = auth.currentUser;
-      const credentials = firebase.auth.EmailAuthProvider.credential(
-        this.$store.state.user.user.email,
-        this.password
-      );
-
-      user.reauthenticateWithCredential(credentials).then(() => {
+      try {
+        await this.$store.dispatch('user/reauthenticate', {password: this.password})
 
         if(window.confirm('アカウントを削除しますがよろしいですか？')){
-          user.delete().then(() => {
-            this.$store.dispatch('user/clearUserState')
-            this.$router.push('/')
-          }).catch(err => {
-            console.log(err)
-            window.alert("削除に失敗しました")
-          })
+          await this.$store.dispatch('user/deleteUser')
+          this.$router.push('/')
         }
-      }).catch(err => {
-        if(err.code === "auth/wrong-password") {
-          this.err_msg = "パスワードが正しくありません"
+      } catch (e) {
+        if (e.code === 'auth/wrong-password') {
+          this.err_msg = 'パスワードが正しくありません'
+        } else {
+          window.alert('退会に失敗しました。再度やり直してください。')
         }
-      })
-      
+      }
     }
   },
   validations: {

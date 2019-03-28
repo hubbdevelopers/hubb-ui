@@ -12,7 +12,8 @@ export const state = () => ({
     notifications: [],
     id: '', // DB ID
     uid: '', // Firebase UID
-    accountId: '' // ACCOUNT ID
+    accountId: '', // ACCOUNT ID
+    email: ''
 })
 
 export const actions = {
@@ -32,6 +33,7 @@ export const actions = {
 
             const user = await this.$axios.$get(`/users?uid=${authUser.uid}`)
             commit('updateId', user.data.ID)
+            commit('updateEmail', authUser.email)
             dispatch('fetchUser')
             dispatch('fetchPages')
             dispatch('fetchCommunities')
@@ -57,6 +59,36 @@ export const actions = {
           const res = await this.$axios.$post('users', param)
   
           commit('updateId', res.data.ID)
+          resolve()
+        } catch(e) {
+          reject(e)
+        }
+      })
+    },
+
+    reauthenticate({state}, param) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const user = auth.currentUser
+          const credentials = firebase.auth.EmailAuthProvider.credential(
+            state.email,
+            param.password
+          );
+
+          await user.reauthenticateAndRetrieveDataWithCredential(credentials)
+          resolve()
+        } catch (e) {
+          reject(e)
+        }
+      })
+    },
+
+    deleteUser({commit, state}) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const user = auth.currentUser
+          await user.delete()
+          commit('clearUserState')
           resolve()
         } catch(e) {
           reject(e)
@@ -392,6 +424,10 @@ export const mutations = {
 
     updateLike (state, likes) {
       state.likes = likes
+    },
+
+    updateEmail(state, email) {
+      state.email = email
     },
 
     // updateNotification (state, notifications) {
