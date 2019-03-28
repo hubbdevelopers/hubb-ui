@@ -28,8 +28,6 @@
 </template>
 
 <script>
-import firebase from 'firebase'
-import { auth } from '~/plugins/firebase'
 import { required, minLength, maxLength } from 'vuelidate/lib/validators'
 
 export default {
@@ -48,6 +46,7 @@ export default {
 
         if(window.confirm('アカウントを削除しますがよろしいですか？')){
           await this.$store.dispatch('user/deleteUser')
+          window.alert('アカウントを削除しました')
           this.$router.push('/')
         }
       } catch (e) {

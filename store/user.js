@@ -83,7 +83,7 @@ export const actions = {
       })
     },
 
-    deleteUser({commit, state}) {
+    deleteUser({commit}) {
       return new Promise(async (resolve, reject) => {
         try {
           const user = auth.currentUser
@@ -91,6 +91,18 @@ export const actions = {
           commit('clearUserState')
           resolve()
         } catch(e) {
+          reject(e)
+        }
+      })
+    },
+
+    updatePassword({}, param) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const user = auth.currentUser
+          await user.updatePassword(param.password)
+          resolve()
+        } catch (e) {
           reject(e)
         }
       })
