@@ -24,12 +24,14 @@ export const actions = {
         auth.onAuthStateChanged(async authUser => {
           if(authUser) {
 
-            authUser.getIdToken(/* forceRefresh */ true).then(idToken => {
+            try {
+              const idToken = await authUser.getIdToken(/* forceRefresh */ true)
               this.$axios.setToken(idToken, 'Bearer')
-            }).catch(e => {
-              console.log("get token error")
+            } catch (e) {
               console.log(e)
-            });
+              reject()
+            }
+
 
             const user = await this.$axios.$get(`/users?uid=${authUser.uid}`)
             commit('updateId', user.data.ID)
