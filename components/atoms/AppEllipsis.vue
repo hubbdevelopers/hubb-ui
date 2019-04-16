@@ -1,5 +1,5 @@
 <template>
-  <i class="fas fa-ellipsis-h" @click="callback($event)"></i>
+  <i @click="callback($event)" class="fas fa-ellipsis-h" />
 </template>
 <script>
 export default {

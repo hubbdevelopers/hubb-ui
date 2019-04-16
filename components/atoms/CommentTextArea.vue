@@ -1,5 +1,5 @@
 <template>
-  <textarea  class="textarea" rows="3" v-model="internalValue"></textarea>
+  <textarea v-model="internalValue" class="textarea" rows="3" />
 </template>
 <script>
 export default {
@@ -7,18 +7,17 @@ export default {
     value: {
       type: String,
       default: ''
-      }
+    }
   },
   computed: {
     internalValue: {
-      get () {
+      get() {
         return this.value
       },
-      set (newVal) {
+      set(newVal) {
         if (this.value !== newVal) this.$emit('input', newVal)
       }
     }
   }
 }
 </script>
-

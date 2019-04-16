@@ -1,18 +1,24 @@
 <template>
   <div>
-		<div class="tabs">
+    <div class="tabs">
       <ul>
-        <li class="is-active"><a>ページ</a></li>
+        <li class="is-active">
+          <a>ページ</a>
+        </li>
       </ul>
     </div>
-    
-		<div class="columns is-multiline">
-      <div v-for="page in pages" :key="page.ID" class="column is-three-fifths is-offset-one-fifth">
+
+    <div class="columns is-multiline">
+      <div
+        v-for="page in pages"
+        :key="page.ID"
+        class="column is-three-fifths is-offset-one-fifth"
+      >
         <page-box :pageId="page.ID.toString()" />
       </div>
-		</div>
+    </div>
 
-		<!--h2 class="is-size-3">コミュニティ一覧</h2>
+    <!--h2 class="is-size-3">コミュニティ一覧</h2>
 		<div class="columns is-multiline">
 			<div v-for="community in communities" :key="community.id" class="column is-one-third">
 				<div class="card">
@@ -35,12 +41,15 @@
 					</div>
 				</div>
 			</div>
-		</div-->
-	</div>
+    </div-->
+  </div>
 </template>
 <script>
 import PageBox from '~/components/molecules/PageBox'
 export default {
+  components: {
+    PageBox
+  },
   props: {
     user: {
       type: Object,
@@ -54,11 +63,6 @@ export default {
       type: Array,
       required: true
     }
-  },
-	components: {
-    PageBox
-	},
-  
+  }
 }
 </script>
-

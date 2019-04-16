@@ -1,7 +1,7 @@
 import moment from 'moment'
 export default {
   methods: {
-    $_howManyDaysAgo(date) {
+    $$howManyDaysAgo(date) {
       return moment(date).fromNow()
     }
   }

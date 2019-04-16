@@ -1,6 +1,8 @@
 <template>
   <span class="icon has-text-success">
-    <a :href="'https://twitter.com/' + twitterId" target="_blank"><i class="fab fa-twitter"></i></a>
+    <a :href="'https://twitter.com/' + twitterId" target="_blank">
+      <i class="fab fa-twitter" />
+    </a>
   </span>
 </template>
 <script>
@@ -15,7 +17,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .fa-twitter {
-  color: #00A3EA;
+  color: #00a3ea;
 }
 </style>
-

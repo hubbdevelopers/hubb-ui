@@ -1,30 +1,41 @@
 <template>
   <section class="section">
     <div class="container">
-
       <div class="columns is-centered">
         <div class="column is-half box">
-          <h2 class="title  has-text-centered">Signup To Hubb!</h2>
+          <h2 class="title has-text-centered">Signup To Hubb!</h2>
 
           <div class="field">
             <label class="label">メールアドレス</label>
             <div class="control">
-              <input class="input" type="email" v-model="email" placeholder="e.g. alexsmith@gmail.com" :class="{ 'is-danger': !is_valid_email }">
+              <input
+                v-model="email"
+                :class="{ 'is-danger': !isValidEmail }"
+                class="input"
+                type="email"
+                placeholder="e.g. alexsmith@gmail.com"
+              />
             </div>
-            <p class="help is-danger" v-if="!is_valid_email">{{err_msg}}</p>
+            <p v-if="!isValidEmail" class="help is-danger">{{ errMsg }}</p>
           </div>
 
           <div class="field">
             <label class="label">パスワード(英数字8文字以上)</label>
             <div class="control">
-              <input class="input" type="password" v-model="password">
+              <input v-model="password" class="input" type="password" />
             </div>
           </div>
 
           <div class="has-text-centered">
-            <button class="button is-primary" id="submit" @click='signup' v-bind:disabled="$v.email.$invalid || $v.password.$invalid">Submit</button>
+            <button
+              @click="signup"
+              v-bind:disabled="$v.email.$invalid || $v.password.$invalid"
+              id="submit"
+              class="button is-primary"
+            >
+              Submit
+            </button>
           </div>
-
         </div>
       </div>
     </div>
@@ -32,23 +43,21 @@
 </template>
 
 <script>
-import firebase from 'firebase'
-import { auth } from '~/plugins/firebase'
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
 
 export default {
-  data(){
+  data() {
     return {
       email: '',
       password: '',
-      is_valid_email: true,
-      err_msg: ''
+      isValidEmail: true,
+      errMsg: ''
     }
   },
   methods: {
     async signup() {
-      this.is_valid_email = true
-      this.err_msg = ''
+      this.isValidEmail = true
+      this.errMsg = ''
 
       const param = {
         email: this.email,
@@ -59,25 +68,13 @@ export default {
         // TODO check email address
         await this.$store.dispatch('user/signup', param)
         this.$router.push('/i/init')
-      } catch(e) {
-        if(e.code === "auth/email-already-in-use") {
-          this.is_valid_email = false
-          this.err_msg = 'このメールアドレスはすでに使用されています'
+      } catch (e) {
+        if (e.code === 'auth/email-already-in-use') {
+          this.isValidEmail = false
+          this.errMsg = 'このメールアドレスはすでに使用されています'
         }
         console.log(e)
       }
-     
-
-      // auth.createUserWithEmailAndPassword(param.email, param.password).then(async res => {
-      //   //await this.$store.dispatch('user/initUser')
-      //   this.$router.push('/i/init')
-      // }).catch(err => {
-      //   if(err.code === "auth/email-already-in-use") {
-      //     this.is_valid_email = false
-      //     this.err_msg = 'このメールアドレスはすでに使用されています'
-      //   }
-      // })
-      
     }
   },
   validations: {
@@ -93,5 +90,3 @@ export default {
   }
 }
 </script>
-
-

@@ -1,11 +1,11 @@
 <template>
   <div class="is-inline-block">
-  <n-link :to="link">
-    <figure class="image is-32x32 rounded">
-      <img class="is-rounded" :src="imageSrc" alt="ユーザー画像">
-    </figure>
-  </n-link>
-</div>
+    <n-link :to="link">
+      <figure class="image is-32x32 rounded">
+        <img :src="imageSrc" class="is-rounded" alt="ユーザー画像" />
+      </figure>
+    </n-link>
+  </div>
 </template>
 <script>
 export default {
@@ -19,10 +19,12 @@ export default {
       default: false
     },
     ownerId: {
-      type: Number
+      type: Number,
+      required: true
     },
     image: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   computed: {
@@ -36,7 +38,9 @@ export default {
       }
     },
     imageSrc() {
-      return this.image ? this.image : 'https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg'
+      return this.image
+        ? this.image
+        : 'https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg'
     }
   }
 }

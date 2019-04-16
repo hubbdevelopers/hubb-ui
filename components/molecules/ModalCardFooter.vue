@@ -1,8 +1,10 @@
 <template>
-<footer class="modal-card-foot">
-  <button class="button is-success" @click="submit" :disabled="!canSubmit"><slot /></button>
-  <button class="button" @click="close">閉じる</button>
-</footer>
+  <footer class="modal-card-foot">
+    <button @click="submit" :disabled="!canSubmit" class="button is-success">
+      <slot />
+    </button>
+    <button @click="close" class="button">閉じる</button>
+  </footer>
 </template>
 <script>
 export default {
@@ -22,4 +24,3 @@ export default {
   }
 }
 </script>
-

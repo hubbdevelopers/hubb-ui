@@ -1,92 +1,109 @@
 <template>
-<div class="is-clearfix page-box">
-  <div class="is-clearfix">
-    <div class="is-pulled-left left-area">
-      <n-link :to="link">
-        <h1 class="is-size-4">{{page.Name}}</h1>
-      </n-link>
-      <div class="content">
-        <p>{{content}}</p>
+  <div class="is-clearfix page-box">
+    <div class="is-clearfix">
+      <div class="is-pulled-left left-area">
+        <n-link :to="link">
+          <h1 class="is-size-4">{{ page.Name }}</h1>
+        </n-link>
+        <div class="content">
+          <p>{{ content }}</p>
+        </div>
+        <page-owner-info
+          :owner="user"
+          :page="page"
+          :isUser="true"
+          class="page-owner-info"
+        />
       </div>
-      <page-owner-info class="page-owner-info" :owner="user" :page="page" :isUser="true"/>
-    </div>
-    <div class="is-pulled-right">
+      <div class="is-pulled-right">
         <figure class="image is-96x96">
           <n-link :to="link">
-            <img v-if="page.Image" v-bind:src="page.Image" alt="ページ画像">
-            <img v-else src="https://bulma.io/images/placeholders/128x128.png" alt="ページ画像">
+            <img v-if="page.Image" v-bind:src="page.Image" alt="ページ画像" />
+            <img
+              v-else
+              src="https://bulma.io/images/placeholders/128x128.png"
+              alt="ページ画像"
+            />
           </n-link>
         </figure>
         <div class="likes-comments">
-          <span class="likes"><i class="far fa-heart"></i> {{likes.length}} </span>
-          <span class="comments"><i class="far fa-comment"></i> {{comments.length}}</span>
+          <span class="likes">
+            <i class="far fa-heart" />
+            {{ likes.length }}
+          </span>
+          <span class="comments">
+            <i class="far fa-comment" />
+            {{ comments.length }}
+          </span>
         </div>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
 import dateMixin from '~/mixins/dateMixin'
 import PageOwnerInfo from '~/components/molecules/PageOwnerInfo.vue'
 export default {
-  mixins: [dateMixin],
   components: {
     PageOwnerInfo
+  },
+  mixins: [dateMixin],
+  props: {
+    pageId: { type: String, required: true }
   },
   data() {
     return {
       page: {},
       user: {},
       comments: [],
-			likes: [],
+      likes: []
     }
   },
-  props: {
-    pageId: String,
+  computed: {
+    link() {
+      if (this.page.OwnerType === 'users') {
+        return '/' + this.user.AccountId + '/' + this.page.ID
+      } else if (this.page.OwnerType === 'communities') {
+        return '/i/community/' + this.page.OwnerId + '/' + this.page.ID
+      } else {
+        return '/'
+      }
+    },
+    content() {
+      const temp = document.createElement('div')
+      temp.innerHTML = this.page.Content
+      return temp.textContent || temp.innerText || ''
+    }
   },
   async created() {
     try {
       this.page = (await this.$axios.$get(`pages/${this.pageId}`)).data
       if (this.page.OwnerType === 'users') {
         this.user = (await this.$axios.$get(`users/${this.page.OwnerId}`)).data
-      } else if(this.page.OwnerType === 'communities'){
+      } else if (this.page.OwnerType === 'communities') {
         // TODO
       }
-			this.comments = (await this.$axios.$get(`comments?pageid=${this.pageId}`)).data
-			this.likes = (await this.$axios.$get(`likes?pageid=${this.pageId}`)).data
-		} catch(e) {
-			console.log(e)
-		}
-  },
-  computed: {
-    link() {
-      if(this.page.OwnerType === 'users') {
-        return '/' + this.user.AccountId + '/' + this.page.ID
-      }else if(this.page.OwnerType === 'communities'){
-        return '/i/community/' + this.page.OwnerId + '/' + this.page.ID
-      }else {
-        return '/'
-      }
-    },
-    content() {
-      const temp = document.createElement("div");
-      temp.innerHTML = this.page.Content;
-      return temp.textContent || temp.innerText || "";
+      this.comments = (await this.$axios.$get(
+        `comments?pageid=${this.pageId}`
+      )).data
+      this.likes = (await this.$axios.$get(`likes?pageid=${this.pageId}`)).data
+    } catch (e) {
+      console.log(e)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-a { 
+a {
   text-decoration: none;
-  color: gray
+  color: gray;
 }
 
-a:hover { 
+a:hover {
   text-decoration: none;
-  color: gray
+  color: gray;
 }
 
 .page-box {
@@ -114,7 +131,7 @@ a:hover {
       position: absolute;
     }
     &:after {
-      content: "";
+      content: '';
       height: 100%;
       width: 100%;
     }
@@ -138,5 +155,4 @@ a:hover {
 .likes {
   margin-right: 5px;
 }
-
 </style>

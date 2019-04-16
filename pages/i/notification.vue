@@ -1,14 +1,11 @@
 <template>
-<section class="section">
-<div class="container">
-	<div>
-    {{notifications}}
-  </div>
-</div>
-</section>
+  <section class="section">
+    <div class="container">
+      <div>{{ notifications }}</div>
+    </div>
+  </section>
 </template>
 <script>
-
 export default {
   computed: {
     notifications: function() {

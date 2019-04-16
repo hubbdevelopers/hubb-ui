@@ -1,5 +1,5 @@
 <template>
-<section class="modal-card-body">
-  <slot></slot>
-</section>
+  <section class="modal-card-body">
+    <slot />
+  </section>
 </template>

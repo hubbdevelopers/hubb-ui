@@ -11,8 +11,8 @@ const firebaseApp = !firebase.apps.length
 
 export default firebaseApp
 export const db = firebaseApp.firestore()
-const settings = {/* your settings... */ timestampsInSnapshots: true};
-db.settings(settings);
+const settings = { /* your settings... */ timestampsInSnapshots: true }
+db.settings(settings)
 
 export const auth = firebaseApp.auth()
 export const storage = firebaseApp.storage()

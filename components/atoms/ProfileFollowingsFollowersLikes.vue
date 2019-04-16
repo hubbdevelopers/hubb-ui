@@ -1,9 +1,22 @@
 <template>
-<div>
-  <p>フォロー:<nuxt-link :to="'/' + userId + '/followings'">{{followingCount}}</nuxt-link></p>
-  <p>フォロワー:<nuxt-link :to="'/' + userId +'/followers'">{{followerCount}}</nuxt-link></p>
-  <p>いいね:<nuxt-link :to="'/' + userId +'/likes'">{{likeCount}}</nuxt-link></p>
-</div>
+  <div>
+    <p>
+      フォロー:
+      <nuxt-link :to="'/' + userId + '/followings'">{{
+        followingCount
+      }}</nuxt-link>
+    </p>
+    <p>
+      フォロワー:
+      <nuxt-link :to="'/' + userId + '/followers'">{{
+        followerCount
+      }}</nuxt-link>
+    </p>
+    <p>
+      いいね:
+      <nuxt-link :to="'/' + userId + '/likes'">{{ likeCount }}</nuxt-link>
+    </p>
+  </div>
 </template>
 <script>
 export default {
@@ -27,4 +40,3 @@ export default {
   }
 }
 </script>
-

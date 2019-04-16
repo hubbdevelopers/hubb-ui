@@ -1,7 +1,11 @@
 <template>
   <div>
-    <button v-if="isFollowingUser" class="button is-primary" @click="unfollow">フォロー中</button>
-    <button v-else class="button is-primary is-outlined" @click="follow">フォローする</button>
+    <button v-if="isFollowingUser" @click="unfollow" class="button is-primary">
+      フォロー中
+    </button>
+    <button v-else @click="follow" class="button is-primary is-outlined">
+      フォローする
+    </button>
   </div>
 </template>
 <script>

@@ -1,7 +1,6 @@
 <template>
   <section class="section">
     <div class="container">
-
       <div class="columns is-centered">
         <div class="column is-half box">
           <h2 class="title">初期設定</h2>
@@ -9,27 +8,40 @@
           <div class="field">
             <label class="label">アカウントID</label>
             <div class="control">
-              <input class="input" type="text" v-model="account_id" :class="{ 'is-danger': !is_valid_account_id }" >
+              <input
+                v-model="accountId"
+                :class="{ 'is-danger': !isValidAccountId }"
+                class="input"
+                type="text"
+              />
             </div>
             <p class="help">3文字以上の英数字</p>
-            <p class="help is-danger" v-if="!is_valid_account_id">{{err_msg}}</p>
+            <p v-if="!isValidAccountId" class="help is-danger">
+              {{ errMsg }}
+            </p>
           </div>
 
           <div class="field">
             <label class="label">ニックネーム(登録後に変更可能)</label>
             <div class="control">
-              <input class="input" type="text" v-model="name">
+              <input v-model="name" class="input" type="text" />
             </div>
             <p class="help">日本語入力可能</p>
           </div>
 
           <div class="field">
             <div class="control">
-              <button class="button is-link" id="submit" @click='submit' v-bind:disabled="$v.account_id.$invalid || $v.name.$invalid">Submit</button>
+              <button
+                @click="submit"
+                v-bind:disabled="$v.accountId.$invalid || $v.name.$invalid"
+                id="submit"
+                class="button is-link"
+              >
+                Submit
+              </button>
               <nuxt-link class="button is-link" to="/">Back</nuxt-link>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -37,56 +49,58 @@
 </template>
 
 <script>
-import { required, minLength, maxLength, alphaNum } from 'vuelidate/lib/validators'
-import { mapGetters } from 'vuex'
+import {
+  required,
+  minLength,
+  maxLength,
+  alphaNum
+} from 'vuelidate/lib/validators'
 
 export default {
-  data(){
+  data() {
     return {
-      account_id: "",
-      name: "",
-      is_valid_account_id: true,
-      is_valid_name: true,
-      err_msg: ''
+      accountId: '',
+      name: '',
+      isValidAccountId: true,
+      errMsg: ''
     }
   },
   methods: {
     submit() {
-      this.is_valid_account_id = true
-      this.err_msg = ''
+      this.isValidAccountId = true
+      this.errMsg = ''
 
       const param = {
-        account_id: this.account_id,
+        accountId: this.accountId,
         name: this.name
       }
 
-      this.$store.dispatch('user/initialUpdate', param).then(res => {
-        this.$store.commit('user/updateAccountId', this.account_id)
-        this.$router.push(`/${this.$store.state.user.id}`)
-      }).catch(err => {
-        window.alert(err)
-      })
+      this.$store
+        .dispatch('user/initialUpdate', param)
+        .then(() => {
+          this.$store.commit('user/updateAccountId', this.accountId)
+          this.$router.push(`/${this.$store.state.user.id}`)
+        })
+        .catch(err => {
+          window.alert(err)
+        })
 
       // this.checkAccountId().then(async () => {
 
       //   //await this.$store.dispatch('user/initialUpdate', param)
-      //   // this.$store.dispatch('user/updateAccountId', this.account_id)
+      //   // this.$store.dispatch('user/updateAccountId', this.accountId)
       //   // this.$store.dispatch('user/updateName', this.name)
 
-
-
-      //   //this.$router.push('/' + this.account_id)
+      //   //this.$router.push('/' + this.accountId)
       // }).catch((err) => {
       //   console.log(err)
-      //   this.is_valid_account_id = false
-      //   this.err_msg = 'このアカウントIDはすでに使用されています'
+      //   this.isValidAccountId = false
+      //   this.errMsg = 'このアカウントIDはすでに使用されています'
       // })
-
-
     }
   },
   validations: {
-    account_id: {
+    accountId: {
       required,
       alphaNum,
       minLength: minLength(3),
@@ -98,5 +112,3 @@ export default {
   }
 }
 </script>
-
-

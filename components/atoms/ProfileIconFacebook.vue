@@ -1,6 +1,8 @@
 <template>
   <span class="icon has-text-success">
-    <a :href="'https://facebook.com/' + facebookId" target="_blank"><i class="fab fa-facebook"></i></a>
+    <a :href="'https://facebook.com/' + facebookId" target="_blank">
+      <i class="fab fa-facebook" />
+    </a>
   </span>
 </template>
 <script>
@@ -15,6 +17,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .fa-facebook {
-  color: #334F8D;
+  color: #334f8d;
 }
 </style>

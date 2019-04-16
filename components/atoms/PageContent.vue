@@ -1,5 +1,5 @@
 <template>
-  <div v-html="content"></div>
+  <div v-html="content" />
 </template>
 <script>
 export default {

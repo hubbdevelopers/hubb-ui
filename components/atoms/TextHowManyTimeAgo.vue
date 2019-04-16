@@ -1,5 +1,5 @@
 <template>
-  <div>{{$_howManyDaysAgo(date)}}</div>
+  <div>{{ $$howManyDaysAgo(date) }}</div>
 </template>
 <script>
 import dateMixin from '~/mixins/dateMixin'
@@ -7,6 +7,7 @@ export default {
   mixins: [dateMixin],
   props: {
     date: {
+      type: Object,
       required: true
     }
   }

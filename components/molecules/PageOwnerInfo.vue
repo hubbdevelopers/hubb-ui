@@ -1,21 +1,26 @@
 <template>
-<div class="is-clearfix">
-  <div class="is-inline-block is-pulled-left">
-    <image-icon-link :ownerId="owner.ID" :image="owner.Image" :isUser="isUser" :isCommunity="isCommunity"/>
+  <div class="is-clearfix">
+    <div class="is-inline-block is-pulled-left">
+      <image-icon-link
+        :ownerId="owner.ID"
+        :image="owner.Image"
+        :isUser="isUser"
+        :isCommunity="isCommunity"
+      />
+    </div>
+    <div class="is-inline-block is-pulled-left right-area">
+      <span>{{ owner.Name }}</span>
+      <text-how-many-time-ago :date="page.CreatedAt" />
+    </div>
   </div>
-  <div class="is-inline-block is-pulled-left right-area">
-    <span>{{owner.Name}}</span>
-    <text-how-many-time-ago :date="page.CreatedAt"/>
-  </div>
-</div>
 </template>
 <script>
 import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
 import TextHowManyTimeAgo from '~/components/atoms/TextHowManyTimeAgo.vue'
 export default {
   components: {
-		ImageIconLink,
-		TextHowManyTimeAgo
+    ImageIconLink,
+    TextHowManyTimeAgo
   },
   props: {
     owner: {

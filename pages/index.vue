@@ -4,14 +4,21 @@
       <template v-if="isLogin">
         <div class="columns">
           <div class="column is-one-third is-hidden-mobile">
-            <user-profile :user="$store.state.user.user" v-if="isLogin && accountId" />
+            <user-profile
+              :user="$store.state.user.user"
+              v-if="isLogin && accountId"
+            />
           </div>
           <div class="column">
             <div class="columns is-multiline">
-              <div v-for="page in timeline" :key="page.ID" class="column is-three-fifths is-offset-one-fifth">
-                <page-box :pageId="page.ID.toString()" />
+              <div
+                v-for="page in timeline"
+                :key="page.ID"
+                class="column is-three-fifths is-offset-one-fifth"
+              >
+                <page-box :pageId="String(page.ID)" />
               </div>
-            </div> 
+            </div>
           </div>
         </div>
       </template>
@@ -23,10 +30,14 @@
           </div>
           <div class="column">
             <div class="columns is-multiline">
-              <div v-for="page in notLoginTimeline" :key="page.ID" class="column is-three-fifths is-offset-one-fifth">
-                <page-box :pageId="page.ID.toString()" />
+              <div
+                v-for="page in notLoginTimeline"
+                :key="page.ID"
+                class="column is-three-fifths is-offset-one-fifth"
+              >
+                <page-box :pageId="String(page.ID)" />
               </div>
-            </div> 
+            </div>
           </div>
         </div>
       </template>
@@ -34,43 +45,41 @@
   </section>
 </template>
 
-<script>
-import LoginBox from '~/components/user/LoginBox'
-import PageBox from '~/components/molecules/PageBox'
-import UserProfile from '~/components/organisms/UserProfile'
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+import LoginBox from '~/components/user/LoginBox.vue'
+import PageBox from '~/components/molecules/PageBox.vue'
+import UserProfile from '~/components/organisms/UserProfile.vue'
 
-export default {
+@Component({
   components: {
     UserProfile,
     LoginBox,
     PageBox
-  },
-  data(){
-    return {
-      email: "",
-      password: "",
-      config: "",
-      notLoginTimeline: []
-    }
-  },
+  }
+})
+export default class extends Vue {
+  email = ''
+  password = ''
+  config = ''
+  notLoginTimeline = []
+
   async created() {
     if (this.isLogin) {
       return
     }
-    
-    this.notLoginTimeline = (await this.$axios.$get(`/recentpages`)).data
-  },
-  computed: {
-    isLogin: function() {
-      return this.$store.getters['user/isLogin']
-    },
-    accountId: function() {
-      return this.$store.getters['user/getAccountId']
-    },
-    timeline: function() {
-      return this.$store.getters['user/getTimeline']
-    }
+    this.notLoginTimeline = (await this.$axios.get('/recentpages')).data.data
+    console.log(this.notLoginTimeline)
+  }
+
+  get isLogin() {
+    return this.$store.getters['user/isLogin']
+  }
+  get accountId() {
+    return this.$store.getters['user/getAccountId']
+  }
+  get timeline() {
+    return this.$store.getters['user/getTimeline']
   }
 }
 </script>
-

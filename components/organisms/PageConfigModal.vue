@@ -1,16 +1,20 @@
 <template>
-<div class="modal" :class="{'is-active': isActive}">
-  <div class="modal-background" @click="close"></div>
-  <div class="modal-card">
-    <modal-card-header @close="close">ページ設定</modal-card-header>
-    <modal-card-body>
-      <div>
-				<div><nuxt-link to="edit" append>編集ページ</nuxt-link></div>
-				<button class="button is-primary" @click="deletePage">ページ削除</button>
-			</div>
-    </modal-card-body>
+  <div :class="{ 'is-active': isActive }" class="modal">
+    <div @click="close" class="modal-background" />
+    <div class="modal-card">
+      <modal-card-header @close="close">ページ設定</modal-card-header>
+      <modal-card-body>
+        <div>
+          <div>
+            <nuxt-link to="edit" append>編集ページ</nuxt-link>
+          </div>
+          <button @click="deletePage" class="button is-primary">
+            ページ削除
+          </button>
+        </div>
+      </modal-card-body>
+    </div>
   </div>
-</div>
 </template>
 <script>
 import ModalCardHeader from '~/components/molecules/ModalCardHeader'

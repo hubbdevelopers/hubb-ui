@@ -1,34 +1,34 @@
 <template>
-<div>
-  <button v-if="isLiked && isLogin" class="button" @click="unlikePage">
+  <div>
+    <button v-if="isLiked && isLogin" @click="unlikePage" class="button">
       <span class="icon is-small">
-          <i class="fas fa-heart has-text-danger"></i>
+        <i class="fas fa-heart has-text-danger" />
       </span>
-  </button>
-  <button v-else-if="isLogin" class="button" @click="likePage" >
+    </button>
+    <button v-else-if="isLogin" @click="likePage" class="button">
       <span class="icon is-small">
-          <i class="fas fa-heart has-text-grey-lighter"></i>
+        <i class="fas fa-heart has-text-grey-lighter" />
       </span>
-  </button>
-  <button v-else class="button" disabled>
+    </button>
+    <button v-else class="button" disabled>
       <span class="icon is-small">
-          <i class="fas fa-heart has-text-grey-lighter"></i>
+        <i class="fas fa-heart has-text-grey-lighter" />
       </span>
-  </button>
-  
-  <span>{{likeCount}}</span>
-</div>
+    </button>
+
+    <span>{{ likeCount }}</span>
+  </div>
 </template>
 <script>
 export default {
   props: {
     isLiked: {
       type: Boolean,
-      required: true,
+      required: true
     },
     isLogin: {
       type: Boolean,
-      required: true,
+      required: true
     },
     likeCount: {
       type: Number,

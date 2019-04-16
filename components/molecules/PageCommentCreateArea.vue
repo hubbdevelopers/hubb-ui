@@ -2,14 +2,25 @@
   <div class="field">
     <div class="columns is-mobile">
       <div class="column is-2">
-        <image-icon-link :ownerId="$store.state.user.id" :image="$store.state.user.user.Image" :isUser="true" :isCommunity="false"/>
+        <image-icon-link
+          :ownerId="$store.state.user.id"
+          :image="$store.state.user.user.Image"
+          :isUser="true"
+          :isCommunity="false"
+        />
       </div>
       <div class="column">
-        <comment-text-area v-model="commentText"/>
+        <comment-text-area v-model="commentText" />
       </div>
     </div>
-    
-    <button class="button is-primary" v-bind:disabled="!commentText" @click="createComment">コメント</button> 
+
+    <button
+      v-bind:disabled="!commentText"
+      @click="createComment"
+      class="button is-primary"
+    >
+      コメント
+    </button>
   </div>
 </template>
 <script>
@@ -21,20 +32,19 @@ export default {
     ImageIconLink
   },
   data() {
-		return {
-			commentText: ''
-		}
+    return {
+      commentText: ''
+    }
   },
   methods: {
-		createComment() {
+    createComment() {
       const param = {
         pageId: this.$route.params.pageId,
         text: this.commentText
       }
       this.$emit('create-comment', param)
       this.commentText = ''
-		}
-	}
+    }
+  }
 }
 </script>
-
