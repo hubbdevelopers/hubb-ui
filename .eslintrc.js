@@ -12,7 +12,9 @@ module.exports = {
     'eslint:recommended',
     'plugin:vue/essential',
     'plugin:vue/recommended',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+    'prettier/vue'
   ],
   plugins: ['vue', '@typescript-eslint'],
   rules: {
@@ -20,6 +22,15 @@ module.exports = {
     '@typescript-eslint/indent': ['error', 2],
     'vue/max-attributes-per-line': 'off',
     "quotes": ["warn", "single"],
-    "no-extra-semi": "warn"
+    "no-extra-semi": "warn",
+    "vue/html-self-closing": ["error", {
+      "html": {
+        "void": "always",
+      }
+    }],
+    "prettier/prettier": ["error", {
+      "semi": false ,
+      "singleQuote": true
+    }]
   }
 }
