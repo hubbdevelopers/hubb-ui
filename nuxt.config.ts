@@ -1,10 +1,10 @@
-require('dotenv').config()
+require('dotenv').config();
 
 module.exports = {
-  mode: "spa",
+  mode: 'spa',
   /*
-  ** Headers of the page
-  */
+   ** Headers of the page
+   */
   head: {
     title: 'hubb',
     meta: [
@@ -12,14 +12,11 @@ module.exports = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'Nuxt.js project' }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-    ],
-
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
   /*
-  ** Customize the progress bar color
-  */
+   ** Customize the progress bar color
+   */
   loading: { color: '#3B8070' },
 
   plugins: [
@@ -27,22 +24,23 @@ module.exports = {
     '~/plugins/vuelidate',
     '~/plugins/auth',
     '~/plugins/croppa',
-    '~/plugins/moment',
+    '~/plugins/moment'
     //'~/plugins/fcm'
   ],
 
   modules: [
     '@nuxtjs/bulma',
     '@nuxtjs/dotenv',
-    ['@nuxtjs/axios', {baseURL: process.env.BASE_URL || 'http://localhost:8080'}],
+    [
+      '@nuxtjs/axios',
+      { baseURL: process.env.BASE_URL || 'http://localhost:8080' }
+    ],
     ['@nuxtjs/pwa', { icon: false }],
-    '@nuxtjs/style-resources',
+    '@nuxtjs/style-resources'
   ],
 
   styleResources: {
-    sass: [
-      '~assets/css/main.scss',
-    ],
+    sass: ['~assets/css/main.scss']
   },
 
   css: [
@@ -53,33 +51,45 @@ module.exports = {
   ],
 
   router: {
-   // middleware: 'checkInit'
-  },  
+    // middleware: 'checkInit'
+  },
 
   /*
-  ** Build configuration
-  */
+   ** Build configuration
+   */
   build: {
-
-    postcss: {
-      plugins: {
-        'postcss-preset-env': {
-        }
+    /*
+    ** You can extend webpack config here
+   */
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    extend(config, { isDev, isClient }) {
+      if (isDev && isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/
+        })
       }
     },
 
+    postcss: {
+      plugins: {
+        'postcss-preset-env': {}
+      }
+    }
   },
 
   manifest: {
     name: 'My Awesome App',
     lang: 'fa',
-    gcm_sender_id: "103953800507"
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    gcm_sender_id: '103953800507'
   },
 
   workbox: {
     importScripts: [
       //'firebase-messaging-sw.js'
-    ],
-  },
-}
-
+    ]
+  }
+};
