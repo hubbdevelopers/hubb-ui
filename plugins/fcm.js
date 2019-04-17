@@ -1,6 +1,6 @@
 import firebase from 'firebase'
 
-export default ({ app }) => {
+export default () => {
   const messaging = firebase.messaging()
 
   messaging
@@ -13,21 +13,21 @@ export default ({ app }) => {
       console.log(token)
 
       if (token) {
-        let argObj = {
-          to: token,
-          notification: {
-            body: 'メッセージ内容',
-            title: 'タイトル',
-            click_action: 'https://google.com',
-            icon: 'アイコン'
-          }
-        }
-        let optionObj = {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'key=hogehoge'
-          }
-        }
+        // let argObj = {
+        //   to: token,
+        //   notification: {
+        //     body: 'メッセージ内容',
+        //     title: 'タイトル',
+        //     click_action: 'https://google.com',
+        //     icon: 'アイコン'
+        //   }
+        // }
+        // let optionObj = {
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //     Authorization: 'key=hogehoge'
+        //   }
+        // }
         // app.$axios.$post('https://fcm.googleapis.com/fcm/send', argObj,optionObj).then(res => {
         //   console.log(res)
         // })

@@ -20,6 +20,7 @@ module.exports = {
   rules: {
     'no-console': 'off',
     '@typescript-eslint/indent': ['error', 2],
+    '@typescript-eslint/member-delimiter-style': 'off',
     'vue/max-attributes-per-line': 'off',
     "quotes": ["warn", "single"],
     "no-extra-semi": "warn",
@@ -31,6 +32,6 @@ module.exports = {
     "prettier/prettier": ["error", {
       "semi": false ,
       "singleQuote": true
-    }]
+    }],
   }
 }

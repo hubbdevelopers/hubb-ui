@@ -16,7 +16,7 @@
                 :key="page.ID"
                 class="column is-three-fifths is-offset-one-fifth"
               >
-                <page-box :pageId="String(page.ID)" />
+                <page-box :pageId="page.ID" />
               </div>
             </div>
           </div>
@@ -35,7 +35,7 @@
                 :key="page.ID"
                 class="column is-three-fifths is-offset-one-fifth"
               >
-                <page-box :pageId="String(page.ID)" />
+                <page-box :pageId="page.ID" />
               </div>
             </div>
           </div>
@@ -50,6 +50,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import LoginBox from '~/components/user/LoginBox.vue'
 import PageBox from '~/components/molecules/PageBox.vue'
 import UserProfile from '~/components/organisms/UserProfile.vue'
+import Page from 'Page'
 
 @Component({
   components: {
@@ -59,10 +60,10 @@ import UserProfile from '~/components/organisms/UserProfile.vue'
   }
 })
 export default class extends Vue {
-  email = ''
-  password = ''
-  config = ''
-  notLoginTimeline = []
+  email: string = ''
+  password: string = ''
+  config: string = ''
+  notLoginTimeline: Page[] = []
 
   async created() {
     if (this.isLogin) {

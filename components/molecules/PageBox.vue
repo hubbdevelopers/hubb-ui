@@ -41,41 +41,65 @@
   </div>
 </template>
 
-<script>
-import dateMixin from '~/mixins/dateMixin'
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator'
 import PageOwnerInfo from '~/components/molecules/PageOwnerInfo.vue'
-export default {
+import Page from 'Page'
+import User from 'User'
+import Comment from 'Comment'
+import Like from 'Like'
+
+@Component({
   components: {
     PageOwnerInfo
-  },
-  mixins: [dateMixin],
-  props: {
-    pageId: { type: String, required: true }
-  },
-  data() {
-    return {
-      page: {},
-      user: {},
-      comments: [],
-      likes: []
+  }
+})
+export default class extends Vue {
+  @Prop({ required: true }) readonly pageId!: number
+  page: Page = {
+    Content: '',
+    Draft: true,
+    ID: 0,
+    Image: '',
+    Name: '',
+    OwnerId: 0,
+    OwnerType: 'users'
+  }
+  user: User = {
+    AccountId: '',
+    Birthday: '',
+    Comments: [],
+    Description: '',
+    Facebook: '',
+    Follow: [],
+    Homepage: '',
+    ID: 0,
+    Image: '',
+    Instagram: '',
+    Name: '',
+    Pages: [],
+    Twitter: '',
+    UID: ''
+  }
+  comments: Comment[] = []
+  likes: Like[] = []
+
+  get link() {
+    if (this.page.OwnerType === 'users') {
+      return '/' + this.user.AccountId + '/' + this.page.ID
+    } else if (this.page.OwnerType === 'communities') {
+      return '/i/community/' + this.page.OwnerId + '/' + this.page.ID
+    } else {
+      return '/'
     }
-  },
-  computed: {
-    link() {
-      if (this.page.OwnerType === 'users') {
-        return '/' + this.user.AccountId + '/' + this.page.ID
-      } else if (this.page.OwnerType === 'communities') {
-        return '/i/community/' + this.page.OwnerId + '/' + this.page.ID
-      } else {
-        return '/'
-      }
-    },
-    content() {
-      const temp = document.createElement('div')
-      temp.innerHTML = this.page.Content
-      return temp.textContent || temp.innerText || ''
-    }
-  },
+  }
+
+  get content() {
+    const temp = document.createElement('div')
+    temp.innerHTML = this.page.Content
+    return temp.textContent || temp.innerText || ''
+  }
+
   async created() {
     try {
       this.page = (await this.$axios.$get(`pages/${this.pageId}`)).data

@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config()
 
 module.exports = {
   mode: 'spa',
@@ -59,8 +59,8 @@ module.exports = {
    */
   build: {
     /*
-    ** You can extend webpack config here
-   */
+     ** You can extend webpack config here
+     */
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     extend(config, { isDev, isClient }) {
       if (isDev && isClient) {
@@ -92,4 +92,4 @@ module.exports = {
       //'firebase-messaging-sw.js'
     ]
   }
-};
+}
