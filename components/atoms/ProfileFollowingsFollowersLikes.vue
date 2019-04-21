@@ -2,27 +2,25 @@
   <div>
     <p>
       フォロー:
-      <nuxt-link :to="'/' + userId + '/followings'">{{
+      <nuxt-link :to="'/' + uid + '/followings'">{{
         followingCount
       }}</nuxt-link>
     </p>
     <p>
       フォロワー:
-      <nuxt-link :to="'/' + userId + '/followers'">{{
-        followerCount
-      }}</nuxt-link>
+      <nuxt-link :to="'/' + uid + '/followers'">{{ followerCount }}</nuxt-link>
     </p>
     <p>
       いいね:
-      <nuxt-link :to="'/' + userId + '/likes'">{{ likeCount }}</nuxt-link>
+      <nuxt-link :to="'/' + uid + '/likes'">{{ likeCount }}</nuxt-link>
     </p>
   </div>
 </template>
 <script>
 export default {
   props: {
-    userId: {
-      type: Number,
+    uid: {
+      type: String,
       required: true
     },
     followingCount: {

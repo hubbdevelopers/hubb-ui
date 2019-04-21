@@ -8,6 +8,7 @@
 </template>
 <script>
 import Mypage from '~/components/templates/MyPage'
+import { getUser } from '~/common/user'
 
 export default {
   components: {
@@ -24,18 +25,16 @@ export default {
     }
   },
   computed: {
-    isOwner: function() {
-      return this.$store.getters['user/isMyId'](this.$route.params.userId)
-    }
+    // isOwner: function() {
+    //   return this.$store.getters['user/isMyId'](this.$route.params.userId)
+    // }
   },
   async created() {
-    this.user = (await this.$axios.$get(
-      `users/${this.$route.params.userId}`
-    )).data
-    this.pages = (await this.$axios.$get(`pages?userid=${this.user.ID}`)).data
-    this.communities = (await this.$axios.$get(
-      `communities?userid=${this.user.ID}`
-    )).data
+    this.user = await getUser(this.$route.params.uid)
+    // this.pages = (await this.$axios.$get(`pages?userid=${this.user.ID}`)).data
+    // this.communities = (await this.$axios.$get(
+    //   `communities?userid=${this.user.ID}`
+    // )).data
 
     this.loading = false
   },

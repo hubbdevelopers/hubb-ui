@@ -40,14 +40,14 @@
     >
       <div class="navbar-end">
         <n-link
-          :to="`/${$store.state.user.id}`"
+          :to="`/${$store.state.user.uid}`"
           v-if="isLogin"
           class="navbar-item"
         >
           <i class="fas fa-user" /> マイページ
         </n-link>
         <n-link
-          :to="`/${$store.state.user.id}/settings`"
+          :to="`/${$store.state.user.uid}/settings`"
           v-if="isLogin"
           class="navbar-item"
         >

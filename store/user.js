@@ -1,5 +1,6 @@
 import { auth, storage } from '~/plugins/firebase'
 import firebase from 'firebase'
+const db = firebase.firestore()
 const storageRef = storage.ref()
 
 export const state = () => ({
@@ -17,28 +18,30 @@ export const state = () => ({
 })
 
 export const actions = {
-  initUser({ commit, dispatch }) {
+  initUser({ commit }) {
     return new Promise((resolve, reject) => {
       auth.onAuthStateChanged(async authUser => {
         if (authUser) {
-          try {
-            const idToken = await authUser.getIdToken(/* forceRefresh */ true)
-            this.$axios.setToken(idToken, 'Bearer')
-          } catch (e) {
-            console.log(e)
-            reject()
+          const doc = await db
+            .collection('users')
+            .doc(authUser.uid)
+            .get()
+          if (doc.exists) {
+            const user = doc.data()
+            commit('updateAccountId', user.accountId)
+            commit('updateUser', user)
+          } else {
+            console.log('No such document!')
           }
 
-          const user = await this.$axios.$get(`/users?uid=${authUser.uid}`)
-          commit('updateId', user.data.ID)
+          commit('updateUId', authUser.uid)
           commit('updateEmail', authUser.email)
-          dispatch('fetchUser')
-          dispatch('fetchPages')
-          dispatch('fetchCommunities')
-          dispatch('fetchFollowings')
-          dispatch('fetchTimeline')
-          dispatch('fetchLikes')
-          //dispatch('fetchNotifications')
+          // dispatch('fetchPages')
+          // dispatch('fetchCommunities')
+          // dispatch('fetchFollowings')
+          // dispatch('fetchTimeline')
+          // dispatch('fetchLikes')
+          // dispatch('fetchNotifications')
           resolve()
         } else {
           console.log('not login')
@@ -56,9 +59,15 @@ export const actions = {
           param.password
         )
         param.uid = authData.user.uid
-        const res = await this.$axios.$post('users', param)
+        await db
+          .collection('users')
+          .doc(authData.user.uid)
+          .set({ createdAt: firebase.firestore.FieldValue.serverTimestamp() })
 
-        commit('updateId', res.data.ID)
+        commit('updateUid', param.uid)
+        // const res = await this.$axios.$post('users', param)
+
+        //commit('updateId', res.data.ID)
         resolve()
       } catch (e) {
         reject(e)
@@ -124,11 +133,14 @@ export const actions = {
     })
   },
 
-  initialUpdate({ dispatch, state }, param) {
+  initialUpdate({ state }, { accountId, name }) {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.$axios.$put(`users/${state.id}/init`, param)
-        dispatch('fetchUser')
+        await db
+          .collection('users')
+          .doc(state.uid)
+          .set({ accountId: accountId, name: name })
+        // dispatch('fetchUser')
         resolve()
       } catch (e) {
         reject(e)
@@ -262,12 +274,9 @@ export const actions = {
     })
   },
 
-  async fetchUser({ commit, state }) {
-    const user = await this.$axios.$get(`users/${state.id}`)
-    commit('updateAccountId', user.data.AccountId)
-    commit('updateUId', user.data.UID)
-    commit('updateUser', user.data)
-  },
+  // async fetchUser({ commit, state }) {
+
+  // },
 
   async fetchPages({ commit, state }) {
     const pages = await this.$axios.$get(`pages?userid=${state.id}`)
@@ -421,7 +430,7 @@ export const actions = {
 
 export const mutations = {
   updateUser(state, user) {
-    state.user = user
+    state.user.data = user
   },
 
   updateId(state, id) {
@@ -429,6 +438,7 @@ export const mutations = {
   },
 
   updateUId(state, uid) {
+    state.user.uid = uid
     state.uid = uid
   },
 

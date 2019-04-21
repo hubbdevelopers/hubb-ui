@@ -16,8 +16,8 @@
     <div v-if="user">
       <div>
         <div>
-          <profile-name>{{ user.Name }}</profile-name>
-          <profile-account-id>{{ user.AccountId }}</profile-account-id>
+          <profile-name>{{ user.data.name }}</profile-name>
+          <profile-account-id>{{ user.data.accountId }}</profile-account-id>
         </div>
 
         <profile-s-n-s
@@ -31,7 +31,7 @@
         <profile-birthday :birthday="user.Birthday" />
 
         <profile-followings-followers-likes
-          :user-id="user.ID"
+          :uid="user.uid"
           :following-count="followingCount"
           :follower-count="followerCount"
           :like-count="likeCount"
@@ -88,17 +88,15 @@ export default {
     }
   },
   async created() {
-    this.$axios.$get(`/users/${this.user.ID}/followings`).then(res => {
-      this.followingCount = res.data.length
-    })
-
-    this.$axios.$get(`/users/${this.user.ID}/followers`).then(res => {
-      this.followerCount = res.data.length
-    })
-
-    this.$axios.$get(`/likes?userid=${this.user.ID}`).then(res => {
-      this.likeCount = res.data.length
-    })
+    // this.$axios.$get(`/users/${this.user.ID}/followings`).then(res => {
+    //   this.followingCount = res.data.length
+    // })
+    // this.$axios.$get(`/users/${this.user.ID}/followers`).then(res => {
+    //   this.followerCount = res.data.length
+    // })
+    // this.$axios.$get(`/likes?userid=${this.user.ID}`).then(res => {
+    //   this.likeCount = res.data.length
+    // })
   },
   methods: {
     follow() {

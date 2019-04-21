@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     isOwner: function() {
-      return this.$store.getters['user/isMyId'](this.$route.params.userId)
+      return this.$store.getters['user/isMyId'](this.$route.params.uid)
     }
   },
   methods: {
