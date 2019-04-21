@@ -78,8 +78,7 @@ export default {
       this.$store
         .dispatch('user/initialUpdate', param)
         .then(() => {
-          this.$store.commit('user/updateAccountId', this.accountId)
-          this.$router.push(`/${this.$store.state.user.id}`)
+          this.$router.push(`/${this.$store.state.user.uid}`)
         })
         .catch(err => {
           window.alert(err)

@@ -39,12 +39,12 @@ export default {
   },
   computed: {
     isOwner: function() {
-      return this.$store.getters['user/isMyId'](this.$route.params.userId)
+      return this.$store.getters['user/isMyId'](this.$route.params.uid)
     }
   },
   async created() {
     this.user = (await this.$axios.$get(
-      `/users/${this.$route.params.userId}`
+      `/users/${this.$route.params.uid}`
     )).data
     this.followers = (await this.$axios.$get(
       `/users/${this.user.ID}/followers`
