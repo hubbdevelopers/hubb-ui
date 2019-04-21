@@ -50,7 +50,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import LoginBox from '~/components/user/LoginBox.vue'
 import PageBox from '~/components/molecules/PageBox.vue'
 import UserProfile from '~/components/organisms/UserProfile.vue'
-import Page from 'Page'
+import { Page } from '~/common/page'
 
 @Component({
   components: {
@@ -69,7 +69,7 @@ export default class extends Vue {
     if (this.isLogin) {
       return
     }
-    this.notLoginTimeline = (await this.$axios.get('/recentpages')).data.data
+    // this.notLoginTimeline = (await this.$axios.get('/recentpages')).data.data
     console.log(this.notLoginTimeline)
   }
 

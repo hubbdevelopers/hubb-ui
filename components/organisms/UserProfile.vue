@@ -2,7 +2,7 @@
   <div class="box">
     <div class="columns is-mobile is-vcentered">
       <div class="column is-two-fifths">
-        <profile-image :image="user.Image" />
+        <profile-image :image="user.data.image" />
       </div>
       <div v-if="isOwner" class="column">
         <n-link
@@ -16,8 +16,8 @@
     <div v-if="user">
       <div>
         <div>
-          <profile-name>{{ user.data.name }}</profile-name>
-          <profile-account-id>{{ user.data.accountId }}</profile-account-id>
+          <!-- <profile-name>{{ user.data.name }}</profile-name>
+          <profile-account-id>{{ user.data.accountId }}</profile-account-id> -->
         </div>
 
         <profile-s-n-s
@@ -45,17 +45,20 @@
     </div>
   </div>
 </template>
-<script>
-import ProfileName from '~/components/atoms/ProfileName'
-import ProfileAccountId from '~/components/atoms/ProfileAccountId'
-import ProfileDescription from '~/components/atoms/ProfileDescription'
-import ProfileBirthday from '~/components/atoms/ProfileBirthday'
-import ProfileFollowingsFollowersLikes from '~/components/atoms/ProfileFollowingsFollowersLikes'
-import ProfileImage from '~/components/atoms/ProfileImage'
-import ProfileSNS from '~/components/molecules/ProfileSNS'
-import ProfileFollowButton from '~/components/atoms/ProfileFollowButton'
+<script lang="ts">
+import ProfileName from '~/components/atoms/ProfileName.vue'
+import ProfileAccountId from '~/components/atoms/ProfileAccountId.vue'
+import ProfileDescription from '~/components/atoms/ProfileDescription.vue'
+import ProfileBirthday from '~/components/atoms/ProfileBirthday.vue'
+import ProfileFollowingsFollowersLikes from '~/components/atoms/ProfileFollowingsFollowersLikes.vue'
+import ProfileImage from '~/components/atoms/ProfileImage.vue'
+import ProfileSNS from '~/components/molecules/ProfileSNS.vue'
+import ProfileFollowButton from '~/components/atoms/ProfileFollowButton.vue'
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import { User } from '~/common/user'
+import { Page } from '~/common/page'
 
-export default {
+@Component({
   components: {
     ProfileName,
     ProfileAccountId,
@@ -65,28 +68,17 @@ export default {
     ProfileImage,
     ProfileSNS,
     ProfileFollowButton
-  },
-  props: {
-    user: {
-      type: Object,
-      required: true
-    }
-  },
-  data() {
-    return {
-      followingCount: 0,
-      followerCount: 0,
-      likeCount: 0
-    }
-  },
-  computed: {
-    isOwner: function() {
-      return this.$store.getters['user/isMyId'](this.user.ID)
-    },
-    isFollowingUser: function() {
-      return this.$store.getters['user/isFollowingUser'](this.user.ID)
-    }
-  },
+  }
+})
+export default class extends Vue {
+  @Prop({ required: true }) readonly user!: User | undefined
+  followingCount: number = 0
+  followerCount: number = 0
+  likeCount: number = 0
+
+  get isOwner() {
+    return this.$store.getters['user/isMyUid'](this.$route.params.uid)
+  }
   async created() {
     // this.$axios.$get(`/users/${this.user.ID}/followings`).then(res => {
     //   this.followingCount = res.data.length
@@ -97,20 +89,18 @@ export default {
     // this.$axios.$get(`/likes?userid=${this.user.ID}`).then(res => {
     //   this.likeCount = res.data.length
     // })
-  },
-  methods: {
-    follow() {
-      this.$store.dispatch('user/followUser', this.user.ID).catch(err => {
-        console.log(err)
-        window.alert('error')
-      })
-    },
-    unfollow() {
-      this.$store.dispatch('user/unfollowUser', this.user.ID).catch(err => {
-        console.log(err)
-        window.alert('error')
-      })
-    }
   }
+  // follow() {
+  //   this.$store.dispatch('user/followUser', this.user.ID).catch(err => {
+  //     console.log(err)
+  //     window.alert('error')
+  //   })
+  // }
+  // unfollow() {
+  //   this.$store.dispatch('user/unfollowUser', this.user.ID).catch(err => {
+  //     console.log(err)
+  //     window.alert('error')
+  //   })
+  // }
 }
 </script>

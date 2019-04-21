@@ -11,10 +11,10 @@
     <div class="columns is-multiline">
       <div
         v-for="page in pages"
-        :key="page.ID"
+        :key="page.id"
         class="column is-three-fifths is-offset-one-fifth"
       >
-        <page-box :pageId="page.ID.toString()" />
+        <page-box :page="page" :user="user" />
       </div>
     </div>
 
@@ -33,7 +33,7 @@
 
 						<div class="content">
 							<p class="title">
-								{{community.Name}}
+								{{community.data.name}}
 							</p>
 							Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 							Phasellus nec iaculis mauris.
@@ -44,25 +44,20 @@
     </div-->
   </div>
 </template>
-<script>
-import PageBox from '~/components/molecules/PageBox'
-export default {
+<script lang="ts">
+import PageBox from '~/components/molecules/PageBox.vue'
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import { User } from '~/common/user'
+import { Page } from '~/common/page'
+
+@Component({
   components: {
     PageBox
-  },
-  props: {
-    user: {
-      type: Object,
-      required: true
-    },
-    pages: {
-      type: Array,
-      required: true
-    },
-    communities: {
-      type: Array,
-      required: true
-    }
   }
+})
+export default class extends Vue {
+  @Prop({ required: true }) readonly user!: User
+  @Prop({ required: true }) readonly pages!: Page[]
+  @Prop({ required: true }) readonly communities!: any
 }
 </script>

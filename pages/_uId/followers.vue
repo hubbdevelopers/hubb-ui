@@ -38,17 +38,17 @@ export default {
     }
   },
   computed: {
-    isOwner: function() {
-      return this.$store.getters['user/isMyId'](this.$route.params.uid)
-    }
+    // isOwner: function() {
+    //   return this.$store.getters['user/isMyId'](this.$route.params.uid)
+    // }
   },
   async created() {
-    this.user = (await this.$axios.$get(
-      `/users/${this.$route.params.uid}`
-    )).data
-    this.followers = (await this.$axios.$get(
-      `/users/${this.user.ID}/followers`
-    )).data
+    // this.user = (await this.$axios.$get(
+    //   `/users/${this.$route.params.uid}`
+    // )).data
+    // this.followers = (await this.$axios.$get(
+    //   `/users/${this.user.ID}/followers`
+    // )).data
 
     this.followers.forEach(follower => {
       console.log(follower)

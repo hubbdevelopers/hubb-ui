@@ -18,7 +18,7 @@
         </nuxt-link>
       </div>
       <div class="card-content">
-        <p class="title">{{ community.Name }}</p>
+        <p class="title">{{ community.data.name }}</p>
         <div class="content">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec
           iaculis mauris.

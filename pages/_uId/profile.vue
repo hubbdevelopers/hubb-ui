@@ -108,8 +108,8 @@ export default {
   computed: {
     name: {
       get: function() {
-        this.nameInput = this.$store.state.user.user.Name || ''
-        return this.$store.state.user.user.Name
+        this.nameInput = this.$store.state.user.user.data.name || ''
+        return this.$store.state.user.user.data.name
       },
       set: function(newValue) {
         this.nameInput = newValue

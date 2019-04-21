@@ -2,7 +2,7 @@
   <article v-if="comment" class="media">
     <image-icon-link
       :ownerId="user.ID"
-      :image="user.Image"
+      :image="user.data.image"
       :isUser="true"
       :isCommunity="false"
       class="media-left"
@@ -11,7 +11,7 @@
     <div class="media-content">
       <div class="content">
         <p>
-          <strong>{{ user.Name }}</strong>
+          <strong>{{ user.data.name }}</strong>
           <br />
           {{ comment.Text }}
           <br />

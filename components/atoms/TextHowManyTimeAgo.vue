@@ -1,15 +1,21 @@
 <template>
-  <div>{{ $$howManyDaysAgo(date) }}</div>
+  <div>{{ howManyDaysAgo }}</div>
 </template>
-<script>
-import dateMixin from '~/mixins/dateMixin'
-export default {
-  mixins: [dateMixin],
-  props: {
-    date: {
-      type: Object | String,
-      required: true
-    }
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import PageOwnerInfo from '~/components/molecules/PageOwnerInfo.vue'
+import moment from 'moment'
+
+@Component({
+  components: {
+    PageOwnerInfo
+  }
+})
+export default class extends Vue {
+  @Prop({ required: true }) readonly date!: any
+
+  get howManyDaysAgo() {
+    return this.date ? moment(this.date.toDate()).fromNow() : ''
   }
 }
 </script>
