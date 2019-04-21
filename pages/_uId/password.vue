@@ -10,7 +10,7 @@
             <div class="control">
               <input v-model="oldPassword" class="input" type="password" />
             </div>
-            <p v-if="err_msg" class="help is-danger">{{ err_msg }}</p>
+            <p v-if="errMsg" class="help is-danger">{{ errMsg }}</p>
           </div>
 
           <div class="field">
@@ -18,7 +18,7 @@
             <div class="control">
               <input v-model="newPassword" class="input" type="password" />
             </div>
-            <p v-if="err_msg" class="help is-danger" />
+            <p v-if="errMsg" class="help is-danger" />
           </div>
 
           <div class="field">

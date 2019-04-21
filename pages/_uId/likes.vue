@@ -13,7 +13,7 @@
               :key="page.ID"
               class="column is-three-fifths is-offset-one-fifth"
             >
-              <page-box :pageId="page.ID.toString()" />
+              <page-box :pageId="page.ID" />
             </div>
           </div>
         </div>
@@ -38,17 +38,17 @@ export default {
     }
   },
   computed: {
-    isOwner: function() {
-      return this.$store.getters['user/isMyId'](this.$route.params.userId)
-    }
+    // isOwner: function() {
+    //   return this.$store.getters['user/isMyId'](this.$route.params.userId)
+    // }
   },
   async created() {
-    this.user = (await this.$axios.$get(
-      `/users/${this.$route.params.userId}`
-    )).data
-    this.likes = (await this.$axios.$get(
-      `/likes?userid=${this.$route.params.userId}`
-    )).data
+    // this.user = (await this.$axios.$get(
+    //   `/users/${this.$route.params.userId}`
+    // )).data
+    // this.likes = (await this.$axios.$get(
+    //   `/likes?userid=${this.$route.params.userId}`
+    // )).data
 
     this.likes.forEach(async like => {
       const page = (await this.$axios.$get(`/pages/${like.PageId}`)).data

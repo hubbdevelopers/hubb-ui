@@ -1,24 +1,42 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { auth, storage } from '~/plugins/firebase'
 import firebase from 'firebase'
+import { ActionTree, MutationTree, GetterTree } from 'vuex'
+import { UserData } from '~/common/user'
+import { Page, PageData } from '~/common/page'
 const db = firebase.firestore()
 const storageRef = storage.ref()
 
-export const state = () => ({
-  user: {},
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface RootState {}
+
+export interface UsersState {
+  user: UserData | undefined
+  pages: Page[]
+  communities: any
+  followings: any
+  timeline: Page[]
+  likes: any
+  notifications: any
+  uid: string // Firebase UID
+  email: string
+}
+
+export const state: UsersState = {
+  user: undefined,
   pages: [],
   communities: [],
   followings: [],
   timeline: [],
   likes: [],
   notifications: [],
-  id: '', // DB ID
   uid: '', // Firebase UID
-  accountId: '', // ACCOUNT ID
   email: ''
-})
+}
 
-export const actions = {
-  initUser({ commit }) {
+export const actions: ActionTree<UsersState, RootState> = {
+  initUser({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
       auth.onAuthStateChanged(async authUser => {
         if (authUser) {
@@ -28,15 +46,14 @@ export const actions = {
             .get()
           if (doc.exists) {
             const user = doc.data()
-            commit('updateAccountId', user.accountId)
             commit('updateUser', user)
           } else {
             console.log('No such document!')
           }
 
-          commit('updateUId', authUser.uid)
+          commit('updateUid', authUser.uid)
           commit('updateEmail', authUser.email)
-          // dispatch('fetchPages')
+          dispatch('fetchPages')
           // dispatch('fetchCommunities')
           // dispatch('fetchFollowings')
           // dispatch('fetchTimeline')
@@ -58,10 +75,10 @@ export const actions = {
           param.email,
           param.password
         )
-        param.uid = authData.user.uid
+        param.uid = authData.user!.uid
         await db
           .collection('users')
-          .doc(authData.user.uid)
+          .doc(authData.user!.uid)
           .set({ createdAt: firebase.firestore.FieldValue.serverTimestamp() })
 
         commit('updateUid', param.uid)
@@ -84,7 +101,7 @@ export const actions = {
           param.password
         )
 
-        await user.reauthenticateAndRetrieveDataWithCredential(credentials)
+        await user!.reauthenticateAndRetrieveDataWithCredential(credentials)
         resolve()
       } catch (e) {
         reject(e)
@@ -96,7 +113,7 @@ export const actions = {
     return new Promise(async (resolve, reject) => {
       try {
         const user = auth.currentUser
-        await user.delete()
+        await user!.delete()
         commit('clearUserState')
         resolve()
       } catch (e) {
@@ -110,7 +127,7 @@ export const actions = {
     return new Promise(async (resolve, reject) => {
       try {
         const user = auth.currentUser
-        await user.updatePassword(param.password)
+        await user!.updatePassword(param.password)
         resolve()
       } catch (e) {
         reject(e)
@@ -163,7 +180,7 @@ export const actions = {
           facebook: facebook,
           instagram: instagram
         }
-        const user = await this.$axios.$put(`users/${state.id}/profile`, param)
+        const user = await this.$axios.$put(`users/${state.uid}/profile`, param)
         commit('updateUser', user.data)
         resolve()
       } catch (e) {
@@ -185,7 +202,7 @@ export const actions = {
         const url = await imageRef.getDownloadURL()
 
         const param = { image: url }
-        const user = await this.$axios.$put(`users/${state.id}/images`, param)
+        const user = await this.$axios.$put(`users/${state.uid}/images`, param)
         commit('updateUser', user.data)
         resolve()
       } catch (e) {
@@ -195,19 +212,20 @@ export const actions = {
     })
   },
 
-  createPage({ dispatch, state }, pageName) {
+  createPage({ state }, pageName) {
     pageName = pageName || 'untitled'
 
     return new Promise(async (resolve, reject) => {
       try {
         const param = {
           name: pageName,
-          ownerId: Number(state.id),
-          ownerType: 'users'
+          ownerId: state.uid,
+          ownerType: 'user',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }
-        const page = await this.$axios.$post('pages', param)
-        dispatch('fetchPages')
-        resolve(page.data)
+
+        const doc = await db.collection('pages').add(param)
+        resolve(doc.id)
       } catch (e) {
         console.error('Error writing document: ', e)
         reject(e)
@@ -217,7 +235,7 @@ export const actions = {
 
   createCommunity({ dispatch, state }, communityName) {
     return new Promise(async (resolve, reject) => {
-      const param = { name: communityName, userId: Number(state.id) }
+      const param = { name: communityName, userId: Number(state.uid) }
       try {
         const community = await this.$axios.$post('/communities', param)
         dispatch('fetchCommunities')
@@ -279,27 +297,44 @@ export const actions = {
   // },
 
   async fetchPages({ commit, state }) {
-    const pages = await this.$axios.$get(`pages?userid=${state.id}`)
-    commit('updatePages', pages.data)
+    try {
+      const query = await db
+        .collection('pages')
+        .where('ownerId', '==', state.uid)
+        .get()
+
+      if (query.size > 0) {
+        const pages = query.docs.map(
+          (doc): Page => {
+            return { id: doc.id, data: doc.data() as PageData }
+          }
+        )
+        commit('updatePages', pages)
+      }
+    } catch (e) {
+      console.log(e)
+    }
   },
 
   async fetchCommunities({ commit, state }) {
-    const communities = await this.$axios.$get(`communities?userid=${state.id}`)
+    const communities = await this.$axios.$get(
+      `communities?userid=${state.uid}`
+    )
     commit('updateCommunities', communities.data)
   },
 
   async fetchFollowings({ commit, state }) {
-    const followings = await this.$axios.$get(`users/${state.id}/followings`)
+    const followings = await this.$axios.$get(`users/${state.uid}/followings`)
     commit('updateFollowings', followings.data)
   },
 
   async fetchTimeline({ commit, state }) {
-    const timeline = await this.$axios.$get(`users/${state.id}/timeline`)
+    const timeline = await this.$axios.$get(`users/${state.uid}/timeline`)
     commit('updateTimeline', timeline.data)
   },
 
   async fetchLikes({ commit, state }) {
-    const likes = await this.$axios.$get(`likes?userid=${state.id}`)
+    const likes = await this.$axios.$get(`likes?userid=${state.uid}`)
     commit('updateLike', likes.data)
   },
 
@@ -318,7 +353,7 @@ export const actions = {
     return new Promise(async (resolve, reject) => {
       try {
         await this.$axios.$post(
-          `/users/${state.id}/follow/users/${followingId}`
+          `/users/${state.uid}/follow/users/${followingId}`
         )
         dispatch('fetchFollowings')
         resolve()
@@ -332,7 +367,7 @@ export const actions = {
     return new Promise(async (resolve, reject) => {
       try {
         await this.$axios.$delete(
-          `/users/${state.id}/follow/users/${followingId}`
+          `/users/${state.uid}/follow/users/${followingId}`
         )
         dispatch('fetchFollowings')
         resolve()
@@ -346,7 +381,7 @@ export const actions = {
     return new Promise(async (resolve, reject) => {
       try {
         await this.$axios.$post(
-          `/users/${state.id}/follow/communities/${followingId}`
+          `/users/${state.uid}/follow/communities/${followingId}`
         )
         dispatch('fetchFollowings')
         resolve()
@@ -360,7 +395,7 @@ export const actions = {
     return new Promise(async (resolve, reject) => {
       try {
         await this.$axios.$delete(
-          `/users/${state.id}/follow/communities/${followingId}`
+          `/users/${state.uid}/follow/communities/${followingId}`
         )
         dispatch('fetchFollowings')
         resolve()
@@ -372,7 +407,7 @@ export const actions = {
 
   likePage({ dispatch, state }, pageId) {
     return new Promise(async (resolve, reject) => {
-      const param = { userId: Number(state.id), pageId: Number(pageId) }
+      const param = { userId: Number(state.uid), pageId: Number(pageId) }
 
       try {
         const comment = await this.$axios.$post('/likes', param)
@@ -388,7 +423,7 @@ export const actions = {
     return new Promise(async (resolve, reject) => {
       try {
         const comment = await this.$axios.$delete(
-          `/likes?pageid=${pageId}&userid=${state.id}`
+          `/likes?pageid=${pageId}&userid=${state.uid}`
         )
         dispatch('fetchLikes')
         resolve(comment)
@@ -400,15 +435,33 @@ export const actions = {
 
   createComment({ state }, { pageId, text }) {
     return new Promise(async (resolve, reject) => {
-      const param = {
-        text: text,
-        userId: Number(state.id),
-        pageId: Number(pageId)
-      }
-
       try {
-        const comment = await this.$axios.$post('/comments', param)
-        resolve(comment)
+        const batch = db.batch()
+
+        const userRef = db
+          .collection('users')
+          .doc(state.uid)
+          .collection('comments')
+          .doc()
+        batch.set(userRef, {
+          pageId: pageId,
+          text: text,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        })
+
+        const pageRef = db
+          .collection('pages')
+          .doc(pageId)
+          .collection('comments')
+          .doc(userRef.id)
+        batch.set(pageRef, {
+          userId: state.uid,
+          text: text,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        })
+
+        await batch.commit()
+        resolve({ userId: state.uid, pageId: pageId, text: text })
       } catch (e) {
         reject(e)
       }
@@ -419,8 +472,8 @@ export const actions = {
   deleteComment({}, { commentId }) {
     return new Promise(async (resolve, reject) => {
       try {
-        const comment = await this.$axios.$delete(`/comments/${commentId}`)
-        resolve(comment)
+        // const comment = await this.$axios.$delete(`/comments/${commentId}`)
+        // resolve(comment)
       } catch (e) {
         reject(e)
       }
@@ -428,29 +481,16 @@ export const actions = {
   }
 }
 
-export const mutations = {
-  updateUser(state, user) {
-    state.user.data = user
+export const mutations: MutationTree<UsersState> = {
+  updateUser(state, user: UserData) {
+    state.user = user
   },
 
-  updateId(state, id) {
-    state.id = id
-  },
-
-  updateUId(state, uid) {
-    state.user.uid = uid
+  updateUid(state, uid: string) {
     state.uid = uid
   },
 
-  updateAccountId(state, accountId) {
-    state.accountId = accountId
-  },
-
-  updateUserName(state, name) {
-    state.user.name = name
-  },
-
-  updatePages(state, pages) {
+  updatePages(state, pages: Page[]) {
     state.pages = pages
   },
 
@@ -479,29 +519,28 @@ export const mutations = {
   // },
 
   clearUserState(state) {
-    state.user = {}
+    state.user = undefined
     state.pages = []
     state.communities = []
     state.followings = []
     state.timeline = []
     state.uid = ''
-    state.accountId = ''
   }
 }
 
-export const getters = {
-  getId: state => {
-    return state.id
-  },
-
+export const getters: GetterTree<UsersState, RootState> = {
   getAccountId: state => {
-    return state.accountId
+    return state.user ? state.user.accountId : ''
   },
 
   getImage: state => {
-    return state.user.Image
-      ? state.user.Image
+    return state.user && state.user.image
+      ? state.user.image
       : 'https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg'
+  },
+
+  isMyUid: state => (uid: string): boolean => {
+    return state.uid === uid
   },
 
   isCommunityMember: state => communityId => {
@@ -511,7 +550,9 @@ export const getters = {
   },
 
   isCommunityOwner: state => communityOwnerAccountId => {
-    return communityOwnerAccountId === state.accountId
+    return state.user && communityOwnerAccountId === state.user.accountId
+      ? true
+      : false
   },
 
   isFollowingUser: state => userId => {
@@ -534,15 +575,11 @@ export const getters = {
   },
 
   isMyAccountId: state => accountId => {
-    return accountId === state.accountId
-  },
-
-  isMyId: state => id => {
-    return id == state.id
+    return state.user && accountId === state.user.accountId ? true : false
   },
 
   isLogin: state => {
-    return Boolean(state.uid)
+    return !!state.uid
   },
 
   isLikedPage: state => pageId => {

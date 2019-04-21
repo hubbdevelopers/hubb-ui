@@ -6,10 +6,10 @@
           :showModal="showNewPageModal"
           @closeModal="closeModal"
         />
-        <new-community-modal
+        <!-- <new-community-modal
           :showModal="showNewCommunityModal"
           @closeModal="closeModal"
-        />
+        /> -->
       </div>
 
       <div class="columns">
@@ -28,49 +28,37 @@
     </div>
   </section>
 </template>
-<script>
-import NewPageModal from '~/components/organisms/NewPageModal'
-import NewCommunityModal from '~/components/modal/NewCommunityModal'
-import UserProfile from '~/components/organisms/UserProfile'
-import MypageTabArea from '~/components/organisms/MypageTabArea'
+<script lang="ts">
+import NewPageModal from '~/components/organisms/NewPageModal.vue'
+import NewCommunityModal from '~/components/modal/NewCommunityModal.vue'
+import UserProfile from '~/components/organisms/UserProfile.vue'
+import MypageTabArea from '~/components/organisms/MypageTabArea.vue'
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import { User } from '~/common/user'
+import { Page } from '~/common/page'
 
-export default {
+@Component({
   components: {
     NewPageModal,
     NewCommunityModal,
     UserProfile,
     MypageTabArea
-  },
-  props: {
-    user: {
-      type: Object,
-      required: true
-    },
-    pages: {
-      type: Array,
-      required: true
-    },
-    communities: {
-      type: Array,
-      required: true
-    }
-  },
-  data() {
-    return {
-      showNewPageModal: false,
-      showNewCommunityModal: false
-    }
-  },
-  computed: {
-    isOwner: function() {
-      return this.$store.getters['user/isMyId'](this.$route.params.uid)
-    }
-  },
-  methods: {
-    closeModal() {
-      this.showNewPageModal = false
-      this.showNewCommunityModal = false
-    }
+  }
+})
+export default class extends Vue {
+  @Prop({ required: true }) readonly user!: User
+  @Prop({ required: true }) readonly pages!: Page[]
+  @Prop({ required: true }) readonly communities!: any
+
+  showNewPageModal: boolean = false
+  showNewCommunityModal: boolean = false
+
+  get isOwner() {
+    return this.$store.getters['user/isMyUid'](this.$route.params.uid)
+  }
+  closeModal() {
+    this.showNewPageModal = false
+    this.showNewCommunityModal = false
   }
 }
 </script>

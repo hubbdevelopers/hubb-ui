@@ -23,7 +23,7 @@
         <div v-for="page in pages" :key="page.id" class="column is-one-quarter">
           <div class="card">
             <div class="card-image">
-              <nuxt-link :to="page.ID.toString()" append>
+              <nuxt-link :to="page.ID" append>
                 <figure class="image is-4by3">
                   <img
                     src="https://bulma.io/images/placeholders/1280x960.png"
@@ -34,7 +34,7 @@
             </div>
             <div class="card-content">
               <div class="content">
-                <p class="title">{{ page.Name }}</p>
+                <p class="title">{{ page.data.name }}</p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Phasellus nec iaculis mauris.
               </div>

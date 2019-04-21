@@ -68,7 +68,7 @@ export default {
         .dispatch('user/createCommunityPage', param)
         .then(res => {
           console.log(res)
-          this.$router.push({ path: res.ID.toString(), append: true })
+          this.$router.push({ path: res.ID, append: true })
         })
         .finally(() => {
           this.isCreating = false

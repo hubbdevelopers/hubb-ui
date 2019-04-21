@@ -4,14 +4,14 @@
       <div class="is-pulled-left image-icon">
         <image-icon-link
           :ownerId="user.ID"
-          :image="user.Image"
+          :image="user.data.image"
           :isUser="true"
           :isCommunity="false"
         />
       </div>
       <div class="is-pulled-left name-area">
-        <p class="is-size-6">{{ user.Name }}</p>
-        <p class="is-size-7 has-text-weight-light">{{ user.AccountId }}</p>
+        <p class="is-size-6">{{ user.data.name }}</p>
+        <p class="is-size-7 has-text-weight-light">{{ user.data.ccountId }}</p>
       </div>
       <div v-if="!isOwner" class="is-pulled-right follow-button-area">
         <button
@@ -47,14 +47,14 @@ export default {
   computed: {
     isFollowingUser: function() {
       return this.$store.getters['user/isFollowingUser'](this.user.ID)
-    },
-    isOwner: function() {
-      return this.$store.getters['user/isMyId'](this.user.ID)
     }
+    // isOwner: function() {
+    //   return this.$store.getters['user/isMyId'](this.user.ID)
+    // }
   },
   async created() {
     if (!Object.keys(this.user).length) {
-      this.user = (await this.$axios.$get(`/users/${this.user.ID}`)).data
+      //this.user = (await this.$axios.$get(`/users/${this.user.ID}`)).data
     }
   },
   methods: {

@@ -4,7 +4,7 @@
       <div class="column is-2">
         <image-icon-link
           :ownerId="$store.state.user.id"
-          :image="$store.state.user.user.Image"
+          :image="$store.state.user.user.image"
           :isUser="true"
           :isCommunity="false"
         />
@@ -23,28 +23,26 @@
     </button>
   </div>
 </template>
-<script>
-import CommentTextArea from '~/components/atoms/CommentTextArea'
+<script lang="ts">
+import CommentTextArea from '~/components/atoms/CommentTextArea.vue'
 import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
-export default {
+import { Vue, Component } from 'vue-property-decorator'
+
+@Component({
   components: {
     CommentTextArea,
     ImageIconLink
-  },
-  data() {
-    return {
-      commentText: ''
+  }
+})
+export default class extends Vue {
+  commentText: string = ''
+  createComment() {
+    const param = {
+      pageId: this.$route.params.pageId,
+      text: this.commentText
     }
-  },
-  methods: {
-    createComment() {
-      const param = {
-        pageId: this.$route.params.pageId,
-        text: this.commentText
-      }
-      this.$emit('create-comment', param)
-      this.commentText = ''
-    }
+    this.$emit('create-comment', param)
+    this.commentText = ''
   }
 }
 </script>

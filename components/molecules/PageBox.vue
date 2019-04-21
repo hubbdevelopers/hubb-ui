@@ -3,10 +3,10 @@
     <div class="is-clearfix">
       <div class="is-pulled-left left-area">
         <n-link :to="link">
-          <h1 class="is-size-4">{{ page.Name }}</h1>
+          <h1 class="is-size-4">{{ page.data.name }}</h1>
         </n-link>
         <div class="content">
-          <p>{{ content }}</p>
+          <p>{{ page.data.content }}</p>
         </div>
         <page-owner-info
           :owner="user"
@@ -18,7 +18,7 @@
       <div class="is-pulled-right">
         <figure class="image is-96x96">
           <n-link :to="link">
-            <img v-if="page.Image" v-bind:src="page.Image" alt="ページ画像" />
+            <img v-if="page" v-bind:src="page.data.image" alt="ページ画像" />
             <img
               v-else
               src="https://bulma.io/images/placeholders/128x128.png"
@@ -29,11 +29,13 @@
         <div class="likes-comments">
           <span class="likes">
             <i class="far fa-heart" />
-            {{ likes.length }}
+            <!-- {{ likes.length }} -->
+            999
           </span>
           <span class="comments">
             <i class="far fa-comment" />
-            {{ comments.length }}
+            <!-- {{ comments.length }} -->
+            999
           </span>
         </div>
       </div>
@@ -44,10 +46,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import PageOwnerInfo from '~/components/molecules/PageOwnerInfo.vue'
-import Page from 'Page'
-import User from 'User'
-import Comment from 'Comment'
-import Like from 'Like'
+import { Page } from '~/common/page'
+import { User } from '~/common/user'
 
 @Component({
   components: {
@@ -55,67 +55,44 @@ import Like from 'Like'
   }
 })
 export default class extends Vue {
-  @Prop({ required: true }) readonly pageId!: number
-  page: Page = {
-    Content: '',
-    Draft: true,
-    ID: 0,
-    Image: '',
-    Name: '',
-    OwnerId: 0,
-    OwnerType: 'users'
-  }
-  user: User = {
-    AccountId: '',
-    Birthday: '',
-    Comments: [],
-    Description: '',
-    Facebook: '',
-    Follow: [],
-    Homepage: '',
-    ID: 0,
-    Image: '',
-    Instagram: '',
-    Name: '',
-    Pages: [],
-    Twitter: '',
-    UID: ''
-  }
-  comments: Comment[] = []
-  likes: Like[] = []
+  @Prop({ required: true }) readonly user!: User
+  @Prop({ required: true }) readonly page!: Page
+  //page?: Page = undefined
+  // comments: Comment[] = []
+  // likes: Like[] = []
 
   get link() {
-    if (this.page.OwnerType === 'users') {
-      return '/' + this.user.AccountId + '/' + this.page.ID
-    } else if (this.page.OwnerType === 'communities') {
-      return '/i/community/' + this.page.OwnerId + '/' + this.page.ID
+    if (this.page.data.ownerType === 'user') {
+      return '/' + this.user.uid + '/' + this.page.id
+    } else if (this.page.data.ownerType === 'community') {
+      return '/i/community/' + this.page.data.ownerId + '/' + this.page.id
     } else {
       return '/'
     }
   }
 
-  get content() {
-    const temp = document.createElement('div')
-    temp.innerHTML = this.page.Content
-    return temp.textContent || temp.innerText || ''
-  }
+  // get content() {
+  //   const temp = document.createElement('div')
+  //   temp.innerHTML = this.page.content
+  //   return temp.textContent || temp.innerText || ''
+  // }
 
-  async created() {
-    try {
-      this.page = (await this.$axios.$get(`pages/${this.pageId}`)).data
-      if (this.page.OwnerType === 'users') {
-        this.user = (await this.$axios.$get(`users/${this.page.OwnerId}`)).data
-      } else if (this.page.OwnerType === 'communities') {
-        // TODO
-      }
-      this.comments = (await this.$axios.$get(
-        `comments?pageid=${this.pageId}`
-      )).data
-      this.likes = (await this.$axios.$get(`likes?pageid=${this.pageId}`)).data
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  // async created() {
+  //   try {
+  //     this.page = (await this.$axios.$get(`pages/${this.pageId}`)).data
+  //     if (this.page.ownerType === 'users') {
+  //       this.user = (await this.$axios.$get(`users/${this.page.ownerId}`)).data
+  //     } else if (this.page.OwnerType === 'communities') {
+  //       // TODO
+  //     }
+  //     this.comments = (await this.$axios.$get(
+  //       `comments?pageid=${this.pageId}`
+  //     )).data
+  //     this.likes = (await this.$axios.$get(`likes?pageid=${this.pageId}`)).data
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  // }
 }
 </script>
 

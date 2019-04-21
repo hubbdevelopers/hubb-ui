@@ -2,43 +2,39 @@
   <div class="is-clearfix">
     <div class="is-inline-block is-pulled-left">
       <image-icon-link
-        :ownerId="owner.ID"
-        :image="owner.Image"
+        :ownerId="ownerId"
+        :image="owner.data.image"
         :isUser="isUser"
         :isCommunity="isCommunity"
       />
     </div>
     <div class="is-inline-block is-pulled-left right-area">
-      <span>{{ owner.Name }}</span>
-      <text-how-many-time-ago :date="page.CreatedAt" />
+      <span>{{ owner.data.name }}</span>
+      <text-how-many-time-ago :date="page.data.createdAt" />
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
 import TextHowManyTimeAgo from '~/components/atoms/TextHowManyTimeAgo.vue'
-export default {
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Page } from '~/common/page'
+import { User } from '~/common/user'
+
+@Component({
   components: {
     ImageIconLink,
     TextHowManyTimeAgo
-  },
-  props: {
-    owner: {
-      type: Object,
-      required: true
-    },
-    page: {
-      type: Object,
-      required: true
-    },
-    isUser: {
-      type: Boolean,
-      default: false
-    },
-    isCommunity: {
-      type: Boolean,
-      default: false
-    }
+  }
+})
+export default class extends Vue {
+  @Prop({ required: true }) readonly owner!: User
+  @Prop({ required: true }) readonly page!: Page
+  @Prop({ default: false }) readonly isUser!: boolean
+  @Prop({ default: false }) readonly isCommunity!: boolean
+
+  get ownerId() {
+    return this.owner.uid
   }
 }
 </script>

@@ -12,7 +12,7 @@
             <label class="label">ページ名</label>
             <div class="control">
               <input
-                v-model="page.Name"
+                v-model="page.data.name"
                 class="input"
                 type="text"
                 placeholder="Text input"
@@ -60,9 +60,9 @@ export default {
     saveContent: async function() {
       const param = {
         draft: this.page.Draft,
-        name: this.page.Name,
+        name: this.page.name,
         content: this.page.Content,
-        image: this.page.Image
+        image: this.page.data.image
       }
       await this.$axios.$put(`/pages/${this.$route.params.pageId}`, param)
       this.$router.push(`/${this.$store.state.user.id}/${this.page.ID}`)
@@ -88,7 +88,7 @@ export default {
 
       imageRef.put(file).then(() => {
         imageRef.getDownloadURL().then(url => {
-          this.page.Image = url
+          this.page.data.image = url
         })
       })
     }

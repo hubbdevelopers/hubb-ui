@@ -21,7 +21,7 @@
               placeholder="Text input"
             />
           </div>
-          <p v-if="err_msg" class="help is-danger">{{ err_msg }}</p>
+          <p v-if="errMsg" class="help is-danger">{{ errMsg }}</p>
         </div>
       </section>
       <footer class="modal-card-foot">
@@ -65,7 +65,7 @@ export default {
             .dispatch('user/createCommunity', this.newCommunityName)
             .then(res => {
               console.log(res)
-              this.$router.push({ path: '/i/community/' + res.ID.toString() })
+              this.$router.push({ path: '/i/community/' + res.ID })
             })
             .finally(() => {
               this.isCreating = false

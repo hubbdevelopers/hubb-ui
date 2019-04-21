@@ -7,8 +7,8 @@
         v-bind:key="community.ID"
         class="columns"
       >
-        <nuxt-link :to="community.ID.toString()" append>{{
-          community.Name
+        <nuxt-link :to="community.ID" append>{{
+          community.data.name
         }}</nuxt-link>
       </div>
     </div>

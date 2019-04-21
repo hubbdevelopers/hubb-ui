@@ -6,53 +6,47 @@
     :communities="communities"
   />
 </template>
-<script>
-import Mypage from '~/components/templates/MyPage'
-import { getUser } from '~/common/user'
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+import Mypage from '~/components/templates/MyPage.vue'
+import { User, getUser, blankUser } from '~/common/user'
+import { Page, getPages } from '~/common/page'
 
-export default {
+@Component({
   components: {
     Mypage
-  },
-  data() {
-    return {
-      user: null,
-      pages: [],
-      communities: [],
-      showNewPageModal: false,
-      showNewCommunityModal: false,
-      loading: true
-    }
-  },
-  computed: {
-    // isOwner: function() {
-    //   return this.$store.getters['user/isMyId'](this.$route.params.userId)
-    // }
-  },
+  }
+})
+export default class extends Vue {
+  user: User = blankUser
+  pages: Page[] = []
+  communities = []
+  showNewPageModal: boolean = false
+  showNewCommunityModal: boolean = false
+  loading: boolean = true
+
   async created() {
     this.user = await getUser(this.$route.params.uid)
-    // this.pages = (await this.$axios.$get(`pages?userid=${this.user.ID}`)).data
+    this.pages = await getPages(this.$route.params.uid, 'user')
     // this.communities = (await this.$axios.$get(
     //   `communities?userid=${this.user.ID}`
     // )).data
-
     this.loading = false
-  },
-  methods: {
-    goConfigPage() {
-      this.$router.push({ path: 'config', append: true })
-    },
-    closeModal() {
-      this.showNewPageModal = false
-      this.showNewCommunityModal = false
-    },
-    withdraw() {
-      this.$router.push({ path: 'withdraw', append: true })
-      // this.$store.dispatch('user/withdraw').catch(err => {
-      // 	console.log(err)
-      // 	window.alert("error")
-      // })
-    }
+  }
+
+  goConfigPage() {
+    this.$router.push({ path: 'config', append: true })
+  }
+  closeModal() {
+    this.showNewPageModal = false
+    this.showNewCommunityModal = false
+  }
+  withdraw() {
+    this.$router.push({ path: 'withdraw', append: true })
+    // this.$store.dispatch('user/withdraw').catch(err => {
+    // 	console.log(err)
+    // 	window.alert("error")
+    // })
   }
 }
 </script>

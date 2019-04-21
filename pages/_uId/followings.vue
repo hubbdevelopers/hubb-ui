@@ -49,9 +49,9 @@ export default {
     }
   },
   computed: {
-    isOwner: function() {
-      return this.$store.getters['user/isMyId'](this.$route.params.userId)
-    }
+    // isOwner: function() {
+    //   return this.$store.getters['user/isMyId'](this.$route.params.userId)
+    // }
   },
   async created() {
     this.user = (await this.$axios.$get(
