@@ -3,7 +3,7 @@
 import { auth, storage } from '~/plugins/firebase'
 import firebase from 'firebase'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
-import { UserData } from '~/common/user'
+import { UserData, blankUser } from '~/common/user'
 import { Page, PageData } from '~/common/page'
 const db = firebase.firestore()
 const storageRef = storage.ref()
@@ -12,7 +12,7 @@ const storageRef = storage.ref()
 export interface RootState {}
 
 export interface UsersState {
-  user: UserData | undefined
+  user: UserData
   pages: Page[]
   communities: any
   followings: any
@@ -24,7 +24,7 @@ export interface UsersState {
 }
 
 export const state: UsersState = {
-  user: undefined,
+  user: blankUser.data,
   pages: [],
   communities: [],
   followings: [],
@@ -461,7 +461,7 @@ export const actions: ActionTree<UsersState, RootState> = {
         })
 
         await batch.commit()
-        resolve({ userId: state.uid, pageId: pageId, text: text })
+        resolve()
       } catch (e) {
         reject(e)
       }
@@ -469,11 +469,27 @@ export const actions: ActionTree<UsersState, RootState> = {
   },
 
   // eslint-disable-next-line no-empty-pattern
-  deleteComment({}, { commentId }) {
+  deleteComment({ state }, { pageId, commentId }) {
     return new Promise(async (resolve, reject) => {
       try {
-        // const comment = await this.$axios.$delete(`/comments/${commentId}`)
-        // resolve(comment)
+        const batch = db.batch()
+
+        const userRef = db
+          .collection('users')
+          .doc(state.uid)
+          .collection('comments')
+          .doc(commentId)
+        batch.delete(userRef)
+
+        const pageRef = db
+          .collection('pages')
+          .doc(pageId)
+          .collection('comments')
+          .doc(commentId)
+        batch.delete(pageRef)
+
+        await batch.commit()
+        resolve()
       } catch (e) {
         reject(e)
       }
@@ -519,7 +535,7 @@ export const mutations: MutationTree<UsersState> = {
   // },
 
   clearUserState(state) {
-    state.user = undefined
+    state.user = blankUser.data
     state.pages = []
     state.communities = []
     state.followings = []
@@ -530,7 +546,7 @@ export const mutations: MutationTree<UsersState> = {
 
 export const getters: GetterTree<UsersState, RootState> = {
   getAccountId: state => {
-    return state.user ? state.user.accountId : ''
+    return state.user.accountId
   },
 
   getImage: state => {
@@ -550,9 +566,7 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   isCommunityOwner: state => communityOwnerAccountId => {
-    return state.user && communityOwnerAccountId === state.user.accountId
-      ? true
-      : false
+    return communityOwnerAccountId === state.user.accountId
   },
 
   isFollowingUser: state => userId => {
@@ -575,7 +589,7 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   isMyAccountId: state => accountId => {
-    return state.user && accountId === state.user.accountId ? true : false
+    return accountId === state.user.accountId
   },
 
   isLogin: state => {

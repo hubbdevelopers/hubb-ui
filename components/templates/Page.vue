@@ -14,16 +14,16 @@
             @click-ellipsis="showConfigModal"
           />
 
-          <page-comment :is-login="isLogin" :comments="comments" />
+          <page-comment :is-login="isLogin" />
         </div>
       </div>
     </div>
-    <!-- <page-config-modal
+    <page-config-modal
       :is-active="isActiveConfigModal"
       @close="closeConfigModal"
       @delete-page="deletePage"
       v-if="canEdit"
-    /> -->
+    />
   </section>
 </template>
 <script lang="ts">
@@ -46,8 +46,6 @@ export default class extends Vue {
   @Prop({ required: true }) readonly owner!: User
   @Prop({ default: false }) readonly isDeleting!: boolean
   @Prop({ default: false }) readonly canEdit!: boolean
-  comments = []
-  likes = []
   isActiveConfigModal = false
 
   get isLiked() {
@@ -58,16 +56,6 @@ export default class extends Vue {
     return this.$store.getters['user/isLogin']
   }
 
-  async created() {
-    try {
-      // this.comments = (await this.$axios.$get(
-      //   `comments?pageid=${this.$route.params.pageId}`
-      // )).data
-      // this.likes = (await this.$axios.$get(`likes?pageid=${this.$route.params.pageId}`)).data
-    } catch (e) {
-      console.log(e)
-    }
-  }
   deletePage() {
     this.$emit('deletePage')
   }

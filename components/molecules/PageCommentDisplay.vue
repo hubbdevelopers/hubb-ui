@@ -1,7 +1,7 @@
 <template>
   <article v-if="comment" class="media">
     <image-icon-link
-      :ownerId="user.ID"
+      :ownerId="user.uid"
       :image="user.data.image"
       :isUser="true"
       :isCommunity="false"
@@ -13,46 +13,41 @@
         <p>
           <strong>{{ user.data.name }}</strong>
           <br />
-          {{ comment.Text }}
+          {{ comment.data.text }}
           <br />
-          <text-how-many-time-ago :date="comment.CreatedAt" />
+          <text-how-many-time-ago :date="comment.data.createdAt" />
         </p>
       </div>
     </div>
     <div v-if="isMyComment" class="media-right">
-      <button @click="$emit('deleteComment', comment.ID)" class="delete" />
+      <button @click="$emit('deleteComment', comment.id)" class="delete" />
     </div>
   </article>
 </template>
-<script>
+<script lang="ts">
 import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
 import TextHowManyTimeAgo from '~/components/atoms/TextHowManyTimeAgo.vue'
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Comment } from '~/common/comment'
+import { User, blankUser, getUser } from '~/common/user'
 
-export default {
+@Component({
   components: {
     ImageIconLink,
     TextHowManyTimeAgo
-  },
-  props: {
-    comment: {
-      type: Object,
-      required: true
-    }
-  },
-  data() {
-    return {
-      user: {}
-    }
-  },
-  computed: {
-    isMyComment: function() {
-      return this.$store.getters['user/isMyAccountId'](this.user.AccountId)
-    }
-  },
-  created() {
-    this.$axios.$get(`users/${this.comment.UserId}`).then(res => {
-      this.user = res.data
-    })
+  }
+})
+export default class extends Vue {
+  @Prop({ required: true }) readonly comment!: Comment
+
+  user: User = blankUser
+
+  async created() {
+    this.user = await getUser(this.comment.data.userId)
+  }
+
+  get isMyComment() {
+    return this.$store.getters['user/isMyUid'](this.user.uid)
   }
 }
 </script>
