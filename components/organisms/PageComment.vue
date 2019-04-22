@@ -16,6 +16,7 @@
 import PageCommentDisplay from '~/components/molecules/PageCommentDisplay.vue'
 import PageCommentCreateArea from '~/components/molecules/PageCommentCreateArea.vue'
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Comment, getCommentsByPageId } from '~/common/comment'
 
 @Component({
   components: {
@@ -25,14 +26,23 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 })
 export default class extends Vue {
   @Prop({ default: false }) readonly isLogin!: boolean
-  @Prop({ required: true }) readonly comments!: any
+
+  comments: Comment[] = []
+  async created() {
+    try {
+      this.comments = await getCommentsByPageId(this.$route.params.pageId)
+      // this.likes = (await this.$axios.$get(`likes?pageid=${this.$route.params.pageId}`)).data
+    } catch (e) {
+      console.log(e)
+    }
+  }
   async createComment({ pageId, text }) {
     try {
-      const comment = await this.$store.dispatch('user/createComment', {
+      await this.$store.dispatch('user/createComment', {
         pageId: pageId,
         text: text
       })
-      this.comments.unshift(comment)
+      this.comments = await getCommentsByPageId(this.$route.params.pageId)
     } catch (err) {
       console.log(err)
       window.alert('コメントに失敗しました')
@@ -44,10 +54,8 @@ export default class extends Vue {
         pageId: this.$route.params.pageId,
         commentId: commentId
       }
-      const comment = await this.$store.dispatch('user/deleteComment', param)
-      this.comments.some((val, i) => {
-        if (val.ID === comment.ID) this.comments.splice(i, 1)
-      })
+      await this.$store.dispatch('user/deleteComment', param)
+      this.comments = await getCommentsByPageId(this.$route.params.pageId)
     } catch (err) {
       console.log(err)
       window.alert('コメント削除に失敗しました')

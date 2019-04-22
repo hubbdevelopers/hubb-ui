@@ -34,8 +34,7 @@
           </span>
           <span class="comments">
             <i class="far fa-comment" />
-            <!-- {{ comments.length }} -->
-            999
+            {{ comments.length }}
           </span>
         </div>
       </div>
@@ -48,6 +47,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 import PageOwnerInfo from '~/components/molecules/PageOwnerInfo.vue'
 import { Page } from '~/common/page'
 import { User } from '~/common/user'
+import { Comment, getCommentsByPageId } from '~/common/comment'
 
 @Component({
   components: {
@@ -58,7 +58,7 @@ export default class extends Vue {
   @Prop({ required: true }) readonly user!: User
   @Prop({ required: true }) readonly page!: Page
   //page?: Page = undefined
-  // comments: Comment[] = []
+  comments: Comment[] = []
   // likes: Like[] = []
 
   get link() {
@@ -71,28 +71,20 @@ export default class extends Vue {
     }
   }
 
-  // get content() {
-  //   const temp = document.createElement('div')
-  //   temp.innerHTML = this.page.content
-  //   return temp.textContent || temp.innerText || ''
-  // }
+  get content() {
+    const temp = document.createElement('div')
+    temp.innerHTML = this.page.data.content
+    return temp.textContent || temp.innerText || ''
+  }
 
-  // async created() {
-  //   try {
-  //     this.page = (await this.$axios.$get(`pages/${this.pageId}`)).data
-  //     if (this.page.ownerType === 'users') {
-  //       this.user = (await this.$axios.$get(`users/${this.page.ownerId}`)).data
-  //     } else if (this.page.OwnerType === 'communities') {
-  //       // TODO
-  //     }
-  //     this.comments = (await this.$axios.$get(
-  //       `comments?pageid=${this.pageId}`
-  //     )).data
-  //     this.likes = (await this.$axios.$get(`likes?pageid=${this.pageId}`)).data
-  //   } catch (e) {
-  //     console.log(e)
-  //   }
-  // }
+  async created() {
+    try {
+      this.comments = await getCommentsByPageId(this.page.id)
+      // this.likes = (await this.$axios.$get(`likes?pageid=${this.pageId}`)).data
+    } catch (e) {
+      console.log(e)
+    }
+  }
 }
 </script>
 
