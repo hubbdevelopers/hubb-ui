@@ -2,7 +2,7 @@
   <edit :page="page" :canEdit="isMember" />
 </template>
 <script>
-import Edit from '~/components/Edit.vue'
+import Edit from '~/components/templates/PageEdit.vue'
 
 export default {
   components: {

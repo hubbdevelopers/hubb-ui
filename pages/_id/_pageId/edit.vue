@@ -1,30 +1,27 @@
 <template>
-  <edit :page="page" :canEdit="isOwner" />
+  <page-edit :page="page" :canEdit="isOwner" />
 </template>
-<script>
-import Edit from '~/components/Edit.vue'
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+import PageEdit from '~/components/templates/PageEdit.vue'
+import { Page, blankPage, getPage } from '~/common/page'
 
-export default {
+@Component({
   components: {
-    Edit
-  },
-  data() {
-    return {
-      page: {}
-    }
-  },
-  computed: {
-    // isOwner: function() {
-    //   return (
-    //     this.$store.getters['user/isMyId'](this.page.OwnerId) &&
-    //     this.page.OwnerType === 'users'
-    //   )
-    // }
-  },
+    PageEdit
+  }
+})
+export default class extends Vue {
+  page: Page = blankPage
+
+  get isOwner() {
+    return (
+      this.$store.getters['user/isMyId'](this.page.id) &&
+      this.page.data.ownerType === 'user'
+    )
+  }
   async created() {
-    // this.page = (await this.$axios.$get(
-    //   `/pages/${this.$route.params.pageId}`
-    // )).data
+    this.page = await getPage(this.$route.params.pageId)
   }
 }
 </script>

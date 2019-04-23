@@ -5,7 +5,7 @@
         <div class="column is-three-quarters box">
           <croppa
             v-model="myCroppa"
-            :initial-image="$store.state.user.user.image"
+            :initial-image="$store.getters['user/getImage']"
           />
           <button
             @click="uploadCroppedImage"
@@ -89,136 +89,132 @@
     </div>
   </section>
 </template>
-<script>
+<script lang="ts">
 /* eslint-disable vue/no-side-effects-in-computed-properties */
 import moment from 'moment'
-export default {
-  data() {
-    return {
-      nameInput: '',
-      descriptionInput: '',
-      birthdayInput: '',
-      homepageInput: '',
-      facebookInput: '',
-      twitterInput: '',
-      instagramInput: '',
-      myCroppa: {}
+import Croppa from 'vue-croppa'
+import { Vue, Component } from 'vue-property-decorator'
+import PageEdit from '~/components/templates/PageEdit.vue'
+import { Page, blankPage, getPage } from '~/common/page'
+
+@Component({
+  components: {
+    PageEdit
+  }
+})
+export default class extends Vue {
+  nameInput: string = this.$store.state.user.data.name
+  descriptionInput: string = this.$store.state.user.data.description
+  birthdayInput: string = this.$store.state.user.data.birthday
+  homepageInput: string = this.$store.state.user.data.homepage
+  facebookInput: string = this.$store.state.user.data.facebook
+  twitterInput: string = this.$store.state.user.data.twitter
+  instagramInput: string = this.$store.state.user.data.instagram
+  myCroppa: Croppa = {}
+
+  get name() {
+    return this.$store.state.user.data.name
+  }
+
+  set name(newValue) {
+    this.nameInput = newValue
+  }
+
+  get description() {
+    return this.$store.state.user.data.description
+  }
+
+  set description(newValue) {
+    this.descriptionInput = newValue
+  }
+
+  get birthday() {
+    return this.$store.state.user.data.birthday
+  }
+
+  set birthday(newValue) {
+    this.birthdayInput = newValue
+  }
+
+  get homepage() {
+    return this.$store.state.user.data.homepage
+  }
+
+  set homepage(newValue) {
+    this.homepageInput = newValue
+  }
+
+  get facebook() {
+    return this.$store.state.user.data.facebook
+  }
+
+  set facebook(newValue) {
+    this.facebookInput = newValue
+  }
+
+  get twitter() {
+    return this.$store.state.user.data.twitter
+  }
+
+  set twitter(newValue) {
+    this.twitterInput = newValue
+  }
+
+  get instagram() {
+    return this.$store.state.user.data.instagram
+  }
+
+  set instagram(newValue) {
+    this.instagramInput = newValue
+  }
+
+  update() {
+    console.log(this.descriptionInput)
+    if (this.descriptionInput && this.descriptionInput.length > 100) {
+      window.alert('自己紹介は100文字までです')
+      return
     }
-  },
-  computed: {
-    name: {
-      get: function() {
-        this.nameInput = this.$store.state.user.user.data.name || ''
-        return this.$store.state.user.user.data.name
-      },
-      set: function(newValue) {
-        this.nameInput = newValue
-      }
-    },
-    description: {
-      get: function() {
-        this.descriptionInput = this.$store.state.user.user.Description || ''
-        return this.$store.state.user.user.Description
-      },
-      set: function(newValue) {
-        this.descriptionInput = newValue
-      }
-    },
-    birthday: {
-      get: function() {
-        this.birthdayInput = this.$store.state.user.user.Birthday || ''
-        return moment(this.$store.state.user.user.Birthday).format('YYYY-MM-DD')
-      },
-      set: function(newValue) {
-        this.birthdayInput = newValue
-      }
-    },
-    homepage: {
-      get: function() {
-        this.homepageInput = this.$store.state.user.user.Homepage || ''
-        return this.$store.state.user.user.Homepage
-      },
-      set: function(newValue) {
-        this.homepageInput = newValue
-      }
-    },
-    facebook: {
-      get: function() {
-        this.facebookInput = this.$store.state.user.user.Facebook || ''
-        return this.$store.state.user.user.Facebook
-      },
-      set: function(newValue) {
-        this.facebookInput = newValue
-      }
-    },
-    twitter: {
-      get: function() {
-        this.twitterInput = this.$store.state.user.user.Twitter || ''
-        return this.$store.state.user.user.Twitter
-      },
-
-      set: function(newValue) {
-        this.twitterInput = newValue
-      }
-    },
-    instagram: {
-      get: function() {
-        this.instagramInput = this.$store.state.user.user.Instagram || ''
-        return this.$store.state.user.user.Instagram
-      },
-      set: function(newValue) {
-        this.instagramInput = newValue
-      }
+    const param = {
+      name: this.nameInput,
+      description: this.descriptionInput,
+      birthday: this.birthdayInput,
+      homepage: this.homepageInput,
+      facebook: this.facebookInput,
+      twitter: this.twitterInput,
+      instagram: this.instagramInput
     }
-  },
-  methods: {
-    update() {
-      if (this.descriptionInput.length > 100) {
-        window.alert('自己紹介は100文字までです')
-        return
-      }
-      const param = {
-        name: this.nameInput,
-        description: this.descriptionInput,
-        birthday: this.birthdayInput,
-        homepage: this.homepageInput,
-        facebook: this.facebookInput,
-        twitter: this.twitterInput,
-        instagram: this.instagramInput
-      }
 
-      this.$store
-        .dispatch('user/updateProfile', param)
-        .then(() => {
-          this.$router.push(`/${this.$store.state.user.id}`)
-        })
-        .catch(err => {
-          console.log(err)
-          window.alert('error')
-        })
-    },
+    this.$store
+      .dispatch('user/updateProfile', param)
+      .then(() => {
+        this.$router.push(`/${this.$store.state.user.id}`)
+      })
+      .catch(err => {
+        console.log(err)
+        window.alert('error')
+      })
+  }
 
-    uploadCroppedImage() {
-      this.myCroppa.generateBlob(
-        blob => {
-          if (!blob) {
-            return
-          }
+  uploadCroppedImage() {
+    this.myCroppa.generateBlob(
+      blob => {
+        if (!blob) {
+          return
+        }
 
-          this.$store
-            .dispatch('user/updateImage', blob)
-            .then(() => {
-              this.$router.push(`/${this.$store.state.user.id}`)
-            })
-            .catch(err => {
-              console.log(err)
-              window.alert('error')
-            })
-        },
-        'image/*',
-        0.8
-      ) // 80% compressed jpeg file
-    }
+        this.$store
+          .dispatch('user/updateImage', blob)
+          .then(() => {
+            this.$router.push(`/${this.$store.state.user.id}`)
+          })
+          .catch(err => {
+            console.log(err)
+            window.alert('error')
+          })
+      },
+      'image/*',
+      0.8
+    ) // 80% compressed jpeg file
   }
 }
 </script>

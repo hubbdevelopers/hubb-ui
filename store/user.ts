@@ -40,19 +40,20 @@ export const actions: ActionTree<UsersState, RootState> = {
     return new Promise((resolve, reject) => {
       auth.onAuthStateChanged(async authUser => {
         if (authUser) {
-          const doc = await db
-            .collection('users')
-            .doc(authUser.uid)
-            .get()
-          if (doc.exists) {
-            const user = doc.data()
-            commit('updateUser', user)
-          } else {
-            console.log('No such document!')
-          }
+          // const doc = await db
+          //   .collection('users')
+          //   .doc(authUser.uid)
+          //   .get()
+          // if (doc.exists) {
+          //   const user = doc.data()
+          //   commit('updateUser', user)
+          // } else {
+          //   console.log('No such document!')
+          // }
 
           commit('updateId', authUser.uid)
           commit('updateEmail', authUser.email)
+          dispatch('fetchUser')
           dispatch('fetchPages')
           // dispatch('fetchCommunities')
           // dispatch('fetchFollowings')
@@ -162,7 +163,7 @@ export const actions: ActionTree<UsersState, RootState> = {
   },
 
   updateProfile(
-    { commit, state },
+    { dispatch, state },
     { name, description, birthday, homepage, twitter, facebook, instagram }
   ) {
     return new Promise(async (resolve, reject) => {
@@ -176,8 +177,13 @@ export const actions: ActionTree<UsersState, RootState> = {
           facebook: facebook,
           instagram: instagram
         }
-        const user = await this.$axios.$put(`users/${state.id}/profile`, param)
-        commit('updateUser', user.data)
+        console.log(param)
+        await db
+          .collection('users')
+          .doc(state.id)
+          .update(param)
+
+        dispatch('fetchUser')
         resolve()
       } catch (e) {
         console.error('Error writing document: ', e)
@@ -288,9 +294,26 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  // async fetchUser({ commit, state }) {
+  async fetchUser({ commit, state }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const doc = await db
+          .collection('users')
+          .doc(state.id)
+          .get()
 
-  // },
+        if (doc.exists) {
+          const user = doc.data()
+          commit('updateUser', user)
+        } else {
+          console.log('No such document!')
+        }
+        resolve()
+      } catch (e) {
+        reject()
+      }
+    })
+  },
 
   async fetchPages({ commit, state }) {
     try {

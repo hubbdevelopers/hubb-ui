@@ -6,7 +6,7 @@
       </div>
       <div v-if="isOwner" class="column">
         <n-link
-          :to="`/${user.ID}/profile`"
+          :to="`/${user.id}/profile`"
           class="button is-primary is-outlined is-rounded"
           >プロフィール編集</n-link
         >
@@ -71,7 +71,7 @@ import { Page } from '~/common/page'
   }
 })
 export default class extends Vue {
-  @Prop({ required: true }) readonly user!: User | undefined
+  @Prop({ required: true }) readonly user!: User
   followingCount: number = 0
   followerCount: number = 0
   likeCount: number = 0
