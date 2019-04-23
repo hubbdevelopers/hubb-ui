@@ -1,13 +1,13 @@
 export default function({ route, redirect, store }) {
-  if (store.state.user.uid && !store.state.user.user.account_id) {
+  if (store.state.user.id && !store.state.user.data.accountId) {
     // init yet
     if (route.path !== '/i/init') {
       return redirect('/i/init')
     }
-  } else if (store.state.user.uid && store.state.user.user.account_id) {
+  } else if (store.state.user.id && store.state.user.data.accountId) {
     // already init
     if (route.path == '/i/init') {
-      return redirect('/' + store.state.user.user.account_id)
+      return redirect('/' + store.state.user.data.accountId)
     }
   } else {
     // not login

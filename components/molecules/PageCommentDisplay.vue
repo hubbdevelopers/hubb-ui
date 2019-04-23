@@ -1,7 +1,7 @@
 <template>
   <article v-if="comment" class="media">
     <image-icon-link
-      :ownerId="user.uid"
+      :ownerId="user.id"
       :image="user.data.image"
       :isUser="true"
       :isCommunity="false"
@@ -47,7 +47,7 @@ export default class extends Vue {
   }
 
   get isMyComment() {
-    return this.$store.getters['user/isMyUid'](this.user.uid)
+    return this.$store.getters['user/isMyId'](this.user.id)
   }
 }
 </script>

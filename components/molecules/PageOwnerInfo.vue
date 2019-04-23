@@ -34,7 +34,7 @@ export default class extends Vue {
   @Prop({ default: false }) readonly isCommunity!: boolean
 
   get ownerId() {
-    return this.owner.uid
+    return this.owner.id
   }
 }
 </script>

@@ -3,7 +3,7 @@ import { TimeStamp } from 'firebase/firebase-firestore'
 const db = firebase.firestore()
 
 export interface User {
-  uid: string
+  id: string
   data: UserData
 }
 
@@ -15,7 +15,7 @@ export interface UserData {
 }
 
 export const blankUser = {
-  uid: '',
+  id: '',
   data: {
     accountId: '',
     name: 'unknown',
@@ -24,15 +24,15 @@ export const blankUser = {
   }
 }
 
-export async function getUser(uid: string): Promise<User> {
+export async function getUser(id: string): Promise<User> {
   try {
     const doc = await db
       .collection('users')
-      .doc(uid)
+      .doc(id)
       .get()
 
     if (doc.exists) {
-      const user: User = { uid: uid, data: doc.data() as UserData }
+      const user: User = { id: id, data: doc.data() as UserData }
       return user
     }
     return blankUser

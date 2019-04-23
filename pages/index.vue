@@ -3,9 +3,10 @@
     <div class="container">
       <template v-if="isLogin">
         <div class="columns">
+          {{ $store.state.user.user }}
           <div class="column is-one-third is-hidden-mobile">
             <user-profile
-              :user="$store.state.user.user"
+              :user="$store.getters['user/getUser']"
               v-if="isLogin && accountId"
             />
           </div>

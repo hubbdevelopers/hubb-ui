@@ -26,8 +26,8 @@ export default class extends Vue {
   loading: boolean = true
 
   async created() {
-    this.user = await getUser(this.$route.params.uid)
-    this.pages = await getPages(this.$route.params.uid, 'user')
+    this.user = await getUser(this.$route.params.id)
+    this.pages = await getPages(this.$route.params.id, 'user')
     // this.communities = (await this.$axios.$get(
     //   `communities?userid=${this.user.ID}`
     // )).data

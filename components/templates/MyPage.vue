@@ -54,7 +54,7 @@ export default class extends Vue {
   showNewCommunityModal: boolean = false
 
   get isOwner() {
-    return this.$store.getters['user/isMyUid'](this.$route.params.uid)
+    return this.$store.getters['user/isMyId'](this.$route.params.id)
   }
   closeModal() {
     this.showNewPageModal = false

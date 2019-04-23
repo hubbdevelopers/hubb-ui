@@ -78,7 +78,7 @@ export default {
       this.$store
         .dispatch('user/initialUpdate', param)
         .then(() => {
-          this.$router.push(`/${this.$store.state.user.uid}`)
+          this.$router.push(`/${this.$store.state.user.id}`)
         })
         .catch(err => {
           window.alert(err)

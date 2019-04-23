@@ -3,7 +3,7 @@
 import { auth, storage } from '~/plugins/firebase'
 import firebase from 'firebase'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
-import { UserData, blankUser } from '~/common/user'
+import { User, UserData, blankUser } from '~/common/user'
 import { Page, PageData } from '~/common/page'
 const db = firebase.firestore()
 const storageRef = storage.ref()
@@ -12,26 +12,26 @@ const storageRef = storage.ref()
 export interface RootState {}
 
 export interface UsersState {
-  user: UserData
+  data: UserData
   pages: Page[]
   communities: any
   followings: any
   timeline: Page[]
   likes: any
   notifications: any
-  uid: string // Firebase UID
+  id: string // Firebase UID
   email: string
 }
 
 export const state: UsersState = {
-  user: blankUser.data,
+  data: blankUser.data,
   pages: [],
   communities: [],
   followings: [],
   timeline: [],
   likes: [],
   notifications: [],
-  uid: '', // Firebase UID
+  id: '', // Firebase UID
   email: ''
 }
 
@@ -51,7 +51,7 @@ export const actions: ActionTree<UsersState, RootState> = {
             console.log('No such document!')
           }
 
-          commit('updateUid', authUser.uid)
+          commit('updateId', authUser.uid)
           commit('updateEmail', authUser.email)
           dispatch('fetchPages')
           // dispatch('fetchCommunities')
@@ -75,16 +75,12 @@ export const actions: ActionTree<UsersState, RootState> = {
           param.email,
           param.password
         )
-        param.uid = authData.user!.uid
         await db
           .collection('users')
           .doc(authData.user!.uid)
           .set({ createdAt: firebase.firestore.FieldValue.serverTimestamp() })
 
-        commit('updateUid', param.uid)
-        // const res = await this.$axios.$post('users', param)
-
-        //commit('updateId', res.data.ID)
+        commit('updateId', authData.user!.uid)
         resolve()
       } catch (e) {
         reject(e)
@@ -155,7 +151,7 @@ export const actions: ActionTree<UsersState, RootState> = {
       try {
         await db
           .collection('users')
-          .doc(state.uid)
+          .doc(state.id)
           .set({ accountId: accountId, name: name })
         // dispatch('fetchUser')
         resolve()
@@ -180,7 +176,7 @@ export const actions: ActionTree<UsersState, RootState> = {
           facebook: facebook,
           instagram: instagram
         }
-        const user = await this.$axios.$put(`users/${state.uid}/profile`, param)
+        const user = await this.$axios.$put(`users/${state.id}/profile`, param)
         commit('updateUser', user.data)
         resolve()
       } catch (e) {
@@ -194,7 +190,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     return new Promise(async (resolve, reject) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const uuidv1 = require('uuid/v1')
-      const imagePath = 'images/user/' + state.uid + '/' + uuidv1()
+      const imagePath = 'images/user/' + state.id + '/' + uuidv1()
       const imageRef = storageRef.child(imagePath)
 
       try {
@@ -202,7 +198,7 @@ export const actions: ActionTree<UsersState, RootState> = {
         const url = await imageRef.getDownloadURL()
 
         const param = { image: url }
-        const user = await this.$axios.$put(`users/${state.uid}/images`, param)
+        const user = await this.$axios.$put(`users/${state.id}/images`, param)
         commit('updateUser', user.data)
         resolve()
       } catch (e) {
@@ -219,7 +215,7 @@ export const actions: ActionTree<UsersState, RootState> = {
       try {
         const param = {
           name: pageName,
-          ownerId: state.uid,
+          ownerId: state.id,
           ownerType: 'user',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }
@@ -235,7 +231,7 @@ export const actions: ActionTree<UsersState, RootState> = {
 
   createCommunity({ dispatch, state }, communityName) {
     return new Promise(async (resolve, reject) => {
-      const param = { name: communityName, userId: Number(state.uid) }
+      const param = { name: communityName, userId: Number(state.id) }
       try {
         const community = await this.$axios.$post('/communities', param)
         dispatch('fetchCommunities')
@@ -300,7 +296,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     try {
       const query = await db
         .collection('pages')
-        .where('ownerId', '==', state.uid)
+        .where('ownerId', '==', state.id)
         .get()
 
       if (query.size > 0) {
@@ -317,24 +313,22 @@ export const actions: ActionTree<UsersState, RootState> = {
   },
 
   async fetchCommunities({ commit, state }) {
-    const communities = await this.$axios.$get(
-      `communities?userid=${state.uid}`
-    )
+    const communities = await this.$axios.$get(`communities?userid=${state.id}`)
     commit('updateCommunities', communities.data)
   },
 
   async fetchFollowings({ commit, state }) {
-    const followings = await this.$axios.$get(`users/${state.uid}/followings`)
+    const followings = await this.$axios.$get(`users/${state.id}/followings`)
     commit('updateFollowings', followings.data)
   },
 
   async fetchTimeline({ commit, state }) {
-    const timeline = await this.$axios.$get(`users/${state.uid}/timeline`)
+    const timeline = await this.$axios.$get(`users/${state.id}/timeline`)
     commit('updateTimeline', timeline.data)
   },
 
   async fetchLikes({ commit, state }) {
-    const likes = await this.$axios.$get(`likes?userid=${state.uid}`)
+    const likes = await this.$axios.$get(`likes?userid=${state.id}`)
     commit('updateLike', likes.data)
   },
 
@@ -353,7 +347,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     return new Promise(async (resolve, reject) => {
       try {
         await this.$axios.$post(
-          `/users/${state.uid}/follow/users/${followingId}`
+          `/users/${state.id}/follow/users/${followingId}`
         )
         dispatch('fetchFollowings')
         resolve()
@@ -367,7 +361,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     return new Promise(async (resolve, reject) => {
       try {
         await this.$axios.$delete(
-          `/users/${state.uid}/follow/users/${followingId}`
+          `/users/${state.id}/follow/users/${followingId}`
         )
         dispatch('fetchFollowings')
         resolve()
@@ -381,7 +375,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     return new Promise(async (resolve, reject) => {
       try {
         await this.$axios.$post(
-          `/users/${state.uid}/follow/communities/${followingId}`
+          `/users/${state.id}/follow/communities/${followingId}`
         )
         dispatch('fetchFollowings')
         resolve()
@@ -395,7 +389,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     return new Promise(async (resolve, reject) => {
       try {
         await this.$axios.$delete(
-          `/users/${state.uid}/follow/communities/${followingId}`
+          `/users/${state.id}/follow/communities/${followingId}`
         )
         dispatch('fetchFollowings')
         resolve()
@@ -407,7 +401,7 @@ export const actions: ActionTree<UsersState, RootState> = {
 
   likePage({ dispatch, state }, pageId) {
     return new Promise(async (resolve, reject) => {
-      const param = { userId: Number(state.uid), pageId: Number(pageId) }
+      const param = { userId: Number(state.id), pageId: Number(pageId) }
 
       try {
         const comment = await this.$axios.$post('/likes', param)
@@ -423,7 +417,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     return new Promise(async (resolve, reject) => {
       try {
         const comment = await this.$axios.$delete(
-          `/likes?pageid=${pageId}&userid=${state.uid}`
+          `/likes?pageid=${pageId}&userid=${state.id}`
         )
         dispatch('fetchLikes')
         resolve(comment)
@@ -440,7 +434,7 @@ export const actions: ActionTree<UsersState, RootState> = {
 
         const userRef = db
           .collection('users')
-          .doc(state.uid)
+          .doc(state.id)
           .collection('comments')
           .doc()
         batch.set(userRef, {
@@ -455,7 +449,7 @@ export const actions: ActionTree<UsersState, RootState> = {
           .collection('comments')
           .doc(userRef.id)
         batch.set(pageRef, {
-          userId: state.uid,
+          userId: state.id,
           text: text,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         })
@@ -476,7 +470,7 @@ export const actions: ActionTree<UsersState, RootState> = {
 
         const userRef = db
           .collection('users')
-          .doc(state.uid)
+          .doc(state.id)
           .collection('comments')
           .doc(commentId)
         batch.delete(userRef)
@@ -498,12 +492,12 @@ export const actions: ActionTree<UsersState, RootState> = {
 }
 
 export const mutations: MutationTree<UsersState> = {
-  updateUser(state, user: UserData) {
-    state.user = user
+  updateUser(state, userData: UserData) {
+    state.data = userData
   },
 
-  updateUid(state, uid: string) {
-    state.uid = uid
+  updateId(state, id: string) {
+    state.id = id
   },
 
   updatePages(state, pages: Page[]) {
@@ -535,28 +529,32 @@ export const mutations: MutationTree<UsersState> = {
   // },
 
   clearUserState(state) {
-    state.user = blankUser.data
+    state.data = blankUser.data
     state.pages = []
     state.communities = []
     state.followings = []
     state.timeline = []
-    state.uid = ''
+    state.id = ''
   }
 }
 
 export const getters: GetterTree<UsersState, RootState> = {
+  getUser: (state): User => {
+    return { id: state.id, data: state.data }
+  },
+
   getAccountId: state => {
-    return state.user.accountId
+    return state.data.accountId
   },
 
   getImage: state => {
-    return state.user && state.user.image
-      ? state.user.image
+    return state.data.image
+      ? state.data.image
       : 'https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg'
   },
 
-  isMyUid: state => (uid: string): boolean => {
-    return state.uid === uid
+  isMyId: state => (id: string): boolean => {
+    return state.id === id
   },
 
   isCommunityMember: state => communityId => {
@@ -566,7 +564,7 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   isCommunityOwner: state => communityOwnerAccountId => {
-    return communityOwnerAccountId === state.user.accountId
+    return communityOwnerAccountId === state.data.accountId
   },
 
   isFollowingUser: state => userId => {
@@ -589,11 +587,11 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   isMyAccountId: state => accountId => {
-    return accountId === state.user.accountId
+    return accountId === state.data.accountId
   },
 
   isLogin: state => {
-    return !!state.uid
+    return !!state.id
   },
 
   isLikedPage: state => pageId => {

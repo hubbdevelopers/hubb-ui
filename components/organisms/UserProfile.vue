@@ -31,7 +31,7 @@
         <profile-birthday :birthday="user.Birthday" />
 
         <profile-followings-followers-likes
-          :uid="user.uid"
+          :id="user.id"
           :following-count="followingCount"
           :follower-count="followerCount"
           :like-count="likeCount"
@@ -77,7 +77,7 @@ export default class extends Vue {
   likeCount: number = 0
 
   get isOwner() {
-    return this.$store.getters['user/isMyUid'](this.$route.params.uid)
+    return this.$store.getters['user/isMyId'](this.$route.params.id)
   }
   async created() {
     // this.$axios.$get(`/users/${this.user.ID}/followings`).then(res => {
