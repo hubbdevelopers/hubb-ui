@@ -16,15 +16,15 @@
     <div v-if="user">
       <div>
         <div>
-          <!-- <profile-name>{{ user.data.name }}</profile-name>
-          <profile-account-id>{{ user.data.accountId }}</profile-account-id> -->
+          <profile-name>{{ user.data.name }}</profile-name>
+          <profile-account-id>{{ user.data.accountId }}</profile-account-id>
         </div>
 
         <profile-s-n-s
-          :homepage-url="user.Homepage"
-          :twitter-id="user.Twitter"
-          :instagram-id="user.Instagram"
-          :facebook-id="user.Facebook"
+          :homepage-url="user.data.homepage"
+          :twitter-id="user.data.twitter"
+          :instagram-id="user.data.instagram"
+          :facebook-id="user.data.facebook"
         />
         <profile-description>{{ user.Description }}</profile-description>
 
@@ -56,7 +56,6 @@ import ProfileSNS from '~/components/molecules/ProfileSNS.vue'
 import ProfileFollowButton from '~/components/atoms/ProfileFollowButton.vue'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { User } from '~/common/user'
-import { Page } from '~/common/page'
 
 @Component({
   components: {

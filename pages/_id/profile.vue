@@ -19,14 +19,14 @@
           <div class="field">
             <label class="label">ニックネーム</label>
             <div class="control">
-              <input v-model="name" class="input" type="text" />
+              <input v-model="nameInput" class="input" type="text" />
             </div>
           </div>
 
           <div class="field">
             <label class="label">自己紹介</label>
             <div class="control">
-              <textarea v-model="description" class="textarea" />
+              <textarea v-model="descriptionInput" class="textarea" />
             </div>
           </div>
 
@@ -34,7 +34,7 @@
             <label class="label">ホームページ</label>
             <div class="control">
               <input
-                v-model="homepage"
+                v-model="homepageInput"
                 class="input"
                 type="text"
                 placeholder="https://google.com"
@@ -47,7 +47,7 @@
               <a class="button is-static">https://twitter.com/</a>
             </p>
             <div class="control is-expanded">
-              <input v-model="twitter" class="input" type="text" />
+              <input v-model="twitterInput" class="input" type="text" />
             </div>
           </div>
 
@@ -57,7 +57,7 @@
               <a class="button is-static">https://www.facebook.com/</a>
             </p>
             <div class="control is-expanded">
-              <input v-model="facebook" class="input" type="text" />
+              <input v-model="facebookInput" class="input" type="text" />
             </div>
           </div>
 
@@ -67,13 +67,13 @@
               <a class="button is-static">https://www.instagram.com/</a>
             </p>
             <div class="control is-expanded">
-              <input v-model="instagram" class="input" type="text" />
+              <input v-model="instagramInput" class="input" type="text" />
             </div>
           </div>
           <div class="field">
             <label class="label">誕生日</label>
             <div class="control">
-              <input v-model="birthday" class="input" type="date" />
+              <input v-model="birthdayInput" class="input" type="date" />
             </div>
           </div>
 
@@ -91,11 +91,9 @@
 </template>
 <script lang="ts">
 /* eslint-disable vue/no-side-effects-in-computed-properties */
-import moment from 'moment'
 import Croppa from 'vue-croppa'
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import PageEdit from '~/components/templates/PageEdit.vue'
-import { Page, blankPage, getPage } from '~/common/page'
 
 @Component({
   components: {
@@ -112,64 +110,42 @@ export default class extends Vue {
   instagramInput: string = this.$store.state.user.data.instagram
   myCroppa: Croppa = {}
 
-  get name() {
-    return this.$store.state.user.data.name
+  @Watch('$store.state.user.data.name')
+  onNameChanged(val: string) {
+    this.nameInput = val
   }
 
-  set name(newValue) {
-    this.nameInput = newValue
+  @Watch('$store.state.user.data.description')
+  onDescriptionChanged(val: string) {
+    this.descriptionInput = val
   }
 
-  get description() {
-    return this.$store.state.user.data.description
+  @Watch('$store.state.user.data.birthday')
+  onBirthdayChanged(val: string) {
+    this.birthdayInput = val
   }
 
-  set description(newValue) {
-    this.descriptionInput = newValue
+  @Watch('$store.state.user.data.homepage')
+  onHomepageChanged(val: string) {
+    this.homepageInput = val
   }
 
-  get birthday() {
-    return this.$store.state.user.data.birthday
+  @Watch('$store.state.user.data.facebook')
+  onFacebookChanged(val: string) {
+    this.facebookInput = val
   }
 
-  set birthday(newValue) {
-    this.birthdayInput = newValue
+  @Watch('$store.state.user.data.twitter')
+  onTwitterChanged(val: string) {
+    this.twitterInput = val
   }
 
-  get homepage() {
-    return this.$store.state.user.data.homepage
-  }
-
-  set homepage(newValue) {
-    this.homepageInput = newValue
-  }
-
-  get facebook() {
-    return this.$store.state.user.data.facebook
-  }
-
-  set facebook(newValue) {
-    this.facebookInput = newValue
-  }
-
-  get twitter() {
-    return this.$store.state.user.data.twitter
-  }
-
-  set twitter(newValue) {
-    this.twitterInput = newValue
-  }
-
-  get instagram() {
-    return this.$store.state.user.data.instagram
-  }
-
-  set instagram(newValue) {
-    this.instagramInput = newValue
+  @Watch('$store.state.user.data.instagram')
+  onInstagramChanged(val: string) {
+    this.instagramInput = val
   }
 
   update() {
-    console.log(this.descriptionInput)
     if (this.descriptionInput && this.descriptionInput.length > 100) {
       window.alert('自己紹介は100文字までです')
       return

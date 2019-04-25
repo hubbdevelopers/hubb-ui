@@ -177,7 +177,6 @@ export const actions: ActionTree<UsersState, RootState> = {
           facebook: facebook,
           instagram: instagram
         }
-        console.log(param)
         await db
           .collection('users')
           .doc(state.id)
@@ -203,9 +202,11 @@ export const actions: ActionTree<UsersState, RootState> = {
         await imageRef.put(imageBlob)
         const url = await imageRef.getDownloadURL()
 
-        const param = { image: url }
-        const user = await this.$axios.$put(`users/${state.id}/images`, param)
-        commit('updateUser', user.data)
+        await db
+          .collection('users')
+          .doc(state.id)
+          .update({ image: url })
+        commit('updateImage', url)
         resolve()
       } catch (e) {
         console.error('Error writing document: ', e)
@@ -517,6 +518,10 @@ export const actions: ActionTree<UsersState, RootState> = {
 export const mutations: MutationTree<UsersState> = {
   updateUser(state, userData: UserData) {
     state.data = userData
+  },
+
+  updateImage(state, imageUrl: string) {
+    state.data.image = imageUrl
   },
 
   updateId(state, id: string) {

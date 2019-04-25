@@ -4,7 +4,7 @@
       <div class="column is-2">
         <image-icon-link
           :ownerId="$store.state.user.id"
-          :image="$store.state.user.user.image"
+          :image="$store.state.user.data.image"
           :isUser="true"
           :isCommunity="false"
         />
