@@ -6,7 +6,6 @@
       </div>
     </div>
     <page-title>{{ page.data.name }}</page-title>
-
     <div class="columns is-mobile is-vcentered">
       <div class="column is-three-quarters">
         <page-owner-info
@@ -73,19 +72,15 @@ export default class extends Vue {
   @Prop({ default: false }) readonly isLiked!: boolean
   @Prop({ default: false }) readonly isLogin!: boolean
 
-  likeCount: number = 0
-
-  async created() {
-    // this.likeCount = (await this.$axios.$get(
-    //   `likes?pageid=${this.$route.params.pageId}`
-    // )).data.length
+  get likeCount(): number {
+    return this.page.data.likedBy.length
   }
 
   likePage() {
     this.$store
       .dispatch('user/likePage', this.$route.params.pageId)
       .then(() => {
-        this.likeCount++
+        this.page.data.likedBy.push(this.$store.state.user.id)
       })
       .catch(err => {
         console.log(err)
@@ -96,7 +91,9 @@ export default class extends Vue {
     this.$store
       .dispatch('user/unlikePage', this.$route.params.pageId)
       .then(() => {
-        this.likeCount--
+        this.page.data.likedBy = this.page.data.likedBy.filter(
+          n => n !== this.$store.state.user.id
+        )
       })
       .catch(err => {
         console.log(err)

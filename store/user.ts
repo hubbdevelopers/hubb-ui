@@ -17,7 +17,7 @@ export interface UsersState {
   communities: any
   followings: any
   timeline: Page[]
-  likes: any
+  // likes: any
   notifications: any
   id: string // Firebase UID
   email: string
@@ -29,7 +29,7 @@ export const state: UsersState = {
   communities: [],
   followings: [],
   timeline: [],
-  likes: [],
+  // likes: [],
   notifications: [],
   id: '', // Firebase UID
   email: ''
@@ -423,28 +423,48 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  likePage({ dispatch, state }, pageId) {
+  likePage({ state, dispatch }, pageId) {
     return new Promise(async (resolve, reject) => {
-      const param = { userId: Number(state.id), pageId: Number(pageId) }
-
       try {
-        const comment = await this.$axios.$post('/likes', param)
-        dispatch('fetchLikes')
-        resolve(comment)
+        const batch = db.batch()
+
+        const userRef = db.collection('users').doc(state.id)
+        batch.update(userRef, {
+          likePages: firebase.firestore.FieldValue.arrayUnion(pageId)
+        })
+
+        const pageRef = db.collection('pages').doc(pageId)
+        batch.update(pageRef, {
+          likedBy: firebase.firestore.FieldValue.arrayUnion(state.id)
+        })
+
+        dispatch('fetchUser')
+        await batch.commit()
+        resolve()
       } catch (e) {
         reject(e)
       }
     })
   },
 
-  unlikePage({ dispatch, state }, pageId) {
+  unlikePage({ state, dispatch }, pageId) {
     return new Promise(async (resolve, reject) => {
       try {
-        const comment = await this.$axios.$delete(
-          `/likes?pageid=${pageId}&userid=${state.id}`
-        )
-        dispatch('fetchLikes')
-        resolve(comment)
+        const batch = db.batch()
+
+        const userRef = db.collection('users').doc(state.id)
+        batch.update(userRef, {
+          likePages: firebase.firestore.FieldValue.arrayRemove(pageId)
+        })
+
+        const pageRef = db.collection('pages').doc(pageId)
+        batch.update(pageRef, {
+          likedBy: firebase.firestore.FieldValue.arrayRemove(state.id)
+        })
+
+        dispatch('fetchUser')
+        await batch.commit()
+        resolve()
       } catch (e) {
         reject(e)
       }
@@ -544,9 +564,9 @@ export const mutations: MutationTree<UsersState> = {
     state.timeline = timeline
   },
 
-  updateLike(state, likes) {
-    state.likes = likes
-  },
+  // updateLike(state, likes) {
+  //   state.likes = likes
+  // },
 
   updateEmail(state, email) {
     state.email = email
@@ -622,8 +642,8 @@ export const getters: GetterTree<UsersState, RootState> = {
     return !!state.id
   },
 
-  isLikedPage: state => pageId => {
-    return Boolean(state.likes.filter(like => like.PageId == pageId).length)
+  isLikedPage: state => (pageId: string): boolean => {
+    return state.data.likePages.includes(pageId)
   },
 
   getTimeline: state => {

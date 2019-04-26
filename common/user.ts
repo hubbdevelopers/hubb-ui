@@ -11,6 +11,7 @@ export interface UserData {
   accountId: string
   name: string
   image: string
+  likePages: string[]
   createdAt: TimeStamp
 }
 
@@ -20,6 +21,7 @@ export const blankUser = {
     accountId: '',
     name: 'unknown',
     image: '',
+    likePages: [],
     createdAt: null
   }
 }

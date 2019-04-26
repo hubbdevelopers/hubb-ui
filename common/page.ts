@@ -13,8 +13,9 @@ export interface PageData {
   ownerId: string
   content: string
   isDraft: boolean
-  createdAt: TimeStamp
   image: string
+  likedBy: string[]
+  createdAt: TimeStamp
 }
 
 export const blankPage = {
@@ -25,8 +26,9 @@ export const blankPage = {
     ownerId: '',
     content: '',
     isDraft: true,
-    createdAt: null,
-    image: ''
+    image: '',
+    likedBy: [],
+    createdAt: null
   }
 }
 
