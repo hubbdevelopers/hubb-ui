@@ -19,7 +19,7 @@ export const blankUser = {
   id: '',
   data: {
     accountId: '',
-    name: 'unknown',
+    name: '',
     image: '',
     likePages: [],
     createdAt: null

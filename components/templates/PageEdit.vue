@@ -22,7 +22,7 @@
 
           <vue-editor
             @imageAdded="handleImageAdded"
-            v-model="page.Content"
+            v-model="page.data.content"
             use-custom-image-handler
           />
         </div>
@@ -52,12 +52,13 @@ export default class extends Vue {
 
   async saveContent() {
     const param = {
-      draft: this.page.data.isDraft,
-      name: this.page.data.name,
-      content: this.page.data.content,
-      image: this.page.data.image
+      id: this.$route.params.pageId || '',
+      draft: this.page.data.isDraft || '',
+      name: this.page.data.name || '',
+      content: this.page.data.content || '',
+      image: this.page.data.image || ''
     }
-    await this.$axios.$put(`/pages/${this.$route.params.pageId}`, param)
+    await this.$store.dispatch('user/updatePage', param)
     this.$router.push(`/${this.$store.state.user.id}/${this.page.id}`)
   }
   handleImageAdded(file, Editor, cursorLocation, resetUploader) {
@@ -67,6 +68,7 @@ export default class extends Vue {
     const imagePath = 'images/page/' + this.page.id + '/' + uuidv1()
     const imageRef = storageRef.child(imagePath)
 
+    console.log(imageRef)
     imageRef.put(file).then(() => {
       imageRef.getDownloadURL().then(url => {
         Editor.insertEmbed(cursorLocation, 'image', url)
@@ -78,12 +80,18 @@ export default class extends Vue {
     const storageRef = storage.ref()
     const imagePath = 'images/page/' + this.page.id + '/main-image'
     const imageRef = storageRef.child(imagePath)
+    console.log(imageRef)
 
-    imageRef.put(file).then(() => {
-      imageRef.getDownloadURL().then(url => {
-        this.page.data.image = url
+    imageRef
+      .put(file)
+      .then(() => {
+        imageRef.getDownloadURL().then(url => {
+          this.page.data.image = url
+        })
       })
-    })
+      .catch(e => {
+        console.log(e)
+      })
   }
 }
 </script>

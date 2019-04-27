@@ -215,7 +215,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  createPage({ state }, pageName) {
+  createPage({ dispatch }, pageName) {
     pageName = pageName || 'untitled'
 
     return new Promise(async (resolve, reject) => {
@@ -224,14 +224,38 @@ export const actions: ActionTree<UsersState, RootState> = {
           name: pageName,
           ownerId: state.id,
           ownerType: 'user',
+          draft: true,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }
 
         const doc = await db.collection('pages').add(param)
+        dispatch('getPages')
         resolve(doc.id)
       } catch (e) {
         console.error('Error writing document: ', e)
         reject(e)
+      }
+    })
+  },
+
+  updatePage({ dispatch }, { id, draft, name, content, image }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await db
+          .collection('pages')
+          .doc(id)
+          .update({
+            draft: draft,
+            namd: name,
+            content: content,
+            image: image,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
+        dispatch('fetchPages')
+        resolve()
+      } catch (e) {
+        console.error('Error writing document: ', e)
+        reject()
       }
     })
   },

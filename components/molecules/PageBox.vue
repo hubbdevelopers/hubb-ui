@@ -6,7 +6,7 @@
           <h1 class="is-size-4">{{ page.data.name }}</h1>
         </n-link>
         <div class="content">
-          <p>{{ page.data.content }}</p>
+          <p>{{ parsedContent }}</p>
         </div>
         <page-owner-info
           :owner="user"
@@ -29,8 +29,7 @@
         <div class="likes-comments">
           <span class="likes">
             <i class="far fa-heart" />
-            <!-- {{ likes.length }} -->
-            999
+            {{ page.data.likedBy.length }}
           </span>
           <span class="comments">
             <i class="far fa-comment" />
@@ -57,10 +56,13 @@ import { Comment, getCommentsByPageId } from '~/common/comment'
 export default class extends Vue {
   @Prop({ required: true }) readonly user!: User
   @Prop({ required: true }) readonly page!: Page
-  //page?: Page = undefined
   comments: Comment[] = []
-  // likes: Like[] = []
 
+  get parsedContent() {
+    var span = document.createElement('span')
+    span.innerHTML = this.page.data.content
+    return span.textContent || span.innerText
+  }
   get link() {
     if (this.page.data.ownerType === 'user') {
       return '/' + this.user.id + '/' + this.page.id
@@ -70,17 +72,10 @@ export default class extends Vue {
       return '/'
     }
   }
-
-  get content() {
-    const temp = document.createElement('div')
-    temp.innerHTML = this.page.data.content
-    return temp.textContent || temp.innerText || ''
-  }
-
+  
   async created() {
     try {
       this.comments = await getCommentsByPageId(this.page.id)
-      // this.likes = (await this.$axios.$get(`likes?pageid=${this.pageId}`)).data
     } catch (e) {
       console.log(e)
     }
@@ -113,6 +108,7 @@ a:hover {
 
 .content {
   overflow: hidden;
+  word-wrap: break-word;
   width: 100%;
   p {
     font-size: 12px;
