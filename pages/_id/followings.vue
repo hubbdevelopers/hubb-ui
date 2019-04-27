@@ -16,61 +16,56 @@
               <list-user-box :user="following" />
             </div>
 
-            <div
+            <!-- <div
               v-for="following in followingCommunities"
               :key="following.ID"
               class="column"
             >
               <list-community-box :communityId="following.FollowingId" />
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
     </div>
   </section>
 </template>
-<script>
-import ListUserBox from '~/components/molecules/ListUserBox'
-import ListCommunityBox from '~/components/molecules/ListCommunityBox'
-import UserProfile from '~/components/organisms/UserProfile'
+<script lang="ts">
+import ListUserBox from '~/components/molecules/ListUserBox.vue'
+import ListCommunityBox from '~/components/molecules/ListCommunityBox.vue'
+import UserProfile from '~/components/organisms/UserProfile.vue'
+import { Vue, Component } from 'vue-property-decorator'
+import { User, getUser, blankUser } from '~/common/user'
 
-export default {
+@Component({
   components: {
     ListUserBox,
     ListCommunityBox,
     UserProfile
-  },
-  data() {
-    return {
-      user: null,
-      followings: [],
-      followingUsers: [],
-      followingCommunities: []
-    }
-  },
-  computed: {
-    // isOwner: function() {
-    //   return this.$store.getters['user/isMyId'](this.$route.params.userId)
-    // }
-  },
-  async created() {
-    this.user = (await this.$axios.$get(
-      `/users/${this.$route.params.userId}`
-    )).data
-    this.followings = (await this.$axios.$get(
-      `/users/${this.user.ID}/followings`
-    )).data
+  }
+})
+export default class extends Vue {
+  user: User = blankUser
+  followingUsers: User[] = []
+  //followingCommunities: []
 
-    this.followings.forEach(following => {
-      if (following.FollowingType === 'user') {
-        this.$axios.$get(`/users/${following.FollowingId}`).then(res => {
-          this.followingUsers.push(res.data)
-        })
-      } else if (following.FollowingType === 'community') {
-        this.$axios.$get(`/communities/${following.FollowingId}`).then(res => {
-          this.followingCommunities.push(res.data)
-        })
-      }
+  get isOwner() {
+    return this.$store.getters['user/isMyId'](this.$route.params.id)
+  }
+
+  async created() {
+    this.user = await getUser(this.$route.params.id)
+
+    if (
+      !this.user.data.followingUsers ||
+      this.user.data.followingUsers.length === 0
+    ) {
+      return
+    }
+
+    this.user.data.followingUsers.forEach(followingId => {
+      getUser(followingId).then((user: User) => {
+        this.followingUsers.push(user)
+      })
     })
   }
 }

@@ -19,7 +19,7 @@ export default {
       default: false
     },
     ownerId: {
-      type: Number,
+      type: String,
       required: true
     },
     image: {

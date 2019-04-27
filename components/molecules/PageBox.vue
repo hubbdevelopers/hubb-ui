@@ -72,7 +72,7 @@ export default class extends Vue {
       return '/'
     }
   }
-  
+
   async created() {
     try {
       this.comments = await getCommentsByPageId(this.page.id)

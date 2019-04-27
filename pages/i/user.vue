@@ -11,6 +11,7 @@
   </section>
 </template>
 <script>
+import { getUsers } from '~/common/user'
 import ListUserBox from '~/components/molecules/ListUserBox'
 
 export default {
@@ -23,7 +24,7 @@ export default {
     }
   },
   async created() {
-    this.users = (await this.$axios.$get('users')).data
+    this.users = await getUsers()
   }
 }
 </script>

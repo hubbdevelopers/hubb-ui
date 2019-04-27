@@ -3,7 +3,7 @@
     <div class="is-clearfix main">
       <div class="is-pulled-left image-icon">
         <image-icon-link
-          :ownerId="user.ID"
+          :ownerId="user.id"
           :image="user.data.image"
           :isUser="true"
           :isCommunity="false"
@@ -11,7 +11,7 @@
       </div>
       <div class="is-pulled-left name-area">
         <p class="is-size-6">{{ user.data.name }}</p>
-        <p class="is-size-7 has-text-weight-light">{{ user.data.ccountId }}</p>
+        <p class="is-size-7 has-text-weight-light">{{ user.data.accountId }}</p>
       </div>
       <div v-if="!isOwner" class="is-pulled-right follow-button-area">
         <button
@@ -32,44 +32,39 @@
     </div>
   </div>
 </template>
-<script>
-import ImageIconLink from '~/components/atoms/ImageIconLink'
-export default {
+<script lang="ts">
+import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import { User } from '~/common/user'
+
+@Component({
   components: {
     ImageIconLink
-  },
-  props: {
-    user: {
-      type: Object,
-      required: true
-    }
-  },
-  computed: {
-    isFollowingUser: function() {
-      return this.$store.getters['user/isFollowingUser'](this.user.ID)
-    }
-    // isOwner: function() {
-    //   return this.$store.getters['user/isMyId'](this.user.ID)
-    // }
-  },
-  async created() {
-    if (!Object.keys(this.user).length) {
-      //this.user = (await this.$axios.$get(`/users/${this.user.ID}`)).data
-    }
-  },
-  methods: {
-    follow() {
-      this.$store.dispatch('user/followUser', this.user.ID).catch(err => {
-        console.log(err)
-        window.alert('error')
-      })
-    },
-    unFollow() {
-      this.$store.dispatch('user/unFollowUser', this.user.ID).catch(err => {
-        console.log(err)
-        window.alert('error')
-      })
-    }
+  }
+})
+export default class extends Vue {
+  @Prop({ required: true }) readonly user!: User
+
+  get isFollowingUser() {
+    return this.$store.getters['user/isFollowingUser'](this.user.id)
+  }
+
+  get isOwner() {
+    return this.$store.getters['user/isMyId'](this.user.id)
+  }
+
+  follow() {
+    this.$store.dispatch('user/followUser', this.user.id).catch(err => {
+      console.log(err)
+      window.alert('error')
+    })
+  }
+
+  unFollow() {
+    this.$store.dispatch('user/unfollowUser', this.user.id).catch(err => {
+      console.log(err)
+      window.alert('error')
+    })
   }
 }
 </script>

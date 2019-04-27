@@ -12,7 +12,6 @@
         >
       </div>
     </div>
-
     <div v-if="user">
       <div>
         <div>
@@ -71,24 +70,27 @@ import { User } from '~/common/user'
 })
 export default class extends Vue {
   @Prop({ required: true }) readonly user!: User
-  followingCount: number = 0
-  followerCount: number = 0
-  likeCount: number = 0
+
+  get followingCount() {
+    return this.$store.getters['user/getFollowingCount']
+  }
+
+  get followerCount() {
+    return this.$store.getters['user/getFollowerCount']
+  }
+
+  get likeCount() {
+    return this.$store.getters['user/getLikeCount']
+  }
 
   get isOwner() {
-    return this.$store.getters['user/isMyId'](this.$route.params.id)
+    return this.$store.getters['user/isMyId'](this.user.id)
   }
-  async created() {
-    // this.$axios.$get(`/users/${this.user.ID}/followings`).then(res => {
-    //   this.followingCount = res.data.length
-    // })
-    // this.$axios.$get(`/users/${this.user.ID}/followers`).then(res => {
-    //   this.followerCount = res.data.length
-    // })
-    // this.$axios.$get(`/likes?userid=${this.user.ID}`).then(res => {
-    //   this.likeCount = res.data.length
-    // })
+
+  get isFollowingUser() {
+    return this.$store.getters['user/isFollowingUser'](this.user.id)
   }
+
   // follow() {
   //   this.$store.dispatch('user/followUser', this.user.ID).catch(err => {
   //     console.log(err)

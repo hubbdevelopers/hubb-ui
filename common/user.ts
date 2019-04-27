@@ -12,6 +12,8 @@ export interface UserData {
   name: string
   image: string
   likePages: string[]
+  followingUsers: string[]
+  followers: string[]
   createdAt: TimeStamp
 }
 
@@ -22,6 +24,8 @@ export const blankUser = {
     name: '',
     image: '',
     likePages: [],
+    followingUsers: [],
+    followers: [],
     createdAt: null
   }
 }
@@ -41,5 +45,25 @@ export async function getUser(id: string): Promise<User> {
   } catch (e) {
     console.log(e)
     return blankUser
+  }
+}
+
+export async function getUsers(): Promise<User[]> {
+  try {
+    const collection = await db.collection('users').get()
+
+    const users: User[] = []
+
+    collection.forEach(
+      (doc): void => {
+        if (doc.exists) {
+          users.push({ id: doc.id, data: doc.data() as UserData })
+        }
+      }
+    )
+    return users
+  } catch (e) {
+    console.log(e)
+    return []
   }
 }

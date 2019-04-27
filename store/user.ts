@@ -15,9 +15,7 @@ export interface UsersState {
   data: UserData
   pages: Page[]
   communities: any
-  followings: any
   timeline: Page[]
-  // likes: any
   notifications: any
   id: string // Firebase UID
   email: string
@@ -27,9 +25,7 @@ export const state: UsersState = {
   data: blankUser.data,
   pages: [],
   communities: [],
-  followings: [],
   timeline: [],
-  // likes: [],
   notifications: [],
   id: '', // Firebase UID
   email: ''
@@ -40,25 +36,12 @@ export const actions: ActionTree<UsersState, RootState> = {
     return new Promise((resolve, reject) => {
       auth.onAuthStateChanged(async authUser => {
         if (authUser) {
-          // const doc = await db
-          //   .collection('users')
-          //   .doc(authUser.uid)
-          //   .get()
-          // if (doc.exists) {
-          //   const user = doc.data()
-          //   commit('updateUser', user)
-          // } else {
-          //   console.log('No such document!')
-          // }
-
           commit('updateId', authUser.uid)
           commit('updateEmail', authUser.email)
           dispatch('fetchUser')
           dispatch('fetchPages')
           // dispatch('fetchCommunities')
-          // dispatch('fetchFollowings')
           // dispatch('fetchTimeline')
-          // dispatch('fetchLikes')
           // dispatch('fetchNotifications')
           resolve()
         } else {
@@ -147,14 +130,14 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  initialUpdate({ state }, { accountId, name }) {
+  initialUpdate({ state, dispatch }, { accountId, name }) {
     return new Promise(async (resolve, reject) => {
       try {
         await db
           .collection('users')
           .doc(state.id)
           .set({ accountId: accountId, name: name })
-        // dispatch('fetchUser')
+        dispatch('fetchUser')
         resolve()
       } catch (e) {
         reject(e)
@@ -341,33 +324,32 @@ export const actions: ActionTree<UsersState, RootState> = {
   },
 
   async fetchPages({ commit, state }) {
-    try {
-      const query = await db
-        .collection('pages')
-        .where('ownerId', '==', state.id)
-        .get()
+    return new Promise(async (resolve, reject) => {
+      try {
+        const query = await db
+          .collection('pages')
+          .where('ownerId', '==', state.id)
+          .get()
 
-      if (query.size > 0) {
-        const pages = query.docs.map(
-          (doc): Page => {
-            return { id: doc.id, data: doc.data() as PageData }
-          }
-        )
-        commit('updatePages', pages)
+        if (query.size > 0) {
+          const pages = query.docs.map(
+            (doc): Page => {
+              return { id: doc.id, data: doc.data() as PageData }
+            }
+          )
+          commit('updatePages', pages)
+        }
+        resolve()
+      } catch (e) {
+        console.log(e)
+        reject(e)
       }
-    } catch (e) {
-      console.log(e)
-    }
+    })
   },
 
   async fetchCommunities({ commit, state }) {
     const communities = await this.$axios.$get(`communities?userid=${state.id}`)
     commit('updateCommunities', communities.data)
-  },
-
-  async fetchFollowings({ commit, state }) {
-    const followings = await this.$axios.$get(`users/${state.id}/followings`)
-    commit('updateFollowings', followings.data)
   },
 
   async fetchTimeline({ commit, state }) {
@@ -394,10 +376,20 @@ export const actions: ActionTree<UsersState, RootState> = {
   followUser({ dispatch, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.$axios.$post(
-          `/users/${state.id}/follow/users/${followingId}`
-        )
-        dispatch('fetchFollowings')
+        const batch = db.batch()
+
+        const userRef = db.collection('users').doc(state.id)
+        batch.update(userRef, {
+          followingUsers: firebase.firestore.FieldValue.arrayUnion(followingId)
+        })
+
+        const followingRef = db.collection('users').doc(followingId)
+        batch.update(followingRef, {
+          followers: firebase.firestore.FieldValue.arrayUnion(state.id)
+        })
+
+        await batch.commit()
+        dispatch('fetchUser')
         resolve()
       } catch (e) {
         reject(e)
@@ -408,10 +400,20 @@ export const actions: ActionTree<UsersState, RootState> = {
   unfollowUser({ dispatch, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.$axios.$delete(
-          `/users/${state.id}/follow/users/${followingId}`
-        )
-        dispatch('fetchFollowings')
+        const batch = db.batch()
+
+        const userRef = db.collection('users').doc(state.id)
+        batch.update(userRef, {
+          followingUsers: firebase.firestore.FieldValue.arrayRemove(followingId)
+        })
+
+        const followingRef = db.collection('users').doc(followingId)
+        batch.update(followingRef, {
+          followers: firebase.firestore.FieldValue.arrayRemove(state.id)
+        })
+
+        await batch.commit()
+        dispatch('fetchUser')
         resolve()
       } catch (e) {
         reject(e)
@@ -462,8 +464,8 @@ export const actions: ActionTree<UsersState, RootState> = {
           likedBy: firebase.firestore.FieldValue.arrayUnion(state.id)
         })
 
-        dispatch('fetchUser')
         await batch.commit()
+        dispatch('fetchUser')
         resolve()
       } catch (e) {
         reject(e)
@@ -486,8 +488,8 @@ export const actions: ActionTree<UsersState, RootState> = {
           likedBy: firebase.firestore.FieldValue.arrayRemove(state.id)
         })
 
-        dispatch('fetchUser')
         await batch.commit()
+        dispatch('fetchUser')
         resolve()
       } catch (e) {
         reject(e)
@@ -530,7 +532,6 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  // eslint-disable-next-line no-empty-pattern
   deleteComment({ state }, { pageId, commentId }) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -580,17 +581,9 @@ export const mutations: MutationTree<UsersState> = {
     state.communities = communities
   },
 
-  updateFollowings(state, followings) {
-    state.followings = followings
-  },
-
   updateTimeline(state, timeline) {
     state.timeline = timeline
   },
-
-  // updateLike(state, likes) {
-  //   state.likes = likes
-  // },
 
   updateEmail(state, email) {
     state.email = email
@@ -604,7 +597,6 @@ export const mutations: MutationTree<UsersState> = {
     state.data = blankUser.data
     state.pages = []
     state.communities = []
-    state.followings = []
     state.timeline = []
     state.id = ''
   }
@@ -625,6 +617,18 @@ export const getters: GetterTree<UsersState, RootState> = {
       : 'https://www.bsn.eu/wp-content/uploads/2016/12/user-icon-image-placeholder-300-grey.jpg'
   },
 
+  getFollowingCount: state => {
+    return state.data.followingUsers ? state.data.followingUsers.length : 0
+  },
+
+  getFollowerCount: state => {
+    return state.data.followers ? state.data.followers.length : 0
+  },
+
+  getLikeCount: state => {
+    return state.data.likePages ? state.data.likePages.length : 0
+  },
+
   isMyId: state => (id: string): boolean => {
     return state.id === id
   },
@@ -641,21 +645,21 @@ export const getters: GetterTree<UsersState, RootState> = {
 
   isFollowingUser: state => userId => {
     return Boolean(
-      state.followings.filter(
-        following =>
-          following.FollowingId == userId && following.FollowingType === 'user'
-      ).length
+      state.data.followingUsers &&
+        state.data.followingUsers.find(id => {
+          return id === userId
+        })
     )
   },
 
   isFollowingCommunity: state => communityId => {
-    return Boolean(
-      state.followings.filter(
-        following =>
-          following.FollowingId == communityId &&
-          following.FollowingType === 'community'
-      ).length
-    )
+    // return Boolean(
+    //   state.followings.filter(
+    //     following =>
+    //       following.FollowingId == communityId &&
+    //       following.FollowingType === 'community'
+    //   ).length
+    // )
   },
 
   isMyAccountId: state => accountId => {
@@ -667,7 +671,7 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   isLikedPage: state => (pageId: string): boolean => {
-    return state.data.likePages.includes(pageId)
+    return state.data.likePages ? state.data.likePages.includes(pageId) : false
   },
 
   getTimeline: state => {

@@ -58,6 +58,6 @@ import { Page } from '~/common/page'
 export default class extends Vue {
   @Prop({ required: true }) readonly user!: User
   @Prop({ required: true }) readonly pages!: Page[]
-  @Prop({ required: true }) readonly communities!: any
+  // @Prop({ required: true }) readonly communities!: any
 }
 </script>

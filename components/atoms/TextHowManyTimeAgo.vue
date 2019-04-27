@@ -4,6 +4,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import PageOwnerInfo from '~/components/molecules/PageOwnerInfo.vue'
+import { TimeStamp } from 'firebase/firebase-firestore'
 import moment from 'moment'
 
 @Component({
@@ -12,7 +13,7 @@ import moment from 'moment'
   }
 })
 export default class extends Vue {
-  @Prop({ required: true }) readonly date!: any
+  @Prop({ required: true }) readonly date!: TimeStamp
 
   get howManyDaysAgo() {
     return this.date ? moment(this.date.toDate()).fromNow() : ''
