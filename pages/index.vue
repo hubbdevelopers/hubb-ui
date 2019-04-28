@@ -14,10 +14,10 @@
             <div class="columns is-multiline">
               <div
                 v-for="page in timeline"
-                :key="page.ID"
+                :key="page.id"
                 class="column is-three-fifths is-offset-one-fifth"
               >
-                <page-box :pageId="page.ID" />
+                <page-box :page="page" />
               </div>
             </div>
           </div>

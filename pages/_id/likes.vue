@@ -13,7 +13,7 @@
               :key="page.id"
               class="column is-three-fifths is-offset-one-fifth"
             >
-              <page-box :page="page" :user="user" />
+              <page-box :page="page" />
             </div>
           </div>
         </div>

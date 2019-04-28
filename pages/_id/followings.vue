@@ -55,15 +55,12 @@ export default class extends Vue {
   async created() {
     this.user = await getUser(this.$route.params.id)
 
-    if (
-      !this.user.data.followingUsers ||
-      this.user.data.followingUsers.length === 0
-    ) {
+    if (this.user.followingUsers.length === 0) {
       return
     }
 
-    this.user.data.followingUsers.forEach(followingId => {
-      getUser(followingId).then((user: User) => {
+    this.user.followingUsers.forEach(following => {
+      getUser(following.id).then((user: User) => {
         this.followingUsers.push(user)
       })
     })

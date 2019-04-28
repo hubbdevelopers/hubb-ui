@@ -3,7 +3,7 @@
 import { auth, storage } from '~/plugins/firebase'
 import firebase from 'firebase'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
-import { User, UserData, blankUser } from '~/common/user'
+import { User, UserData, FollowUser, blankUser } from '~/common/user'
 import { Page, PageData } from '~/common/page'
 const db = firebase.firestore()
 const storageRef = storage.ref()
@@ -17,6 +17,8 @@ export interface UsersState {
   communities: any
   timeline: Page[]
   notifications: any
+  followingUsers: FollowUser[]
+  followers: FollowUser[]
   id: string // Firebase UID
   email: string
 }
@@ -27,6 +29,8 @@ export const state: UsersState = {
   communities: [],
   timeline: [],
   notifications: [],
+  followingUsers: [],
+  followers: [],
   id: '', // Firebase UID
   email: ''
 }
@@ -40,8 +44,11 @@ export const actions: ActionTree<UsersState, RootState> = {
           commit('updateEmail', authUser.email)
           dispatch('fetchUser')
           dispatch('fetchPages')
+          dispatch('fetchFollowingUsers')
+          dispatch('fetchFollowers')
+          dispatch('fetchTimeline')
+
           // dispatch('fetchCommunities')
-          // dispatch('fetchTimeline')
           // dispatch('fetchNotifications')
           resolve()
         } else {
@@ -353,13 +360,27 @@ export const actions: ActionTree<UsersState, RootState> = {
   },
 
   async fetchTimeline({ commit, state }) {
-    const timeline = await this.$axios.$get(`users/${state.id}/timeline`)
-    commit('updateTimeline', timeline.data)
-  },
+    return new Promise(async (resolve, reject) => {
+      try {
+        const snapshot = await db
+          .collection('users')
+          .doc(state.id)
+          .collection('timeline')
+          .get()
 
-  async fetchLikes({ commit, state }) {
-    const likes = await this.$axios.$get(`likes?userid=${state.id}`)
-    commit('updateLike', likes.data)
+        const timeline: Page[] = snapshot.docs.map(
+          (doc): Page => {
+            return { id: doc.id, data: doc.data() as PageData }
+          }
+        )
+
+        commit('updateTimeline', timeline)
+        resolve()
+      } catch (e) {
+        console.log(e)
+        reject(e)
+      }
+    })
   },
 
   // async fetchNotifications({commit, state}) {
@@ -373,23 +394,81 @@ export const actions: ActionTree<UsersState, RootState> = {
   //   commit('updateLike', data)
   // },
 
+  fetchFollowingUsers({ commit, state }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const query = await db
+          .collection('users')
+          .doc(state.id)
+          .collection('followingUsers')
+          .get()
+
+        if (query.size > 0) {
+          const ids = query.docs.map(
+            (doc): FollowUser => {
+              return doc.data() as FollowUser
+            }
+          )
+          commit('updateFollowingUsers', ids)
+        } else {
+          commit('updateFollowingUsers', [])
+        }
+        resolve()
+      } catch (e) {
+        console.log(e)
+        reject(e)
+      }
+    })
+  },
+
+  fetchFollowers({ commit, state }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const query = await db
+          .collection('users')
+          .doc(state.id)
+          .collection('followers')
+          .get()
+
+        if (query.size > 0) {
+          const ids = query.docs.map(
+            (doc): FollowUser => {
+              return doc.data() as FollowUser
+            }
+          )
+          commit('updateFollowers', ids)
+        } else {
+          commit('updateFollowers', [])
+        }
+        resolve()
+      } catch (e) {
+        console.log(e)
+        reject(e)
+      }
+    })
+  },
+
   followUser({ dispatch, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
         const batch = db.batch()
 
-        const userRef = db.collection('users').doc(state.id)
-        batch.update(userRef, {
-          followingUsers: firebase.firestore.FieldValue.arrayUnion(followingId)
-        })
+        const userRef = db
+          .collection('users')
+          .doc(state.id)
+          .collection('followingUsers')
+          .doc(followingId)
+        batch.set(userRef, { id: followingId })
 
-        const followingRef = db.collection('users').doc(followingId)
-        batch.update(followingRef, {
-          followers: firebase.firestore.FieldValue.arrayUnion(state.id)
-        })
+        const followingRef = db
+          .collection('users')
+          .doc(followingId)
+          .collection('followers')
+          .doc(state.id)
+        batch.set(followingRef, { id: state.id })
 
         await batch.commit()
-        dispatch('fetchUser')
+        dispatch('fetchFollowingUsers')
         resolve()
       } catch (e) {
         reject(e)
@@ -402,18 +481,24 @@ export const actions: ActionTree<UsersState, RootState> = {
       try {
         const batch = db.batch()
 
-        const userRef = db.collection('users').doc(state.id)
-        batch.update(userRef, {
-          followingUsers: firebase.firestore.FieldValue.arrayRemove(followingId)
-        })
+        const userRef = await db
+          .collection('users')
+          .doc(state.id)
+          .collection('followingUsers')
+          .doc(followingId)
 
-        const followingRef = db.collection('users').doc(followingId)
-        batch.update(followingRef, {
-          followers: firebase.firestore.FieldValue.arrayRemove(state.id)
-        })
+        batch.delete(userRef)
+
+        const followingRef = await db
+          .collection('users')
+          .doc(followingId)
+          .collection('followers')
+          .doc(state.id)
+
+        batch.delete(followingRef)
 
         await batch.commit()
-        dispatch('fetchUser')
+        dispatch('fetchFollowingUsers')
         resolve()
       } catch (e) {
         reject(e)
@@ -581,12 +666,20 @@ export const mutations: MutationTree<UsersState> = {
     state.communities = communities
   },
 
-  updateTimeline(state, timeline) {
+  updateTimeline(state, timeline: Page[]) {
     state.timeline = timeline
   },
 
   updateEmail(state, email) {
     state.email = email
+  },
+
+  updateFollowingUsers(state, followings: FollowUser[]) {
+    state.followingUsers = followings
+  },
+
+  updateFollowers(state, followers: FollowUser[]) {
+    state.followers = followers
   },
 
   // updateNotification (state, notifications) {
@@ -604,7 +697,12 @@ export const mutations: MutationTree<UsersState> = {
 
 export const getters: GetterTree<UsersState, RootState> = {
   getUser: (state): User => {
-    return { id: state.id, data: state.data }
+    return {
+      id: state.id,
+      data: state.data,
+      followers: state.followers,
+      followingUsers: state.followingUsers
+    }
   },
 
   getAccountId: state => {
@@ -618,11 +716,11 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   getFollowingCount: state => {
-    return state.data.followingUsers ? state.data.followingUsers.length : 0
+    return state.followingUsers.length
   },
 
   getFollowerCount: state => {
-    return state.data.followers ? state.data.followers.length : 0
+    return state.followers.length
   },
 
   getLikeCount: state => {
@@ -645,10 +743,9 @@ export const getters: GetterTree<UsersState, RootState> = {
 
   isFollowingUser: state => userId => {
     return Boolean(
-      state.data.followingUsers &&
-        state.data.followingUsers.find(id => {
-          return id === userId
-        })
+      state.followingUsers.find(following => {
+        return following.id === userId
+      })
     )
   },
 

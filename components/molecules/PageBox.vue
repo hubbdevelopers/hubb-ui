@@ -9,7 +9,7 @@
           <p>{{ parsedContent }}</p>
         </div>
         <page-owner-info
-          :owner="user"
+          :owner="displayUser"
           :page="page"
           :isUser="true"
           class="page-owner-info"
@@ -45,7 +45,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import PageOwnerInfo from '~/components/molecules/PageOwnerInfo.vue'
 import { Page } from '~/common/page'
-import { User } from '~/common/user'
+import { User, blankUser, getUser } from '~/common/user'
 import { Comment, getCommentsByPageId } from '~/common/comment'
 
 @Component({
@@ -54,9 +54,18 @@ import { Comment, getCommentsByPageId } from '~/common/comment'
   }
 })
 export default class extends Vue {
-  @Prop({ required: true }) readonly user!: User
+  @Prop({
+    default: blankUser
+  })
+  readonly user!: User
   @Prop({ required: true }) readonly page!: Page
   comments: Comment[] = []
+
+  createdUser: User = blankUser
+
+  get displayUser() {
+    return this.user.id ? this.user : this.createdUser
+  }
 
   get parsedContent() {
     var span = document.createElement('span')
@@ -65,7 +74,7 @@ export default class extends Vue {
   }
   get link() {
     if (this.page.data.ownerType === 'user') {
-      return '/' + this.user.id + '/' + this.page.id
+      return '/' + this.page.data.ownerId + '/' + this.page.id
     } else if (this.page.data.ownerType === 'community') {
       return '/i/community/' + this.page.data.ownerId + '/' + this.page.id
     } else {
@@ -76,6 +85,9 @@ export default class extends Vue {
   async created() {
     try {
       this.comments = await getCommentsByPageId(this.page.id)
+      if (this.user.id === '') {
+        this.createdUser = await getUser(this.page.data.ownerId)
+      }
     } catch (e) {
       console.log(e)
     }
