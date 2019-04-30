@@ -73,7 +73,7 @@ export default class extends Vue {
   @Prop({ default: false }) readonly isLogin!: boolean
 
   get likeCount(): number {
-    return this.page.data.likedBy.length
+    return this.page.data.likedBy ? this.page.data.likedBy.length : 0
   }
 
   likePage() {

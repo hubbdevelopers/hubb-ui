@@ -29,7 +29,7 @@
         <div class="likes-comments">
           <span class="likes">
             <i class="far fa-heart" />
-            {{ page.data.likedBy.length }}
+            {{ likeCount }}
           </span>
           <span class="comments">
             <i class="far fa-comment" />
@@ -80,6 +80,10 @@ export default class extends Vue {
     } else {
       return '/'
     }
+  }
+
+  get likeCount(): number {
+    return this.page.data.likedBy ? this.page.data.likedBy.length : 0
   }
 
   async created() {

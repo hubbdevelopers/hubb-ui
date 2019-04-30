@@ -205,7 +205,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  createPage({ dispatch }, pageName = 'untitled') {
+  createPage({ state, dispatch }, pageName = 'untitled') {
     return new Promise(async (resolve, reject) => {
       try {
         const param = {
@@ -217,7 +217,7 @@ export const actions: ActionTree<UsersState, RootState> = {
         }
 
         const doc = await db.collection('pages').add(param)
-        dispatch('getPages')
+        dispatch('fetchPages')
         resolve(doc.id)
       } catch (e) {
         console.error('Error writing document: ', e)

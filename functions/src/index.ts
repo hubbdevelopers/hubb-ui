@@ -61,3 +61,49 @@ exports.unfollowUser = functions
       }
     }
   )
+
+exports.createPage = functions
+  .runWith({
+    timeoutSeconds: 540
+  })
+  .firestore.document('pages/{pageId}')
+  .onCreate(
+    async (snap, context): Promise<void> => {
+      try {
+        // const pageId = context.params.pageId
+        const page = snap.data()
+        const pageId = snap.id
+
+        if (page) {
+          if (page.ownerType === 'user') {
+            const user = await db
+              .collection('users')
+              .doc(page.ownerId)
+              .get()
+            if (user.exists) {
+              // 投稿を自分のタイムラインに追加
+              await user.ref
+                .collection('timeline')
+                .doc(pageId)
+                .set(page)
+
+              // 投稿をフォロワーのタイムラインに追加
+              const query = await user.ref.collection('followers').get()
+              query.forEach(
+                async (doc): Promise<void> => {
+                  await db
+                    .collection('users')
+                    .doc(doc.id)
+                    .collection('timeline')
+                    .doc(pageId)
+                    .set(page)
+                }
+              )
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  )
