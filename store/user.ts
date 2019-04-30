@@ -205,9 +205,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  createPage({ dispatch }, pageName) {
-    pageName = pageName || 'untitled'
-
+  createPage({ dispatch }, pageName = 'untitled') {
     return new Promise(async (resolve, reject) => {
       try {
         const param = {
@@ -246,6 +244,21 @@ export const actions: ActionTree<UsersState, RootState> = {
       } catch (e) {
         console.error('Error writing document: ', e)
         reject()
+      }
+    })
+  },
+
+  deletePage({ dispatch }, pageId) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await db
+          .collection('pages')
+          .doc(pageId)
+          .delete()
+        dispatch('fetchPages')
+        resolve()
+      } catch (e) {
+        reject(e)
       }
     })
   },
@@ -292,18 +305,6 @@ export const actions: ActionTree<UsersState, RootState> = {
         resolve(page.data)
       } catch (e) {
         console.error('Error writing document: ', e)
-        reject(e)
-      }
-    })
-  },
-
-  deletePage({ dispatch }, pageId) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const page = await this.$axios.$delete(`pages/${pageId}`)
-        dispatch('fetchPages')
-        resolve(page)
-      } catch (e) {
         reject(e)
       }
     })

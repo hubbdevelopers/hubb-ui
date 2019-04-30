@@ -50,6 +50,7 @@ export default class extends Vue {
     this.$store
       .dispatch('user/deletePage', this.$route.params.pageId)
       .then(() => {
+        window.alert('ページを削除しました')
         this.$router.push(`/${this.$store.state.user.id}`)
       })
       .catch(err => {
