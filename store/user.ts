@@ -255,9 +255,11 @@ export const actions: ActionTree<UsersState, RootState> = {
           .collection('pages')
           .doc(pageId)
           .delete()
+        //console.log(ret)
         dispatch('fetchPages')
         resolve()
       } catch (e) {
+        console.log(e)
         reject(e)
       }
     })

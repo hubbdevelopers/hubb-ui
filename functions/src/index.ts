@@ -1,5 +1,7 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const tools = require('firebase-tools')
 admin.initializeApp(functions.config().firebase)
 
 const db = admin.firestore()
@@ -164,6 +166,13 @@ exports.deletePage = functions
         const pageId = snap.id
 
         if (page) {
+          await tools.firestore.delete(`pages/${pageId}`, {
+            project: process.env.GCLOUD_PROJECT,
+            recursive: true,
+            yes: true,
+            token: functions.config().api.token
+          })
+
           if (page.ownerType === 'user') {
             const user = await db
               .collection('users')

@@ -50,7 +50,6 @@ export default {
       this.$store
         .dispatch('user/createPage', this.newPageName)
         .then(res => {
-          console.log(res)
           this.$router.push({
             path: `/${this.$store.state.user.id}/${res}`
           })
