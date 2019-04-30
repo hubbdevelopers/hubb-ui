@@ -234,7 +234,7 @@ export const actions: ActionTree<UsersState, RootState> = {
           .doc(id)
           .update({
             draft: draft,
-            namd: name,
+            name: name,
             content: content,
             image: image,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()

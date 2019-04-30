@@ -107,3 +107,49 @@ exports.createPage = functions
       }
     }
   )
+
+exports.updatePage = functions
+  .runWith({
+    timeoutSeconds: 540
+  })
+  .firestore.document('pages/{pageId}')
+  .onUpdate(
+    async (change, context): Promise<void> => {
+      try {
+        // const pageId = context.params.pageId
+        const page = change.after.data()
+        const pageId = change.after.id
+
+        if (page) {
+          if (page.ownerType === 'user') {
+            const user = await db
+              .collection('users')
+              .doc(page.ownerId)
+              .get()
+            if (user.exists) {
+              // 投稿を自分のタイムラインに更新
+              await user.ref
+                .collection('timeline')
+                .doc(pageId)
+                .update(page)
+
+              // 投稿をフォロワーのタイムラインに更新
+              const query = await user.ref.collection('followers').get()
+              query.forEach(
+                async (doc): Promise<void> => {
+                  await db
+                    .collection('users')
+                    .doc(doc.id)
+                    .collection('timeline')
+                    .doc(pageId)
+                    .update(page)
+                }
+              )
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  )
