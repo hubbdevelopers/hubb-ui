@@ -70,7 +70,6 @@ exports.createPage = functions
   .onCreate(
     async (snap, context): Promise<void> => {
       try {
-        // const pageId = context.params.pageId
         const page = snap.data()
         const pageId = snap.id
 
@@ -116,7 +115,6 @@ exports.updatePage = functions
   .onUpdate(
     async (change, context): Promise<void> => {
       try {
-        // const pageId = context.params.pageId
         const page = change.after.data()
         const pageId = change.after.id
 
@@ -143,6 +141,51 @@ exports.updatePage = functions
                     .collection('timeline')
                     .doc(pageId)
                     .update(page)
+                }
+              )
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  )
+
+exports.deletePage = functions
+  .runWith({
+    timeoutSeconds: 540
+  })
+  .firestore.document('pages/{pageId}')
+  .onDelete(
+    async (snap, context): Promise<void> => {
+      try {
+        const page = snap.data()
+        const pageId = snap.id
+
+        if (page) {
+          if (page.ownerType === 'user') {
+            const user = await db
+              .collection('users')
+              .doc(page.ownerId)
+              .get()
+            if (user.exists) {
+              // 投稿を自分のタイムラインを削除
+              await user.ref
+                .collection('timeline')
+                .doc(pageId)
+                .delete()
+
+              // 投稿をフォロワーのタイムラインを削除
+              const query = await user.ref.collection('followers').get()
+              query.forEach(
+                async (doc): Promise<void> => {
+                  await db
+                    .collection('users')
+                    .doc(doc.id)
+                    .collection('timeline')
+                    .doc(pageId)
+                    .delete()
                 }
               )
             }
