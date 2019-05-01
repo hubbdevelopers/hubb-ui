@@ -3,6 +3,8 @@ import * as admin from 'firebase-admin'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const tools = require('firebase-tools')
 admin.initializeApp(functions.config().firebase)
+const storage = admin.storage()
+const bucket = storage.bucket()
 
 const db = admin.firestore()
 
@@ -198,6 +200,10 @@ exports.deletePage = functions
                 }
               )
             }
+            //ファイル削除
+            await bucket.deleteFiles({
+              prefix: `images/page/${pageId}`
+            })
           }
         }
       } catch (e) {
@@ -271,6 +277,11 @@ exports.deleteUser = functions
             yes: true,
             token: functions.config().api.token
           })
+
+          //ファイル削除
+          await bucket.deleteFiles({
+            prefix: `images/user/${userId}`
+          })
         }
       } catch (e) {
         console.log(e)
@@ -307,7 +318,7 @@ exports.unfollowUser = functions
   .onDelete(
     async (snap, context): Promise<void> => {
       try {
-        // フォローした相手のフォロワーに追加する
+        // フォロー解除した相手のフォロワーから削除する
         await db
           .collection('users')
           .doc(context.params.followingId)
