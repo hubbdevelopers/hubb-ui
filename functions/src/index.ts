@@ -205,3 +205,75 @@ exports.deletePage = functions
       }
     }
   )
+
+exports.withdrawUser = functions.auth.user().onDelete(
+  async (user): Promise<void> => {
+    try {
+      await db
+        .collection('users')
+        .doc(user.uid)
+        .delete()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+)
+
+exports.deleteUser = functions
+  .runWith({
+    timeoutSeconds: 540
+  })
+  .firestore.document('users/{userId}')
+  .onDelete(
+    async (snap, context): Promise<void> => {
+      try {
+        const user = snap.data()
+        const userId = snap.id
+
+        if (user) {
+          // 自分のページを全削除
+          const pageQuery = await db
+            .collection('pages')
+            .where('ownerType', '==', 'user')
+            .where('ownerId', '==', userId)
+            .get()
+
+          pageQuery.forEach(
+            async (page): Promise<void> => {
+              await tools.firestore.delete(`pages/${page.id}`, {
+                project: process.env.GCLOUD_PROJECT,
+                recursive: true,
+                yes: true,
+                token: functions.config().api.token
+              })
+            }
+          )
+
+          // フォロワーから自分を削除
+          const followerQuery = await snap.ref
+            .collection('followingUsers')
+            .get()
+          followerQuery.forEach(
+            async (follower): Promise<void> => {
+              await db
+                .collection('users')
+                .doc(follower.id)
+                .collection('followers')
+                .doc(userId)
+                .delete()
+            }
+          )
+
+          // 自分のサブコレクションを全削除
+          await tools.firestore.delete(`users/${userId}`, {
+            project: process.env.GCLOUD_PROJECT,
+            recursive: true,
+            yes: true,
+            token: functions.config().api.token
+          })
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  )

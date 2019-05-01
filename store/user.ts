@@ -104,6 +104,7 @@ export const actions: ActionTree<UsersState, RootState> = {
         commit('clearUserState')
         resolve()
       } catch (e) {
+        console.log(e)
         reject(e)
       }
     })
