@@ -4,7 +4,7 @@
       <div v-if="canEdit">
         編集可能です
         <button @click="saveContent" class="button is-primary">保存</button>
-        <input v-model="page.Draft" id="draft" type="checkbox" />
+        <input v-model="page.data.isDraft" id="draft" type="checkbox" />
         <label for="draft">下書きとして保存</label>
         <div>
           <div class="field">
@@ -53,7 +53,7 @@ export default class extends Vue {
   async saveContent() {
     const param = {
       id: this.$route.params.pageId || '',
-      draft: this.page.data.isDraft || '',
+      isDraft: this.page.data.isDraft || true,
       name: this.page.data.name || '',
       content: this.page.data.content || '',
       image: this.page.data.image || ''

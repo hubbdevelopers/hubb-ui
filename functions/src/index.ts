@@ -277,3 +277,45 @@ exports.deleteUser = functions
       }
     }
   )
+
+exports.followUser = functions
+  .runWith({
+    timeoutSeconds: 540
+  })
+  .firestore.document('users/{userId}/followingUsers/{followingId}')
+  .onCreate(
+    async (snap, context): Promise<void> => {
+      try {
+        // フォローした相手のフォロワーに追加する
+        await db
+          .collection('users')
+          .doc(context.params.followingId)
+          .collection('followers')
+          .doc(context.params.userId)
+          .set({ id: context.params.userId })
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  )
+
+exports.unfollowUser = functions
+  .runWith({
+    timeoutSeconds: 540
+  })
+  .firestore.document('users/{userId}/followingUsers/{followingId}')
+  .onDelete(
+    async (snap, context): Promise<void> => {
+      try {
+        // フォローした相手のフォロワーに追加する
+        await db
+          .collection('users')
+          .doc(context.params.followingId)
+          .collection('followers')
+          .doc(context.params.userId)
+          .delete()
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  )

@@ -213,7 +213,7 @@ export const actions: ActionTree<UsersState, RootState> = {
           name: pageName,
           ownerId: state.id,
           ownerType: 'user',
-          draft: true,
+          isDraft: true,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }
 
@@ -227,14 +227,14 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  updatePage({ dispatch }, { id, draft, name, content, image }) {
+  updatePage({ dispatch }, { id, isDraft, name, content, image }) {
     return new Promise(async (resolve, reject) => {
       try {
         await db
           .collection('pages')
           .doc(id)
           .update({
-            draft: draft,
+            isDraft: isDraft,
             name: name,
             content: content,
             image: image,
@@ -455,23 +455,12 @@ export const actions: ActionTree<UsersState, RootState> = {
   followUser({ dispatch, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
-        const batch = db.batch()
-
-        const userRef = db
+        await db
           .collection('users')
           .doc(state.id)
           .collection('followingUsers')
           .doc(followingId)
-        batch.set(userRef, { id: followingId })
-
-        const followingRef = db
-          .collection('users')
-          .doc(followingId)
-          .collection('followers')
-          .doc(state.id)
-        batch.set(followingRef, { id: state.id })
-
-        await batch.commit()
+          .set({ id: followingId })
         dispatch('fetchFollowingUsers')
         resolve()
       } catch (e) {
@@ -483,25 +472,12 @@ export const actions: ActionTree<UsersState, RootState> = {
   unfollowUser({ dispatch, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
-        const batch = db.batch()
-
-        const userRef = await db
+        await db
           .collection('users')
           .doc(state.id)
           .collection('followingUsers')
           .doc(followingId)
-
-        batch.delete(userRef)
-
-        const followingRef = await db
-          .collection('users')
-          .doc(followingId)
-          .collection('followers')
-          .doc(state.id)
-
-        batch.delete(followingRef)
-
-        await batch.commit()
+          .delete()
         dispatch('fetchFollowingUsers')
         resolve()
       } catch (e) {
