@@ -53,7 +53,7 @@ export default class extends Vue {
   async saveContent() {
     const param = {
       id: this.$route.params.pageId || '',
-      isDraft: this.page.data.isDraft || true,
+      isDraft: this.page.data.isDraft,
       name: this.page.data.name || '',
       content: this.page.data.content || '',
       image: this.page.data.image || ''

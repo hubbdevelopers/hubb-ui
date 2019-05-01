@@ -339,6 +339,7 @@ export const actions: ActionTree<UsersState, RootState> = {
       try {
         const query = await db
           .collection('pages')
+          .where('ownerType', '==', 'user')
           .where('ownerId', '==', state.id)
           .get()
 

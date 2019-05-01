@@ -39,7 +39,6 @@ export async function getPages(
   try {
     const query = await db
       .collection('pages')
-      .where('isDraft', '==', false)
       .where('ownerType', '==', ownertType)
       .where('ownerId', '==', ownerId)
       .get()

@@ -77,7 +77,7 @@ exports.createPage = functions
         const page = snap.data()
         const pageId = snap.id
 
-        if (page) {
+        if (page && !page.isDraft) {
           if (page.ownerType === 'user') {
             const user = await db
               .collection('users')
@@ -122,7 +122,7 @@ exports.updatePage = functions
         const page = change.after.data()
         const pageId = change.after.id
 
-        if (page) {
+        if (page && !page.isDraft) {
           if (page.ownerType === 'user') {
             const user = await db
               .collection('users')
@@ -133,7 +133,7 @@ exports.updatePage = functions
               await user.ref
                 .collection('timeline')
                 .doc(pageId)
-                .update(page)
+                .set(page)
 
               // 投稿をフォロワーのタイムラインに更新
               const query = await user.ref.collection('followers').get()
@@ -144,7 +144,35 @@ exports.updatePage = functions
                     .doc(doc.id)
                     .collection('timeline')
                     .doc(pageId)
-                    .update(page)
+                    .set(page)
+                }
+              )
+            }
+          }
+        } else if (page && page.isDraft) {
+          // 下書きの場合はタイムラインから削除
+          if (page.ownerType === 'user') {
+            const user = await db
+              .collection('users')
+              .doc(page.ownerId)
+              .get()
+            if (user.exists) {
+              // 投稿を自分のタイムラインから削除
+              await user.ref
+                .collection('timeline')
+                .doc(pageId)
+                .delete()
+
+              // 投稿をフォロワーのタイムラインから削除
+              const query = await user.ref.collection('followers').get()
+              query.forEach(
+                async (doc): Promise<void> => {
+                  await db
+                    .collection('users')
+                    .doc(doc.id)
+                    .collection('timeline')
+                    .doc(pageId)
+                    .delete()
                 }
               )
             }
