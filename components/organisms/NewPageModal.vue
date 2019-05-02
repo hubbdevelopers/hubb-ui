@@ -51,7 +51,7 @@ export default {
         .dispatch('user/createPage', this.newPageName)
         .then(res => {
           this.$router.push({
-            path: `/${this.$store.state.user.id}/${res}`
+            path: `/${this.$store.state.user.id}/${res}/edit`
           })
           this.newPageName = ''
           this.$emit('close')

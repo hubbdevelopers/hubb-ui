@@ -37,7 +37,11 @@ export async function getCommentsByPageId(pageId: string): Promise<Comment[]> {
         (doc): Comment => {
           const data = doc.data()
           data.pageId = pageId
-          return { id: doc.id, data: data as CommentData }
+          const temp = Object.assign({}, blankComment.data)
+          return {
+            id: doc.id,
+            data: Object.assign(temp, data)
+          }
         }
       )
     }

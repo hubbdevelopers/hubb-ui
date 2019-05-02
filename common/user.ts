@@ -65,9 +65,10 @@ export async function getUser(id: string): Promise<User> {
       .get()
 
     if (doc.exists) {
+      const temp = Object.assign({}, blankUser.data)
       const user: User = {
         id: id,
-        data: doc.data() as UserData,
+        data: Object.assign(temp, doc.data()),
         followers: followers,
         followingUsers: followingUsers
       }
@@ -88,10 +89,11 @@ export async function getUsers(): Promise<User[]> {
 
     collection.forEach(
       (doc): void => {
+        const temp = Object.assign({}, blankUser.data)
         if (doc.exists) {
           users.push({
             id: doc.id,
-            data: doc.data() as UserData,
+            data: Object.assign(temp, doc.data()),
             followers: [], // TODO
             followingUsers: [] // TODO
           })

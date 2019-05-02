@@ -534,6 +534,7 @@ export const actions: ActionTree<UsersState, RootState> = {
         dispatch('fetchUser')
         resolve()
       } catch (e) {
+        console.log(e)
         reject(e)
       }
     })

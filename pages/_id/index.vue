@@ -27,7 +27,7 @@ export default class extends Vue {
 
   async created() {
     this.user = await getUser(this.$route.params.id)
-    this.pages = await getPages(this.$route.params.id, 'user')
+    this.pages = await getPages(this.$route.params.id, 'user', this.isOwner)
     // this.communities = (await this.$axios.$get(
     //   `communities?userid=${this.user.ID}`
     // )).data
@@ -37,16 +37,9 @@ export default class extends Vue {
   goConfigPage() {
     this.$router.push({ path: 'config', append: true })
   }
-  closeModal() {
-    this.showNewPageModal = false
-    this.showNewCommunityModal = false
-  }
-  withdraw() {
-    this.$router.push({ path: 'withdraw', append: true })
-    // this.$store.dispatch('user/withdraw').catch(err => {
-    // 	console.log(err)
-    // 	window.alert("error")
-    // })
+
+  get isOwner() {
+    return this.$store.getters['user/isMyId'](this.$route.params.id)
   }
 }
 </script>
