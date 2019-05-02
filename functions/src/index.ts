@@ -17,6 +17,12 @@ exports.followUser = functions
     // フォローユーザーのページ全てをタイムラインに投入する
     async (snap, context): Promise<void> => {
       try {
+        console.log(
+          'followUser',
+          snap,
+          context.params.userId,
+          context.params.followingId
+        )
         const timelineRef = db
           .collection('users')
           .doc(context.params.userId)
@@ -29,10 +35,21 @@ exports.followUser = functions
           .get()
 
         query.docs.forEach(
-          (doc): void => {
-            timelineRef.doc(doc.id).set(doc.data())
+          async (doc): Promise<void> => {
+            const data = doc.data()
+            if (!data.isDraft) {
+              await timelineRef.doc(doc.id).set(data)
+            }
           }
         )
+
+        // フォローした相手のフォロワーに追加する
+        await db
+          .collection('users')
+          .doc(context.params.followingId)
+          .collection('followers')
+          .doc(context.params.userId)
+          .set({ id: context.params.userId })
       } catch (e) {
         console.log(e)
       }
@@ -48,6 +65,12 @@ exports.unfollowUser = functions
     // フォローユーザーのページ全てをタイムラインから削除する
     async (snap, context): Promise<void> => {
       try {
+        console.log(
+          'unfollowUser',
+          snap,
+          context.params.userId,
+          context.params.followingId
+        )
         const timelineQuery = await db
           .collection('users')
           .doc(context.params.userId)
@@ -56,10 +79,18 @@ exports.unfollowUser = functions
           .get()
 
         timelineQuery.forEach(
-          (doc): void => {
-            doc.ref.delete()
+          async (doc): Promise<void> => {
+            await doc.ref.delete()
           }
         )
+
+        // フォロー解除した相手のフォロワーから削除する
+        await db
+          .collection('users')
+          .doc(context.params.followingId)
+          .collection('followers')
+          .doc(context.params.userId)
+          .delete()
       } catch (e) {
         console.log(e)
       }
@@ -76,6 +107,7 @@ exports.createPage = functions
       try {
         const page = snap.data()
         const pageId = snap.id
+        console.log('create page', pageId, page)
 
         if (page && !page.isDraft) {
           if (page.ownerType === 'user') {
@@ -122,6 +154,7 @@ exports.updatePage = functions
         const page = change.after.data()
         const pageId = change.after.id
 
+        console.log('update page', pageId, page)
         if (page && !page.isDraft) {
           if (page.ownerType === 'user') {
             const user = await db
@@ -195,6 +228,7 @@ exports.deletePage = functions
         const page = snap.data()
         const pageId = snap.id
 
+        console.log('delete page', pageId, page)
         if (page) {
           await tools.firestore.delete(`pages/${pageId}`, {
             project: process.env.GCLOUD_PROJECT,
@@ -311,48 +345,6 @@ exports.deleteUser = functions
             prefix: `images/user/${userId}`
           })
         }
-      } catch (e) {
-        console.log(e)
-      }
-    }
-  )
-
-exports.followUser = functions
-  .runWith({
-    timeoutSeconds: 540
-  })
-  .firestore.document('users/{userId}/followingUsers/{followingId}')
-  .onCreate(
-    async (snap, context): Promise<void> => {
-      try {
-        // フォローした相手のフォロワーに追加する
-        await db
-          .collection('users')
-          .doc(context.params.followingId)
-          .collection('followers')
-          .doc(context.params.userId)
-          .set({ id: context.params.userId })
-      } catch (e) {
-        console.log(e)
-      }
-    }
-  )
-
-exports.unfollowUser = functions
-  .runWith({
-    timeoutSeconds: 540
-  })
-  .firestore.document('users/{userId}/followingUsers/{followingId}')
-  .onDelete(
-    async (snap, context): Promise<void> => {
-      try {
-        // フォロー解除した相手のフォロワーから削除する
-        await db
-          .collection('users')
-          .doc(context.params.followingId)
-          .collection('followers')
-          .doc(context.params.userId)
-          .delete()
       } catch (e) {
         console.log(e)
       }
