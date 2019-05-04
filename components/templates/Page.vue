@@ -13,7 +13,7 @@
             :is-liked="isLiked"
             @click-ellipsis="showConfigModal"
           />
-
+          <hr />
           <page-comment :is-login="isLogin" />
         </div>
       </div>

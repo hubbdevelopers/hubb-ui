@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div v-if="page.data.isDraft" class="draft">このページは下書きです</div>
     <div v-if="page.data.image" class="columns is-centered">
       <div class="column is-half">
         <page-main-image :image="page.data.image" />
@@ -108,5 +109,9 @@ export default class extends Vue {
 <style lang="scss" scoped>
 .content {
   margin-bottom: 40px;
+}
+.draft {
+  background-color: yellow;
+  margin-bottom: 15px;
 }
 </style>

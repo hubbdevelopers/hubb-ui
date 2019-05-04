@@ -18,7 +18,11 @@
       <div class="is-pulled-right">
         <figure class="image is-96x96">
           <n-link :to="link">
-            <img v-if="page" v-bind:src="page.data.image" alt="ページ画像" />
+            <img
+              v-if="page.data.image"
+              v-bind:src="page.data.image"
+              alt="ページ画像"
+            />
             <img
               v-else
               src="https://bulma.io/images/placeholders/128x128.png"
@@ -69,7 +73,7 @@ export default class extends Vue {
 
   get parsedContent() {
     var span = document.createElement('span')
-    span.innerHTML = this.page.data.content
+    span.innerHTML = this.page.data.content || ''
     return span.textContent || span.innerText
   }
   get link() {

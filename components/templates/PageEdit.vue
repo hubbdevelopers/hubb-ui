@@ -2,13 +2,8 @@
   <section class="section">
     <div class="container">
       <div v-if="canEdit">
-        編集可能です
-        <button @click="saveContent" class="button is-primary">保存</button>
-        <input v-model="page.data.isDraft" id="draft" type="checkbox" />
-        <label for="draft">下書きとして保存</label>
         <div>
           <div class="field">
-            <croppa :v-model="myCroppa" @file-choose="handleCroppaFileChoose" />
             <label class="label">ページ名</label>
             <div class="control">
               <input
@@ -25,10 +20,29 @@
             v-model="page.data.content"
             use-custom-image-handler
           />
+          <div class="box image">
+            <div class="is-size-5">メイン画像を選択</div>
+            <croppa
+              :v-model="myCroppa"
+              @file-choose="handleCroppaFileChoose"
+              :width="100"
+              :height="100"
+            />
+          </div>
+          <div class="buttons">
+            <button @click="saveContent(false)" class="button is-primary">
+              保存
+            </button>
+            <button @click="saveContent(true)" class="button is-primary">
+              下書きとして保存
+            </button>
+          </div>
         </div>
-        <nuxt-link :to="'/' + $store.state.user.accountId + '/' + page.ID"
-          >戻る</nuxt-link
-        >
+        <div class="back">
+          <nuxt-link :to="'/' + $store.state.user.id + '/' + page.id"
+            >戻る</nuxt-link
+          >
+        </div>
       </div>
     </div>
   </section>
@@ -38,6 +52,7 @@ import { storage } from '~/plugins/firebase'
 import { VueEditor } from 'vue2-editor'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { Page } from '~/common/page'
+import uuidv1 from 'uuid/v1'
 
 @Component({
   components: {
@@ -50,10 +65,10 @@ export default class extends Vue {
 
   myCroppa: string = ''
 
-  async saveContent() {
+  async saveContent(isDraft = false) {
     const param = {
       id: this.$route.params.pageId || '',
-      isDraft: this.page.data.isDraft,
+      isDraft: isDraft,
       name: this.page.data.name || '',
       content: this.page.data.content || '',
       image: this.page.data.image || ''
@@ -63,12 +78,9 @@ export default class extends Vue {
   }
   handleImageAdded(file, Editor, cursorLocation, resetUploader) {
     const storageRef = storage.ref()
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const uuidv1 = require('uuid/v1')
     const imagePath = 'images/page/' + this.page.id + '/' + uuidv1()
     const imageRef = storageRef.child(imagePath)
 
-    console.log(imageRef)
     imageRef.put(file).then(() => {
       imageRef.getDownloadURL().then(url => {
         Editor.insertEmbed(cursorLocation, 'image', url)
@@ -80,7 +92,6 @@ export default class extends Vue {
     const storageRef = storage.ref()
     const imagePath = 'images/page/' + this.page.id + '/main-image'
     const imageRef = storageRef.child(imagePath)
-    console.log(imageRef)
 
     imageRef
       .put(file)
@@ -95,3 +106,14 @@ export default class extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.image {
+  margin: 10px;
+}
+.buttons {
+  margin: 40px 0;
+}
+.back {
+  margin-top: 20px;
+}
+</style>

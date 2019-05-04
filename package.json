@@ -25,7 +25,7 @@
     "@types/node": "^11.13.4",
     "@types/webpack": "^4.4.27",
     "child_process": "^1.0.2",
-    "firebase": "^5.9.4",
+    "firebase": "^5.11.1",
     "module": "^1.2.5",
     "moment": "^2.23.0",
     "nuxt": "^2.6.1",

@@ -5,14 +5,15 @@
       <modal-card-header @close="close">ページ設定</modal-card-header>
       <modal-card-body>
         <div>
-          <div>
-            <nuxt-link to="edit" append>編集ページ</nuxt-link>
-          </div>
-          <button @click="deletePage" class="button is-primary">
+          <button @click="goEditPage" class="button is-primary">
+            ページ編集
+          </button>
+          <button @click="deletePage" class="button is-danger">
             ページ削除
           </button>
         </div>
       </modal-card-body>
+      <modal-card-footer :display-buttons="false" />
     </div>
   </div>
 </template>
@@ -38,6 +39,9 @@ export default {
     },
     deletePage() {
       this.$emit('delete-page')
+    },
+    goEditPage() {
+      this.$router.push({ path: 'edit', append: true })
     }
   }
 }
