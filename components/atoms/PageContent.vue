@@ -1,5 +1,5 @@
 <template>
-  <div v-html="content" class="content" />
+  <div v-html="$sanitize(content)" class="content" />
 </template>
 <script>
 export default {

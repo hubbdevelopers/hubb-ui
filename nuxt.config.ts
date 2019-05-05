@@ -24,7 +24,8 @@ module.exports = {
     '~/plugins/vuelidate',
     '~/plugins/auth',
     '~/plugins/croppa',
-    '~/plugins/moment'
+    '~/plugins/moment',
+    '~/plugins/sanitize'
     //'~/plugins/fcm'
   ],
 
