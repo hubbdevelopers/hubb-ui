@@ -29,19 +29,17 @@
               :height="100"
             />
           </div>
-          <div class="buttons">
-            <button @click="saveContent(false)" class="button is-primary">
-              保存
-            </button>
-            <button @click="saveContent(true)" class="button">
-              下書きとして保存
-            </button>
+          <div class="has-text-centered">
+            <app-button @click="saveContent(false)" :width="250" type="primary"
+              >保存</app-button
+            >
+            <app-button
+              @click="saveContent(true)"
+              :width="250"
+              class="draft-button"
+              >下書きとして保存</app-button
+            >
           </div>
-        </div>
-        <div class="back">
-          <nuxt-link :to="'/' + $store.state.user.id + '/' + page.id"
-            >戻る</nuxt-link
-          >
         </div>
       </div>
     </div>
@@ -53,10 +51,12 @@ import { VueEditor } from 'vue2-editor'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { Page } from '~/common/page'
 import uuidv1 from 'uuid/v1'
+import AppButton from '~/components/atoms/AppButton.vue'
 
 @Component({
   components: {
-    VueEditor
+    VueEditor,
+    AppButton
   }
 })
 export default class extends Vue {
@@ -110,10 +110,10 @@ export default class extends Vue {
 .image {
   margin: 10px;
 }
-.buttons {
-  margin: 40px 0;
-}
 .back {
   margin-top: 20px;
+}
+.draft-button {
+  margin-top: 10px;
 }
 </style>
