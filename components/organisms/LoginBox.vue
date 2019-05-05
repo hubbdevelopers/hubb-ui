@@ -18,17 +18,15 @@
     </div>
 
     <div class="buttons">
-      <button
-        @click="login"
-        v-bind:disabled="$v.$invalid"
-        id="submit"
-        class="button is-primary"
-      >
-        ログイン
-      </button>
-      <nuxt-link id="google_submit" class="button" to="/i/signup"
-        >新規登録ページへ</nuxt-link
-      >
+      <div class="buttons">
+        <app-button @click="login" :disabled="$v.$invalid" type="primary"
+          >ログイン</app-button
+        >
+
+        <app-button @click="$router.push('/i/signup')"
+          >新規登録ページへ</app-button
+        >
+      </div>
     </div>
 
     <!--div>
@@ -40,8 +38,11 @@
 import firebase from 'firebase/app'
 import { auth } from '~/plugins/firebase'
 import { required, minLength, email } from 'vuelidate/lib/validators'
-
+import AppButton from '~/components/atoms/AppButton.vue'
 export default {
+  components: {
+    AppButton
+  },
   data() {
     return {
       email: '',

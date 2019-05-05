@@ -56,14 +56,14 @@
         <a @click="logout" v-if="isLogin" class="navbar-item">
           <i class="fas fa-sign-out-alt" /> ログアウト
         </a>
-        <div class="navbar-item">
+        <div v-if="!isLogin" class="navbar-item">
           <div class="field is-grouped">
             <p class="control">
-              <n-link v-if="!isLogin" class="button is-primary" to="/i/signup"
-                >新規登録</n-link
+              <app-button @click="$router.push('/i/login')" type="primary"
+                >ログイン</app-button
               >
-              <n-link v-if="!isLogin" class="button is-light" to="/i/login"
-                >ログイン</n-link
+              <app-button @click="$router.push('/i/signup')"
+                >新規登録</app-button
               >
             </p>
           </div>
@@ -75,10 +75,12 @@
 <script>
 import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
 import NewPageModal from '~/components/organisms/NewPageModal'
+import AppButton from '~/components/atoms/AppButton.vue'
 export default {
   components: {
     NewPageModal,
-    ImageIconLink
+    ImageIconLink,
+    AppButton
   },
   data() {
     return {
