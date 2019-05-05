@@ -5,17 +5,20 @@
         <div class="column is-three-quarters">
           <div class="box">
             <h2 class="title">プロフィール画像設定</h2>
-            <croppa
-              v-model="myCroppa"
-              :initial-image="$store.getters['user/getImage']"
-            />
-            <button
-              @click="uploadCroppedImage"
-              id="submit"
-              class="button is-primary"
-            >
-              プロフィール画像変更
-            </button>
+            <div class="has-text-centered">
+              <croppa
+                v-model="myCroppa"
+                :initial-image="$store.getters['user/getImage']"
+              />
+            </div>
+            <div class="has-text-centered updataButton">
+              <app-button
+                @click="uploadCroppedImage"
+                :width="250"
+                type="primary"
+                >プロフィール画像変更</app-button
+              >
+            </div>
           </div>
           <div class="box">
             <h2 class="title">プロフィール設定</h2>
@@ -80,13 +83,10 @@
                 <input v-model="birthdayInput" class="input" type="date" />
               </div>
             </div>
-
-            <div class="field">
-              <div class="control">
-                <button @click="update" id="submit" class="button is-primary">
-                  設定変更
-                </button>
-              </div>
+            <div class="has-text-centered updataButton">
+              <app-button @click="update" :width="250" type="primary"
+                >設定変更</app-button
+              >
             </div>
           </div>
         </div>
@@ -99,10 +99,11 @@
 import Croppa from 'vue-croppa'
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import PageEdit from '~/components/templates/PageEdit.vue'
-
+import AppButton from '~/components/atoms/AppButton.vue'
 @Component({
   components: {
-    PageEdit
+    PageEdit,
+    AppButton
   }
 })
 export default class extends Vue {
@@ -202,5 +203,8 @@ export default class extends Vue {
 <style lang="scss" scoped>
 .settings {
   margin-top: 30px;
+}
+.updataButton {
+  margin: 20px 0;
 }
 </style>
