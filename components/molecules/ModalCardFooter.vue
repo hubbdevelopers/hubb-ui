@@ -1,7 +1,7 @@
 <template>
   <footer class="modal-card-foot">
     <template v-if="displayButtons">
-      <button @click="submit" :disabled="!canSubmit" class="button is-success">
+      <button @click="submit" :disabled="!canSubmit" class="button is-primary">
         <slot />
       </button>
       <button @click="close" class="button">閉じる</button>

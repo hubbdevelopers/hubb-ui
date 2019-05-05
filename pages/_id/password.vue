@@ -29,12 +29,12 @@
                   $v.newPassword.$invalid || $v.oldPassword.$invalid
                 "
                 id="submit"
-                class="button is-danger"
+                class="button is-primary"
               >
                 変更する
               </button>
-              <n-link :to="'/' + $store.state.user.id" class="button is-link"
-                >Back</n-link
+              <n-link :to="'/' + $store.state.user.id" class="button"
+                >戻る</n-link
               >
             </div>
           </div>

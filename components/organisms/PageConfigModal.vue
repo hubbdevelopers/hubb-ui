@@ -8,7 +8,7 @@
           <button @click="goEditPage" class="button is-primary">
             ページ編集
           </button>
-          <button @click="deletePage" class="button is-danger">
+          <button @click="deletePage" class="button is-outlined">
             ページ削除
           </button>
         </div>

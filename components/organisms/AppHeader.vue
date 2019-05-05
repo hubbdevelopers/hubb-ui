@@ -53,6 +53,9 @@
         >
           <i class="fas fa-sliders-h" /> 設定
         </n-link>
+        <a @click="logout" v-if="isLogin" class="navbar-item">
+          <i class="fas fa-sign-out-alt" /> ログアウト
+        </a>
         <div class="navbar-item">
           <div class="field is-grouped">
             <p class="control">
@@ -62,9 +65,6 @@
               <n-link v-if="!isLogin" class="button is-light" to="/i/login"
                 >ログイン</n-link
               >
-              <button v-if="isLogin" @click="logout" class="button is-danger">
-                ログアウト
-              </button>
             </p>
           </div>
         </div>

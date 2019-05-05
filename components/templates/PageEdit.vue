@@ -33,7 +33,7 @@
             <button @click="saveContent(false)" class="button is-primary">
               保存
             </button>
-            <button @click="saveContent(true)" class="button is-primary">
+            <button @click="saveContent(true)" class="button">
               下書きとして保存
             </button>
           </div>

@@ -23,8 +23,8 @@
               >
                 退会する
               </button>
-              <n-link :to="'/' + $store.state.user.id" class="button is-link"
-                >Back</n-link
+              <n-link :to="'/' + $store.state.user.id" class="button"
+                >戻る</n-link
               >
             </div>
           </div>

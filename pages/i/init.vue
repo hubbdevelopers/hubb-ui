@@ -35,11 +35,10 @@
                 @click="submit"
                 v-bind:disabled="$v.accountId.$invalid || $v.name.$invalid"
                 id="submit"
-                class="button is-link"
+                class="button is-primary"
               >
-                Submit
+                設定変更
               </button>
-              <nuxt-link class="button is-link" to="/">Back</nuxt-link>
             </div>
           </div>
         </div>

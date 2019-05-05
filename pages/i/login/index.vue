@@ -3,36 +3,29 @@
     <div class="container">
       <div class="columns is-centered">
         <div class="column is-half box">
-          <h2 class="title has-text-centered">Login To Hubb!</h2>
+          <h2 class="title has-text-centered">ログイン</h2>
 
           <div class="field">
-            <label class="label">Email</label>
+            <label class="label">メールアドレス</label>
             <div class="control">
-              <input
-                v-model="email"
-                class="input"
-                type="email"
-                placeholder="e.g. alexsmith@gmail.com"
-              />
+              <input v-model="email" class="input" type="email" />
             </div>
           </div>
 
           <div class="field">
-            <label class="label">Password</label>
+            <label class="label">パスワード</label>
             <div class="control">
               <input v-model="password" class="input" type="password" />
             </div>
-          </div>
-
-          <div>
             <n-link to="/i/login/forget">パスワードを忘れた方はこちら</n-link>
           </div>
+
           <div class="has-text-centered">
             <button
               @click="login"
               v-bind:disabled="$v.email.$invalid || $v.password.$invalid"
               id="submit"
-              class="button is-primary is-medium"
+              class="button is-primary"
             >
               ログイン
             </button>

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="columns is-centered">
         <div class="column is-half box">
-          <h2 class="title has-text-centered">Signup To Hubb!</h2>
+          <h2 class="title has-text-centered">新規登録</h2>
 
           <div class="field">
             <label class="label">メールアドレス</label>
@@ -13,7 +13,6 @@
                 :class="{ 'is-danger': !isValidEmail }"
                 class="input"
                 type="email"
-                placeholder="e.g. alexsmith@gmail.com"
               />
             </div>
             <p v-if="!isValidEmail" class="help is-danger">{{ errMsg }}</p>
@@ -29,11 +28,11 @@
           <div class="has-text-centered">
             <button
               @click="signup"
-              v-bind:disabled="$v.email.$invalid || $v.password.$invalid"
+              v-bind:disabled="$v.$invalid"
               id="submit"
               class="button is-primary"
             >
-              Submit
+              新規登録
             </button>
           </div>
         </div>
@@ -90,3 +89,4 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped></style>

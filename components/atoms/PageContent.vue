@@ -1,5 +1,5 @@
 <template>
-  <div v-html="content" />
+  <div v-html="content" class="content" />
 </template>
 <script>
 export default {
@@ -11,3 +11,8 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.content {
+  word-wrap: break-word;
+}
+</style>

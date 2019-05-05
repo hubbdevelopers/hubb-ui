@@ -1,51 +1,39 @@
 <template>
   <div class="box">
-    <h2 class="title">Login</h2>
+    <h2 class="title">ログイン</h2>
 
     <div class="field">
-      <label class="label">Email</label>
+      <label class="label">メールアドレス</label>
       <div class="control">
-        <input
-          v-model="email"
-          class="input"
-          type="email"
-          placeholder="e.g. alexsmith@gmail.com"
-        />
+        <input v-model="email" class="input" type="email" />
       </div>
     </div>
 
     <div class="field">
-      <label class="label">Password</label>
+      <label class="label">パスワード</label>
       <div class="control">
         <input v-model="password" class="input" type="password" />
       </div>
-    </div>
-    <div>
       <n-link to="/i/login/forget">パスワードを忘れた方はこちら</n-link>
     </div>
 
-    <div class="field">
-      <div class="control">
-        <button
-          @click="login"
-          v-bind:disabled="$v.email.$invalid || $v.password.$invalid"
-          id="submit"
-          class="button is-link"
-        >
-          Submit
-        </button>
-      </div>
+    <div class="buttons">
+      <button
+        @click="login"
+        v-bind:disabled="$v.$invalid"
+        id="submit"
+        class="button is-primary"
+      >
+        ログイン
+      </button>
+      <nuxt-link id="google_submit" class="button" to="/i/signup"
+        >新規登録ページへ</nuxt-link
+      >
     </div>
 
     <!--div>
         <button class="button is-link" id="google_submit" @click='googleAuth'>Google</button>
     </div-->
-
-    <div>
-      <nuxt-link id="google_submit" class="button is-link" to="/i/signup"
-        >Signup</nuxt-link
-      >
-    </div>
   </div>
 </template>
 <script>

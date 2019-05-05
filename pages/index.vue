@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import LoginBox from '~/components/user/LoginBox.vue'
+import LoginBox from '~/components/organisms/LoginBox.vue'
 import PageBox from '~/components/molecules/PageBox.vue'
 import UserProfile from '~/components/organisms/UserProfile.vue'
 import { Page } from '~/common/page'

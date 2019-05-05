@@ -2,86 +2,91 @@
   <section class="section">
     <div class="container">
       <div class="columns is-centered">
-        <div class="column is-three-quarters box">
-          <croppa
-            v-model="myCroppa"
-            :initial-image="$store.getters['user/getImage']"
-          />
-          <button
-            @click="uploadCroppedImage"
-            id="submit"
-            class="button is-link"
-          >
-            Submit
-          </button>
-          <h2 class="title">設定</h2>
+        <div class="column is-three-quarters">
+          <div class="box">
+            <h2 class="title">プロフィール画像設定</h2>
+            <croppa
+              v-model="myCroppa"
+              :initial-image="$store.getters['user/getImage']"
+            />
+            <button
+              @click="uploadCroppedImage"
+              id="submit"
+              class="button is-primary"
+            >
+              プロフィール画像変更
+            </button>
+          </div>
+          <div class="box">
+            <h2 class="title">プロフィール設定</h2>
 
-          <div class="field">
-            <label class="label">ニックネーム</label>
-            <div class="control">
-              <input v-model="nameInput" class="input" type="text" />
+            <div class="field">
+              <label class="label">ニックネーム</label>
+              <div class="control">
+                <input v-model="nameInput" class="input" type="text" />
+              </div>
             </div>
-          </div>
 
-          <div class="field">
-            <label class="label">自己紹介</label>
-            <div class="control">
-              <textarea v-model="descriptionInput" class="textarea" />
+            <div class="field">
+              <label class="label">自己紹介</label>
+              <div class="control">
+                <textarea v-model="descriptionInput" class="textarea" />
+              </div>
             </div>
-          </div>
 
-          <div class="field">
-            <label class="label">ホームページ</label>
-            <div class="control">
-              <input
-                v-model="homepageInput"
-                class="input"
-                type="text"
-                placeholder="https://google.com"
-              />
+            <div class="field">
+              <label class="label">ホームページ</label>
+              <div class="control">
+                <input
+                  v-model="homepageInput"
+                  class="input"
+                  type="text"
+                  placeholder="https://google.com"
+                />
+              </div>
             </div>
-          </div>
-          <label class="label">Twitter</label>
-          <div class="field has-addons">
-            <p class="control">
-              <a class="button is-static">https://twitter.com/</a>
-            </p>
-            <div class="control is-expanded">
-              <input v-model="twitterInput" class="input" type="text" />
+            <label class="label">Twitter</label>
+            <div class="field has-addons">
+              <p class="control">
+                <a class="button is-static">https://twitter.com/</a>
+              </p>
+              <div class="control is-expanded">
+                <input v-model="twitterInput" class="input" type="text" />
+              </div>
             </div>
-          </div>
 
-          <label class="label">Facebook</label>
-          <div class="field has-addons">
-            <p class="control">
-              <a class="button is-static">https://www.facebook.com/</a>
-            </p>
-            <div class="control is-expanded">
-              <input v-model="facebookInput" class="input" type="text" />
+            <label class="label">Facebook</label>
+            <div class="field has-addons">
+              <p class="control">
+                <a class="button is-static">https://www.facebook.com/</a>
+              </p>
+              <div class="control is-expanded">
+                <input v-model="facebookInput" class="input" type="text" />
+              </div>
             </div>
-          </div>
 
-          <label class="label">Instagram</label>
-          <div class="field has-addons">
-            <p class="control">
-              <a class="button is-static">https://www.instagram.com/</a>
-            </p>
-            <div class="control is-expanded">
-              <input v-model="instagramInput" class="input" type="text" />
+            <label class="label">Instagram</label>
+            <div class="field has-addons">
+              <p class="control">
+                <a class="button is-static">https://www.instagram.com/</a>
+              </p>
+              <div class="control is-expanded">
+                <input v-model="instagramInput" class="input" type="text" />
+              </div>
             </div>
-          </div>
-          <div class="field">
-            <label class="label">誕生日</label>
-            <div class="control">
-              <input v-model="birthdayInput" class="input" type="date" />
+            <div class="field">
+              <label class="label">誕生日</label>
+              <div class="control">
+                <input v-model="birthdayInput" class="input" type="date" />
+              </div>
             </div>
-          </div>
 
-          <div class="field">
-            <div class="control">
-              <button @click="update" id="submit" class="button is-link">
-                Submit
-              </button>
+            <div class="field">
+              <div class="control">
+                <button @click="update" id="submit" class="button is-primary">
+                  設定変更
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -151,13 +156,13 @@ export default class extends Vue {
       return
     }
     const param = {
-      name: this.nameInput,
-      description: this.descriptionInput,
-      birthday: this.birthdayInput,
-      homepage: this.homepageInput,
-      facebook: this.facebookInput,
-      twitter: this.twitterInput,
-      instagram: this.instagramInput
+      name: this.nameInput || '',
+      description: this.descriptionInput || '',
+      birthday: this.birthdayInput || '',
+      homepage: this.homepageInput || '',
+      facebook: this.facebookInput || '',
+      twitter: this.twitterInput || '',
+      instagram: this.instagramInput || ''
     }
 
     this.$store
@@ -194,3 +199,8 @@ export default class extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.settings {
+  margin-top: 30px;
+}
+</style>

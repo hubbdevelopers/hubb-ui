@@ -2,7 +2,9 @@
   <div class="box">
     <div class="columns is-mobile is-vcentered">
       <div class="column is-two-fifths">
-        <profile-image :image="user.data.image" />
+        <n-link :to="`/${user.id}`">
+          <profile-image :image="user.data.image" />
+        </n-link>
       </div>
       <div v-if="isOwner" class="column">
         <n-link
@@ -25,9 +27,9 @@
           :instagram-id="user.data.instagram"
           :facebook-id="user.data.facebook"
         />
-        <profile-description>{{ user.Description }}</profile-description>
+        <profile-description>{{ user.data.description }}</profile-description>
 
-        <profile-birthday :birthday="user.Birthday" />
+        <profile-birthday :birthday="user.data.birthday" />
 
         <profile-followings-followers-likes
           :id="user.id"

@@ -6,15 +6,13 @@
           <h2 class="title has-text-centered">パスワード再設定</h2>
 
           <div class="field">
-            <label class="label">Email</label>
+            <label class="label">メールアドレス</label>
             <div class="control">
-              <input
-                v-model="email"
-                class="input"
-                type="email"
-                placeholder="e.g. alexsmith@gmail.com"
-              />
+              <input v-model="email" class="input" type="email" />
             </div>
+          </div>
+          <div class="explain">
+            パスワード再設定メールを送信します
           </div>
 
           <div class="has-text-centered">
@@ -22,7 +20,7 @@
               @click="send"
               :disabled="$v.email.$invalid"
               id="submit"
-              class="button is-primary is-medium"
+              class="button is-primary"
             >
               送信
             </button>
@@ -71,3 +69,8 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.explain {
+  margin-bottom: 15px;
+}
+</style>
