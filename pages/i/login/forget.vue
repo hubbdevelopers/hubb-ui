@@ -34,38 +34,40 @@
     </div>
   </section>
 </template>
-<script>
+<script lang="ts">
 import { auth } from '~/plugins/firebase'
 import { required, email } from 'vuelidate/lib/validators'
+import { Vue, Component } from 'vue-property-decorator'
+import AppButton from '~/components/atoms/AppButton.vue'
 
-export default {
-  data() {
-    return {
-      email: ''
-    }
-  },
-  methods: {
-    async send() {
-      auth.languageCode = 'ja'
-      auth
-        .sendPasswordResetEmail(this.email)
-        .then(() => {
-          window.alert('メールが送信されました。')
-          this.$router.push('/i/login')
-        })
-        .catch(error => {
-          window.alert(
-            'メール送信できませんでした。メールアドレスをお確かめください。'
-          )
-          console.log(error)
-        })
-    }
+@Component({
+  components: {
+    AppButton
   },
   validations: {
     email: {
       required,
       email
     }
+  }
+})
+export default class extends Vue {
+  email = ''
+
+  async send() {
+    auth.languageCode = 'ja'
+    auth
+      .sendPasswordResetEmail(this.email)
+      .then(() => {
+        window.alert('メールが送信されました。')
+        this.$router.push('/i/login')
+      })
+      .catch(error => {
+        window.alert(
+          'メール送信できませんでした。メールアドレスをお確かめください。'
+        )
+        console.log(error)
+      })
   }
 }
 </script>

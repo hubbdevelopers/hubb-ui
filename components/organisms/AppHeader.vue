@@ -72,46 +72,43 @@
     </div>
   </nav>
 </template>
-<script>
+<script lang="ts">
 import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
-import NewPageModal from '~/components/organisms/NewPageModal'
+import NewPageModal from '~/components/organisms/NewPageModal.vue'
 import AppButton from '~/components/atoms/AppButton.vue'
-export default {
+import { Vue, Component } from 'vue-property-decorator'
+
+@Component({
   components: {
     NewPageModal,
     ImageIconLink,
     AppButton
-  },
-  data() {
-    return {
-      showNav: false,
-      showNewPageModal: false
-    }
-  },
-  computed: {
-    isLogin: function() {
-      return this.$store.getters['user/isLogin']
-    },
-    image: function() {
-      return this.$store.getters['user/getImage']
-    }
-  },
+  }
+})
+export default class extends Vue {
+  showNav = false
+  showNewPageModal = false
 
-  methods: {
-    async logout() {
-      try {
-        await this.$store.dispatch('user/logout')
-        this.$router.push('/')
-      } catch (e) {
-        window.alert('ログアウトエラー')
-      }
-    },
-    showModal() {
-      this.showNewPageModal = true
-    },
-    closeModal() {
-      this.showNewPageModal = false
+  get isLogin() {
+    return this.$store.getters['user/isLogin']
+  }
+  get image() {
+    return this.$store.getters['user/getImage']
+  }
+
+  async logout() {
+    try {
+      await this.$store.dispatch('user/logout')
+      this.$router.push('/')
+    } catch (e) {
+      window.alert('ログアウトエラー')
     }
+  }
+  showModal() {
+    this.showNewPageModal = true
+  }
+  closeModal() {
+    this.showNewPageModal = false
   }
 }
 </script>

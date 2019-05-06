@@ -54,48 +54,12 @@ import {
   maxLength,
   alphaNum
 } from 'vuelidate/lib/validators'
+import { Vue, Component } from 'vue-property-decorator'
+import AppButton from '~/components/atoms/AppButton.vue'
 
-export default {
-  data() {
-    return {
-      accountId: '',
-      name: '',
-      isValidAccountId: true,
-      errMsg: ''
-    }
-  },
-  methods: {
-    submit() {
-      this.isValidAccountId = true
-      this.errMsg = ''
-
-      const param = {
-        accountId: this.accountId,
-        name: this.name
-      }
-
-      this.$store
-        .dispatch('user/initialUpdate', param)
-        .then(() => {
-          this.$router.push(`/${this.$store.state.user.id}`)
-        })
-        .catch(err => {
-          window.alert(err)
-        })
-
-      // this.checkAccountId().then(async () => {
-
-      //   //await this.$store.dispatch('user/initialUpdate', param)
-      //   // this.$store.dispatch('user/updateAccountId', this.accountId)
-      //   // this.$store.dispatch('user/updateName', this.name)
-
-      //   //this.$router.push('/' + this.accountId)
-      // }).catch((err) => {
-      //   console.log(err)
-      //   this.isValidAccountId = false
-      //   this.errMsg = 'このアカウントIDはすでに使用されています'
-      // })
-    }
+@Component({
+  components: {
+    AppButton
   },
   validations: {
     accountId: {
@@ -107,6 +71,44 @@ export default {
     name: {
       required
     }
+  }
+})
+export default class extends Vue {
+  accountId = ''
+  name = ''
+  isValidAccountId = true
+  errMsg = ''
+
+  submit() {
+    this.isValidAccountId = true
+    this.errMsg = ''
+
+    const param = {
+      accountId: this.accountId,
+      name: this.name
+    }
+
+    this.$store
+      .dispatch('user/initialUpdate', param)
+      .then(() => {
+        this.$router.push(`/${this.$store.state.user.id}`)
+      })
+      .catch(err => {
+        window.alert(err)
+      })
+
+    // this.checkAccountId().then(async () => {
+
+    //   //await this.$store.dispatch('user/initialUpdate', param)
+    //   // this.$store.dispatch('user/updateAccountId', this.accountId)
+    //   // this.$store.dispatch('user/updateName', this.name)
+
+    //   //this.$router.push('/' + this.accountId)
+    // }).catch((err) => {
+    //   console.log(err)
+    //   this.isValidAccountId = false
+    //   this.errMsg = 'このアカウントIDはすでに使用されています'
+    // })
   }
 }
 </script>

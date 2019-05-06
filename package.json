@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@nuxtjs/style-resources": "^0.1.2",
+    "@types/vuelidate": "^0.7.5",
     "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
     "@typescript-eslint/typescript-estree": "^1.7.0",

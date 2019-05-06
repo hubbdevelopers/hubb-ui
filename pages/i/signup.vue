@@ -41,40 +41,14 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import { required, minLength, maxLength, email } from 'vuelidate/lib/validators'
+import { Vue, Component } from 'vue-property-decorator'
+import AppButton from '~/components/atoms/AppButton.vue'
 
-export default {
-  data() {
-    return {
-      email: '',
-      password: '',
-      isValidEmail: true,
-      errMsg: ''
-    }
-  },
-  methods: {
-    async signup() {
-      this.isValidEmail = true
-      this.errMsg = ''
-
-      const param = {
-        email: this.email,
-        password: this.password
-      }
-
-      try {
-        // TODO check email address
-        await this.$store.dispatch('user/signup', param)
-        this.$router.push('/i/init')
-      } catch (e) {
-        if (e.code === 'auth/email-already-in-use') {
-          this.isValidEmail = false
-          this.errMsg = 'このメールアドレスはすでに使用されています'
-        }
-        console.log(e)
-      }
-    }
+@Component({
+  components: {
+    AppButton
   },
   validations: {
     email: {
@@ -85,6 +59,34 @@ export default {
       required,
       minLength: minLength(8),
       maxLength: maxLength(20)
+    }
+  }
+})
+export default class extends Vue {
+  email = ''
+  password = ''
+  isValidEmail = true
+  errMsg = ''
+
+  async signup() {
+    this.isValidEmail = true
+    this.errMsg = ''
+
+    const param = {
+      email: this.email,
+      password: this.password
+    }
+
+    try {
+      // TODO check email address
+      await this.$store.dispatch('user/signup', param)
+      this.$router.push('/i/init')
+    } catch (e) {
+      if (e.code === 'auth/email-already-in-use') {
+        this.isValidEmail = false
+        this.errMsg = 'このメールアドレスはすでに使用されています'
+      }
+      console.log(e)
     }
   }
 }
