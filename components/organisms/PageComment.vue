@@ -17,6 +17,7 @@ import PageCommentDisplay from '~/components/molecules/PageCommentDisplay.vue'
 import PageCommentCreateArea from '~/components/molecules/PageCommentCreateArea.vue'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { Comment, getCommentsByPageId } from '~/common/comment'
+import { Page } from '~/common/page'
 
 @Component({
   components: {
@@ -26,6 +27,7 @@ import { Comment, getCommentsByPageId } from '~/common/comment'
 })
 export default class extends Vue {
   @Prop({ default: false }) readonly isLogin!: boolean
+  @Prop({ required: true }) readonly page!: Page
 
   comments: Comment[] = []
   async created() {
@@ -39,6 +41,7 @@ export default class extends Vue {
   async createComment({ pageId, text }) {
     try {
       await this.$store.dispatch('user/createComment', {
+        ownereId: this.page.data.ownerId,
         pageId: pageId,
         text: text
       })

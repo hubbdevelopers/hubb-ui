@@ -14,6 +14,9 @@ export interface UserData {
   name: string
   image: string
   likePages: string[]
+  followingCount: number
+  followerCount: number
+  likeCount: number
   createdAt: TimeStamp
 }
 
@@ -30,6 +33,9 @@ export const blankUser = {
     name: '',
     image: '',
     likePages: [],
+    followingCount: 0,
+    followerCount: 0,
+    likeCount: 0,
     createdAt: null
   }
 }

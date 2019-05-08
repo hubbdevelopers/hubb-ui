@@ -14,7 +14,7 @@
             @click-ellipsis="showConfigModal"
           />
           <hr />
-          <page-comment :is-login="isLogin" />
+          <page-comment :page="page" :is-login="isLogin" />
         </div>
       </div>
     </div>
@@ -49,7 +49,7 @@ export default class extends Vue {
   isActiveConfigModal = false
 
   get isLiked() {
-    return this.$store.getters['user/isLikedPage'](this.$route.params.pageId)
+    return this.page.likedBy.includes(this.$store.state.user.id)
   }
 
   get isLogin() {

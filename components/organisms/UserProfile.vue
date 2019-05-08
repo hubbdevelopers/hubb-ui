@@ -42,6 +42,8 @@
       <profile-follow-button
         v-if="!isOwner"
         :is-following-user="isFollowingUser"
+        @follow="follow"
+        @unfollow="unfollow"
       />
     </div>
   </div>
@@ -74,15 +76,15 @@ export default class extends Vue {
   @Prop({ required: true }) readonly user!: User
 
   get followingCount() {
-    return this.$store.getters['user/getFollowingCount']
+    return this.user.data.followingCount
   }
 
   get followerCount() {
-    return this.$store.getters['user/getFollowerCount']
+    return this.user.data.followerCount
   }
 
   get likeCount() {
-    return this.$store.getters['user/getLikeCount']
+    return this.user.data.likeCount
   }
 
   get isOwner() {
@@ -93,17 +95,27 @@ export default class extends Vue {
     return this.$store.getters['user/isFollowingUser'](this.user.id)
   }
 
-  // follow() {
-  //   this.$store.dispatch('user/followUser', this.user.ID).catch(err => {
-  //     console.log(err)
-  //     window.alert('error')
-  //   })
-  // }
-  // unfollow() {
-  //   this.$store.dispatch('user/unfollowUser', this.user.ID).catch(err => {
-  //     console.log(err)
-  //     window.alert('error')
-  //   })
-  // }
+  follow() {
+    this.$store
+      .dispatch('user/followUser', this.user.id)
+      .then(() => {
+        this.user.data.followerCount++
+      })
+      .catch(err => {
+        console.log(err)
+        window.alert('error')
+      })
+  }
+  unfollow() {
+    this.$store
+      .dispatch('user/unfollowUser', this.user.id)
+      .then(() => {
+        this.user.data.followerCount--
+      })
+      .catch(err => {
+        console.log(err)
+        window.alert('error')
+      })
+  }
 }
 </script>

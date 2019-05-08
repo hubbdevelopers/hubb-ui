@@ -10,9 +10,10 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@types/webpack": "^4.4.31",
     "firebase-admin": "~7.0.0",
     "firebase-functions": "^2.2.0",
-    "firebase-tools": "^6.7.2"
+    "firebase-tools": "^6.8.0"
   },
   "devDependencies": {
     "typescript": "^3.2.2"

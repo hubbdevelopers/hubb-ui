@@ -36,7 +36,7 @@ export const state: UsersState = {
 }
 
 export const actions: ActionTree<UsersState, RootState> = {
-  initUser({ commit, dispatch }) {
+  initUser({ state, commit, dispatch }) {
     return new Promise((resolve, reject) => {
       auth.onAuthStateChanged(async authUser => {
         if (authUser) {
@@ -45,11 +45,19 @@ export const actions: ActionTree<UsersState, RootState> = {
           dispatch('fetchUser')
           dispatch('fetchPages')
           dispatch('fetchFollowingUsers')
-          dispatch('fetchFollowers')
           dispatch('fetchTimeline')
-
-          // dispatch('fetchCommunities')
+          // dispatchfet('fetchCommunities')
           // dispatch('fetchNotifications')
+
+          const a = await db
+            .collectionGroup('pages')
+            .where('ownerId', '==', state.id)
+            .get()
+
+          a.forEach(b => {
+            console.log(b)
+          })
+
           resolve()
         } else {
           console.log('not login')
@@ -216,7 +224,6 @@ export const actions: ActionTree<UsersState, RootState> = {
           isDraft: true,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }
-
         const doc = await db.collection('pages').add(param)
         dispatch('fetchPages')
         resolve(doc.id)
@@ -346,11 +353,12 @@ export const actions: ActionTree<UsersState, RootState> = {
         if (query.size > 0) {
           const pages = query.docs.map(
             (doc): Page => {
-              return { id: doc.id, data: doc.data() as PageData }
+              return { id: doc.id, likedBy: [], data: doc.data() as PageData }
             }
           )
           commit('updatePages', pages)
         }
+
         resolve()
       } catch (e) {
         console.log(e)
@@ -375,7 +383,7 @@ export const actions: ActionTree<UsersState, RootState> = {
 
         const timeline: Page[] = snapshot.docs.map(
           (doc): Page => {
-            return { id: doc.id, data: doc.data() as PageData }
+            return { id: doc.id, likedBy: [], data: doc.data() as PageData }
           }
         )
 
@@ -405,13 +413,13 @@ export const actions: ActionTree<UsersState, RootState> = {
         const query = await db
           .collection('users')
           .doc(state.id)
-          .collection('followingUsers')
+          .collection('follows')
           .get()
 
         if (query.size > 0) {
           const ids = query.docs.map(
             (doc): FollowUser => {
-              return doc.data() as FollowUser
+              return { id: doc.data().to }
             }
           )
           commit('updateFollowingUsers', ids)
@@ -426,42 +434,26 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  fetchFollowers({ commit, state }) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const query = await db
-          .collection('users')
-          .doc(state.id)
-          .collection('followers')
-          .get()
-
-        if (query.size > 0) {
-          const ids = query.docs.map(
-            (doc): FollowUser => {
-              return doc.data() as FollowUser
-            }
-          )
-          commit('updateFollowers', ids)
-        } else {
-          commit('updateFollowers', [])
-        }
-        resolve()
-      } catch (e) {
-        console.log(e)
-        reject(e)
-      }
-    })
-  },
-
   followUser({ dispatch, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
-        await db
+        const batch = db.batch()
+        const usersRef = db.collection('users').doc(state.id)
+        batch.update(usersRef, {
+          followingCount: firebase.firestore.FieldValue.increment(1)
+        })
+        const followRef = db
           .collection('users')
           .doc(state.id)
-          .collection('followingUsers')
-          .doc(followingId)
-          .set({ id: followingId })
+          .collection('follows')
+          .doc()
+        batch.set(followRef, {
+          from: state.id,
+          to: followingId,
+          type: 'user',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        batch.commit()
         dispatch('fetchFollowingUsers')
         resolve()
       } catch (e) {
@@ -473,12 +465,24 @@ export const actions: ActionTree<UsersState, RootState> = {
   unfollowUser({ dispatch, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
-        await db
+        const batch = db.batch()
+
+        const followingQuery = await db
           .collection('users')
           .doc(state.id)
-          .collection('followingUsers')
-          .doc(followingId)
-          .delete()
+          .collection('follows')
+          .where('to', '==', followingId)
+          .get()
+
+        followingQuery.forEach(doc => {
+          batch.delete(doc.ref)
+        })
+
+        const usersRef = db.collection('users').doc(state.id)
+        batch.update(usersRef, {
+          followingCount: firebase.firestore.FieldValue.increment(-1)
+        })
+        batch.commit()
         dispatch('fetchFollowingUsers')
         resolve()
       } catch (e) {
@@ -522,12 +526,18 @@ export const actions: ActionTree<UsersState, RootState> = {
 
         const userRef = db.collection('users').doc(state.id)
         batch.update(userRef, {
-          likePages: firebase.firestore.FieldValue.arrayUnion(pageId)
+          likeCount: firebase.firestore.FieldValue.increment(1)
         })
 
-        const pageRef = db.collection('pages').doc(pageId)
-        batch.update(pageRef, {
-          likedBy: firebase.firestore.FieldValue.arrayUnion(state.id)
+        const pageRef = db
+          .collection('users')
+          .doc(state.id)
+          .collection('likes')
+          .doc()
+        batch.set(pageRef, {
+          from: state.id,
+          pageId: pageId,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
         })
 
         await batch.commit()
@@ -547,12 +557,18 @@ export const actions: ActionTree<UsersState, RootState> = {
 
         const userRef = db.collection('users').doc(state.id)
         batch.update(userRef, {
-          likePages: firebase.firestore.FieldValue.arrayRemove(pageId)
+          likeCount: firebase.firestore.FieldValue.increment(-1)
         })
 
-        const pageRef = db.collection('pages').doc(pageId)
-        batch.update(pageRef, {
-          likedBy: firebase.firestore.FieldValue.arrayRemove(state.id)
+        const pageQuery = await db
+          .collection('users')
+          .doc(state.id)
+          .collection('likes')
+          .where('pageId', '==', pageId)
+          .get()
+
+        pageQuery.forEach(doc => {
+          batch.delete(doc.ref)
         })
 
         await batch.commit()
@@ -564,34 +580,19 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  createComment({ state }, { pageId, text }) {
+  createComment({ state }, { ownereId, pageId, text }) {
     return new Promise(async (resolve, reject) => {
       try {
-        const batch = db.batch()
-
-        const userRef = db
-          .collection('users')
-          .doc(state.id)
-          .collection('comments')
-          .doc()
-        batch.set(userRef, {
-          pageId: pageId,
-          text: text,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
-
-        const pageRef = db
+        await db
           .collection('pages')
           .doc(pageId)
           .collection('comments')
-          .doc(userRef.id)
-        batch.set(pageRef, {
-          userId: state.id,
-          text: text,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
+          .add({
+            userId: state.id,
+            text: text,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
 
-        await batch.commit()
         resolve()
       } catch (e) {
         reject(e)
@@ -602,23 +603,12 @@ export const actions: ActionTree<UsersState, RootState> = {
   deleteComment({ state }, { pageId, commentId }) {
     return new Promise(async (resolve, reject) => {
       try {
-        const batch = db.batch()
-
-        const userRef = db
-          .collection('users')
-          .doc(state.id)
-          .collection('comments')
-          .doc(commentId)
-        batch.delete(userRef)
-
-        const pageRef = db
+        await db
           .collection('pages')
           .doc(pageId)
           .collection('comments')
           .doc(commentId)
-        batch.delete(pageRef)
-
-        await batch.commit()
+          .delete()
         resolve()
       } catch (e) {
         reject(e)
@@ -629,7 +619,8 @@ export const actions: ActionTree<UsersState, RootState> = {
 
 export const mutations: MutationTree<UsersState> = {
   updateUser(state, userData: UserData) {
-    state.data = userData
+    const temp = Object.assign({}, blankUser.data)
+    state.data = Object.assign(temp, userData)
   },
 
   updateImage(state, imageUrl: string) {
@@ -658,10 +649,6 @@ export const mutations: MutationTree<UsersState> = {
 
   updateFollowingUsers(state, followings: FollowUser[]) {
     state.followingUsers = followings
-  },
-
-  updateFollowers(state, followers: FollowUser[]) {
-    state.followers = followers
   },
 
   // updateNotification (state, notifications) {
@@ -698,15 +685,15 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   getFollowingCount: state => {
-    return state.followingUsers.length
+    return state.data.followingCount
   },
 
   getFollowerCount: state => {
-    return state.followers.length
+    return state.data.followerCount
   },
 
   getLikeCount: state => {
-    return state.data.likePages ? state.data.likePages.length : 0
+    return state.data.likeCount
   },
 
   isMyId: state => (id: string): boolean => {

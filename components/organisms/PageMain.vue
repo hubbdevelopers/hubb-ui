@@ -74,14 +74,14 @@ export default class extends Vue {
   @Prop({ default: false }) readonly isLogin!: boolean
 
   get likeCount(): number {
-    return this.page.data.likedBy ? this.page.data.likedBy.length : 0
+    return this.page.likedBy ? this.page.likedBy.length : 0
   }
 
   likePage() {
     this.$store
       .dispatch('user/likePage', this.$route.params.pageId)
       .then(() => {
-        this.page.data.likedBy.push(this.$store.state.user.id)
+        this.page.likedBy.push(this.$store.state.user.id)
       })
       .catch(err => {
         console.log(err)
@@ -92,7 +92,7 @@ export default class extends Vue {
     this.$store
       .dispatch('user/unlikePage', this.$route.params.pageId)
       .then(() => {
-        this.page.data.likedBy = this.page.data.likedBy.filter(
+        this.page.likedBy = this.page.likedBy.filter(
           n => n !== this.$store.state.user.id
         )
       })

@@ -12,44 +12,43 @@ exports.followUser = functions
   .runWith({
     timeoutSeconds: 540
   })
-  .firestore.document('users/{userId}/followingUsers/{followingId}')
+  .firestore.document('users/{userId}/follows/{id}')
   .onCreate(
     // フォローユーザーのページ全てをタイムラインに投入する
     async (snap, context): Promise<void> => {
       try {
-        console.log(
-          'followUser',
-          snap,
-          context.params.userId,
-          context.params.followingId
-        )
-        const timelineRef = db
-          .collection('users')
-          .doc(context.params.userId)
-          .collection('timeline')
+        console.log('followUser', snap, context.params.id)
+        const data = snap.data()
 
-        const query = await db
-          .collection('pages')
-          .where('ownerId', '==', context.params.followingId)
-          .where('ownerType', '==', 'user')
-          .get()
+        if (data) {
+          const timelineRef = db
+            .collection('users')
+            .doc(data.from)
+            .collection('timeline')
 
-        query.docs.forEach(
-          async (doc): Promise<void> => {
-            const data = doc.data()
-            if (!data.isDraft) {
-              await timelineRef.doc(doc.id).set(data)
+          const query = await db
+            .collection('pages')
+            .where('ownerId', '==', data.to)
+            .where('ownerType', '==', 'user')
+            .get()
+
+          query.docs.forEach(
+            async (doc): Promise<void> => {
+              const data = doc.data()
+              if (!data.isDraft) {
+                await timelineRef.doc(doc.id).set(data)
+              }
             }
-          }
-        )
+          )
 
-        // フォローした相手のフォロワーに追加する
-        await db
-          .collection('users')
-          .doc(context.params.followingId)
-          .collection('followers')
-          .doc(context.params.userId)
-          .set({ id: context.params.userId })
+          // フォローした相手のフォロワー数をインクリメントする
+          await db
+            .collection('users')
+            .doc(data.to)
+            .update({
+              followerCount: admin.firestore.FieldValue.increment(1)
+            })
+        }
       } catch (e) {
         console.log(e)
       }
@@ -60,37 +59,37 @@ exports.unfollowUser = functions
   .runWith({
     timeoutSeconds: 540
   })
-  .firestore.document('users/{userId}/followingUsers/{followingId}')
+  .firestore.document('users/{userId}/follows/{id}')
   .onDelete(
     // フォローユーザーのページ全てをタイムラインから削除する
     async (snap, context): Promise<void> => {
       try {
-        console.log(
-          'unfollowUser',
-          snap,
-          context.params.userId,
-          context.params.followingId
-        )
-        const timelineQuery = await db
-          .collection('users')
-          .doc(context.params.userId)
-          .collection('timeline')
-          .where('ownerId', '==', context.params.followingId)
-          .get()
+        console.log('unfollowUser', snap, context.params.id)
 
-        timelineQuery.forEach(
-          async (doc): Promise<void> => {
-            await doc.ref.delete()
-          }
-        )
+        const data = snap.data()
 
-        // フォロー解除した相手のフォロワーから削除する
-        await db
-          .collection('users')
-          .doc(context.params.followingId)
-          .collection('followers')
-          .doc(context.params.userId)
-          .delete()
+        if (data) {
+          const timelineQuery = await db
+            .collection('users')
+            .doc(data.from)
+            .collection('timeline')
+            .where('ownerId', '==', data.to)
+            .get()
+
+          timelineQuery.forEach(
+            async (doc): Promise<void> => {
+              await doc.ref.delete()
+            }
+          )
+
+          // フォロー解除した相手のフォロワー数をデクリメントする
+          await db
+            .collection('users')
+            .doc(data.to)
+            .update({
+              followerCount: admin.firestore.FieldValue.increment(-1)
+            })
+        }
       } catch (e) {
         console.log(e)
       }
@@ -123,15 +122,22 @@ exports.createPage = functions
                 .set(page)
 
               // 投稿をフォロワーのタイムラインに追加
-              const query = await user.ref.collection('followers').get()
+              const query = await db
+                .collectionGroup('follows')
+                .where('to', '==', user.id)
+                .get()
+              //const query = await user.ref.collection('followers').get()
               query.forEach(
                 async (doc): Promise<void> => {
-                  await db
-                    .collection('users')
-                    .doc(doc.id)
-                    .collection('timeline')
-                    .doc(pageId)
-                    .set(page)
+                  if (doc.exists) {
+                    const data = doc.data()
+                    await db
+                      .collection('users')
+                      .doc(data.from)
+                      .collection('timeline')
+                      .doc(pageId)
+                      .set(page)
+                  }
                 }
               )
             }
@@ -169,43 +175,21 @@ exports.updatePage = functions
                 .set(page)
 
               // 投稿をフォロワーのタイムラインに更新
-              const query = await user.ref.collection('followers').get()
+              const query = await db
+                .collectionGroup('follows')
+                .where('to', '==', user.id)
+                .get()
               query.forEach(
                 async (doc): Promise<void> => {
-                  await db
-                    .collection('users')
-                    .doc(doc.id)
-                    .collection('timeline')
-                    .doc(pageId)
-                    .set(page)
-                }
-              )
-            }
-          }
-        } else if (page && page.isDraft) {
-          // 下書きの場合はタイムラインから削除
-          if (page.ownerType === 'user') {
-            const user = await db
-              .collection('users')
-              .doc(page.ownerId)
-              .get()
-            if (user.exists) {
-              // 投稿を自分のタイムラインから削除
-              await user.ref
-                .collection('timeline')
-                .doc(pageId)
-                .delete()
-
-              // 投稿をフォロワーのタイムラインから削除
-              const query = await user.ref.collection('followers').get()
-              query.forEach(
-                async (doc): Promise<void> => {
-                  await db
-                    .collection('users')
-                    .doc(doc.id)
-                    .collection('timeline')
-                    .doc(pageId)
-                    .delete()
+                  if (doc.exists) {
+                    const data = doc.data()
+                    await db
+                      .collection('users')
+                      .doc(data.from)
+                      .collection('timeline')
+                      .doc(pageId)
+                      .set(page)
+                  }
                 }
               )
             }
@@ -243,22 +227,28 @@ exports.deletePage = functions
               .doc(page.ownerId)
               .get()
             if (user.exists) {
-              // 投稿を自分のタイムラインを削除
+              // 投稿を自分のタイムラインから削除
               await user.ref
                 .collection('timeline')
                 .doc(pageId)
                 .delete()
 
               // 投稿をフォロワーのタイムラインを削除
-              const query = await user.ref.collection('followers').get()
+              const query = await db
+                .collectionGroup('follows')
+                .where('to', '==', user.id)
+                .get()
               query.forEach(
                 async (doc): Promise<void> => {
-                  await db
-                    .collection('users')
-                    .doc(doc.id)
-                    .collection('timeline')
-                    .doc(pageId)
-                    .delete()
+                  if (doc.exists) {
+                    const data = doc.data()
+                    await db
+                      .collection('users')
+                      .doc(data.from)
+                      .collection('timeline')
+                      .doc(pageId)
+                      .delete()
+                  }
                 }
               )
             }
@@ -267,6 +257,60 @@ exports.deletePage = functions
               prefix: `images/page/${pageId}`
             })
           }
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  )
+
+exports.likePage = functions
+  .runWith({
+    timeoutSeconds: 540
+  })
+  .firestore.document('users/{userId}/likes/{id}')
+  .onCreate(
+    // ページにいいねしたユーザーを追加する
+    async (snap, context): Promise<void> => {
+      try {
+        console.log('likePage', snap, context.params.id)
+        const data = snap.data()
+        if (data) {
+          const pageRef = db
+            .collection('pages')
+            .doc(data.pageId)
+            .collection('likes')
+            .doc('DATA')
+          pageRef.set({
+            likedBy: admin.firestore.FieldValue.arrayUnion(data.from)
+          })
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  )
+
+exports.unlikePage = functions
+  .runWith({
+    timeoutSeconds: 540
+  })
+  .firestore.document('users/{userId}/likes/{id}')
+  .onDelete(
+    // ページからいいねしたユーザーを削除する
+    async (snap, context): Promise<void> => {
+      try {
+        console.log('unlikePage', snap, context.params.id)
+        const data = snap.data()
+        if (data) {
+          const pageRef = db
+            .collection('pages')
+            .doc(data.pageId)
+            .collection('likes')
+            .doc('DATA')
+          pageRef.set({
+            likedBy: admin.firestore.FieldValue.arrayRemove(data.from)
+          })
         }
       } catch (e) {
         console.log(e)
@@ -314,21 +358,6 @@ exports.deleteUser = functions
                 yes: true,
                 token: functions.config().api.token
               })
-            }
-          )
-
-          // フォロワーから自分を削除
-          const followerQuery = await snap.ref
-            .collection('followingUsers')
-            .get()
-          followerQuery.forEach(
-            async (follower): Promise<void> => {
-              await db
-                .collection('users')
-                .doc(follower.id)
-                .collection('followers')
-                .doc(userId)
-                .delete()
             }
           )
 

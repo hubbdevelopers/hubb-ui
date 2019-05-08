@@ -5,6 +5,7 @@ const db = firebase.firestore()
 export interface Page {
   id: string
   data: PageData
+  likedBy: string[]
 }
 
 export interface PageData {
@@ -29,7 +30,8 @@ export const blankPage = {
     image: '',
     likedBy: [],
     createdAt: null
-  }
+  },
+  likedBy: []
 }
 
 export async function getPages(
@@ -45,14 +47,16 @@ export async function getPages(
         .where('ownerId', '==', ownerId)
         .get()
 
-      if (query.size > 0) {
-        return query.docs.map(
-          (doc): Page => {
-            const temp = Object.assign({}, blankPage.data)
-            return { id: doc.id, data: Object.assign(temp, doc.data()) }
+      return query.docs.map(
+        (doc): Page => {
+          const temp = Object.assign({}, blankPage.data)
+          return {
+            id: doc.id,
+            likedBy: [],
+            data: Object.assign(temp, doc.data())
           }
-        )
-      }
+        }
+      )
     } else {
       const query = await db
         .collection('pages')
@@ -65,7 +69,11 @@ export async function getPages(
         return query.docs.map(
           (doc): Page => {
             const temp = Object.assign({}, blankPage.data)
-            return { id: doc.id, data: Object.assign(temp, doc.data()) }
+            return {
+              id: doc.id,
+              data: Object.assign(temp, doc.data()),
+              likedBy: []
+            }
           }
         )
       }
@@ -85,8 +93,21 @@ export async function getPage(id: string): Promise<Page> {
       .doc(id)
       .get()
     if (doc.exists) {
+      let likedBy: string[] = []
+      const likedByDoc = await doc.ref
+        .collection('likes')
+        .doc('DATA')
+        .get()
+
+      if (likedByDoc.exists) {
+        const data = likedByDoc.data()
+        if (data) {
+          likedBy = data.likedBy
+        }
+      }
       const temp = Object.assign({}, blankPage.data)
       return {
+        likedBy: likedBy,
         id: doc.id,
         data: Object.assign(temp, doc.data())
       }
