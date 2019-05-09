@@ -30,15 +30,23 @@
             />
           </div>
           <div class="has-text-centered">
-            <app-button @click="saveContent(false)" :width="250" type="primary"
-              >保存</app-button
-            >
-            <app-button
-              @click="saveContent(true)"
-              :width="250"
-              class="draft-button"
-              >下書きとして保存</app-button
-            >
+            <div>
+              <app-button
+                @click="saveContent(false)"
+                :width="250"
+                type="primary"
+                >保存</app-button
+              >
+            </div>
+            <div>
+              <app-button
+                v-if="page.data.isDraft"
+                @click="saveContent(true)"
+                :width="250"
+                class="draft-button"
+                >下書きとして保存</app-button
+              >
+            </div>
           </div>
         </div>
       </div>
