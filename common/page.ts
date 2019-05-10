@@ -1,4 +1,4 @@
-import firebase, { database } from 'firebase'
+import firebase from 'firebase'
 import { TimeStamp } from 'firebase/firebase-firestore'
 const db = firebase.firestore()
 

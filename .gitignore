@@ -16,3 +16,4 @@ dist
 sw.*
 *.log
 .vscode
+firestore.rules

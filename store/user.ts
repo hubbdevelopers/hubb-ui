@@ -49,15 +49,6 @@ export const actions: ActionTree<UsersState, RootState> = {
           // dispatchfet('fetchCommunities')
           // dispatch('fetchNotifications')
 
-          const a = await db
-            .collectionGroup('pages')
-            .where('ownerId', '==', state.id)
-            .get()
-
-          a.forEach(b => {
-            console.log(b)
-          })
-
           resolve()
         } else {
           console.log('not login')
