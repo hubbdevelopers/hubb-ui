@@ -14,13 +14,13 @@ exports.followUser = functions
   })
   .firestore.document('users/{userId}/follows/{id}')
   .onCreate(
-    // フォローユーザーのページ全てをタイムラインに投入する
     async (snap, context): Promise<void> => {
       try {
         console.log('followUser', snap, context.params.id)
         const data = snap.data()
 
         if (data) {
+          // フォローユーザーのページ全てをタイムラインに投入する
           const timelineRef = db
             .collection('users')
             .doc(data.from)
@@ -40,6 +40,14 @@ exports.followUser = functions
               }
             }
           )
+
+          // Userドキュメントにフォロー情報を追加
+          await db
+            .collection('users')
+            .doc(data.from)
+            .update({
+              followings: admin.firestore.FieldValue.arrayUnion(data.to)
+            })
 
           // フォローした相手のフォロワー数をインクリメントする
           await db
@@ -81,6 +89,14 @@ exports.unfollowUser = functions
               await doc.ref.delete()
             }
           )
+
+          // Userドキュメントのフォロー情報を削除
+          await db
+            .collection('users')
+            .doc(data.from)
+            .update({
+              followings: admin.firestore.FieldValue.arrayRemove(data.to)
+            })
 
           // フォロー解除した相手のフォロワー数をデクリメントする
           await db
