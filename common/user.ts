@@ -5,17 +5,14 @@ const db = firebase.firestore()
 export interface User {
   id: string
   data: UserData
-  followingUsers: FollowUser[]
-  followers: FollowUser[]
 }
 
 export interface UserData {
   accountId: string
   name: string
   image: string
-  likePages: string[]
-  followingCount: number
-  followerCount: number
+  followingUsers: string[]
+  followers: string[]
   likeCount: number
   createdAt: TimeStamp
 }
@@ -26,45 +23,23 @@ export interface FollowUser {
 
 export const blankUser = {
   id: '',
-  followingUsers: [],
-  followers: [],
   data: {
     accountId: '',
     name: '',
     image: '',
-    likePages: [],
-    followingCount: 0,
-    followerCount: 0,
+    followingUsers: [],
+    followers: [],
     likeCount: 0,
     createdAt: null
   }
 }
 
+export function getBlankUser(): User {
+  return blankUser
+}
+
 export async function getUser(id: string): Promise<User> {
   try {
-    const followingUsersQuery = await db
-      .collection('users')
-      .doc(id)
-      .collection('followingUsers')
-      .get()
-
-    const followingUsers: FollowUser[] = followingUsersQuery.docs.map(
-      (doc): FollowUser => {
-        return doc.data() as FollowUser
-      }
-    )
-
-    const followersQuery = await db
-      .collection('users')
-      .doc(id)
-      .collection('followers')
-      .get()
-
-    const followers: FollowUser[] = followersQuery.docs.map(
-      (doc): FollowUser => {
-        return doc.data() as FollowUser
-      }
-    )
     const doc = await db
       .collection('users')
       .doc(id)
@@ -74,9 +49,7 @@ export async function getUser(id: string): Promise<User> {
       const temp = Object.assign({}, blankUser.data)
       const user: User = {
         id: id,
-        data: Object.assign(temp, doc.data()),
-        followers: followers,
-        followingUsers: followingUsers
+        data: Object.assign(temp, doc.data())
       }
       return user
     }
@@ -99,9 +72,7 @@ export async function getUsers(): Promise<User[]> {
         if (doc.exists) {
           users.push({
             id: doc.id,
-            data: Object.assign(temp, doc.data()),
-            followers: [], // TODO
-            followingUsers: [] // TODO
+            data: Object.assign(temp, doc.data())
           })
         }
       }

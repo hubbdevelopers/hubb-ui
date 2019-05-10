@@ -428,23 +428,17 @@ export const actions: ActionTree<UsersState, RootState> = {
   followUser({ dispatch, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
-        const batch = db.batch()
-        const usersRef = db.collection('users').doc(state.id)
-        batch.update(usersRef, {
-          followingCount: firebase.firestore.FieldValue.increment(1)
-        })
-        const followRef = db
+        await db
           .collection('users')
           .doc(state.id)
           .collection('follows')
           .doc()
-        batch.set(followRef, {
-          from: state.id,
-          to: followingId,
-          type: 'user',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
-        batch.commit()
+          .set({
+            from: state.id,
+            to: followingId,
+            type: 'user',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
         dispatch('fetchFollowingUsers')
         resolve()
       } catch (e) {
@@ -456,8 +450,6 @@ export const actions: ActionTree<UsersState, RootState> = {
   unfollowUser({ dispatch, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
-        const batch = db.batch()
-
         const followingQuery = await db
           .collection('users')
           .doc(state.id)
@@ -465,15 +457,10 @@ export const actions: ActionTree<UsersState, RootState> = {
           .where('to', '==', followingId)
           .get()
 
-        followingQuery.forEach(doc => {
-          batch.delete(doc.ref)
+        followingQuery.forEach(async doc => {
+          await doc.ref.delete()
         })
 
-        const usersRef = db.collection('users').doc(state.id)
-        batch.update(usersRef, {
-          followingCount: firebase.firestore.FieldValue.increment(-1)
-        })
-        batch.commit()
         dispatch('fetchFollowingUsers')
         resolve()
       } catch (e) {
@@ -676,11 +663,11 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   getFollowingCount: state => {
-    return state.data.followingCount
+    return state.data.followingUsers.length
   },
 
   getFollowerCount: state => {
-    return state.data.followerCount
+    return state.data.followers.length
   },
 
   getLikeCount: state => {

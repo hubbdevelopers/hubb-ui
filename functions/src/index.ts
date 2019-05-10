@@ -46,15 +46,15 @@ exports.followUser = functions
             .collection('users')
             .doc(data.from)
             .update({
-              followings: admin.firestore.FieldValue.arrayUnion(data.to)
+              followingUsers: admin.firestore.FieldValue.arrayUnion(data.to)
             })
 
-          // フォローした相手のフォロワー数をインクリメントする
+          // フォローした相手のフォロワー情報を追加
           await db
             .collection('users')
             .doc(data.to)
             .update({
-              followerCount: admin.firestore.FieldValue.increment(1)
+              followers: admin.firestore.FieldValue.arrayUnion(data.from)
             })
         }
       } catch (e) {
@@ -95,15 +95,15 @@ exports.unfollowUser = functions
             .collection('users')
             .doc(data.from)
             .update({
-              followings: admin.firestore.FieldValue.arrayRemove(data.to)
+              followingUsers: admin.firestore.FieldValue.arrayRemove(data.to)
             })
 
-          // フォロー解除した相手のフォロワー数をデクリメントする
+          // フォロー解除した相手のフォロワー情報を削除
           await db
             .collection('users')
             .doc(data.to)
             .update({
-              followerCount: admin.firestore.FieldValue.increment(-1)
+              followers: admin.firestore.FieldValue.arrayRemove(data.from)
             })
         }
       } catch (e) {

@@ -76,11 +76,11 @@ export default class extends Vue {
   @Prop({ required: true }) readonly user!: User
 
   get followingCount() {
-    return this.user.data.followingCount
+    return this.user.data.followingUsers.length
   }
 
   get followerCount() {
-    return this.user.data.followerCount
+    return this.user.data.followers.length
   }
 
   get likeCount() {
