@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div v-if="page.data.isDraft" class="draft">このページは下書きです</div>
+    <div v-if="page.id && page.data.isDraft" class="draft">
+      このページは下書きです
+    </div>
     <div v-if="page.data.image" class="columns is-centered">
       <div class="column is-half">
         <page-main-image :image="page.data.image" />

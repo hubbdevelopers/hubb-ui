@@ -1,28 +1,34 @@
 <template>
-  <page
-    v-if="page"
-    :canEdit="isOwner"
-    :page="page"
-    :owner="owner"
-    :isDeleting="isDeleting"
-    @deletePage="deletePage"
-  />
+  <div>
+    <loading :is-loading="isLoading" />
+    <page
+      v-if="page"
+      :canEdit="isOwner"
+      :page="page"
+      :owner="owner"
+      :isDeleting="isDeleting"
+      @deletePage="deletePage"
+    />
+  </div>
 </template>
 <script lang="ts">
 import Page from '~/components/templates/Page.vue'
 import { Vue, Component } from 'vue-property-decorator'
 import { User, blankUser, getUser } from '~/common/user'
 import { Page as PageType, blankPage, getPage } from '~/common/page'
+import Loading from '~/components/atoms/Loading.vue'
 
 @Component({
   components: {
-    Page
+    Page,
+    Loading
   }
 })
 export default class extends Vue {
   page: PageType = blankPage
   owner: User = blankUser
   isDeleting: boolean = false
+  isLoading: boolean = true
 
   get isOwner() {
     return (
@@ -32,6 +38,7 @@ export default class extends Vue {
   }
   async created() {
     try {
+      this.isLoading = true
       this.page = await getPage(this.$route.params.pageId)
       if (this.page.data.ownerType === 'user') {
         this.owner = await getUser(this.page.data.ownerId)
@@ -40,6 +47,8 @@ export default class extends Vue {
       }
     } catch (e) {
       console.log(e)
+    } finally {
+      this.isLoading = false
     }
   }
   deletePage() {

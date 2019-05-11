@@ -1,6 +1,7 @@
 <template>
   <section class="section">
     <div class="container">
+      <loading :is-loading="isLoading" />
       <div class="columns">
         <div class="column is-one-third">
           <user-profile v-if="user" :user="user" />
@@ -27,33 +28,43 @@ import UserProfile from '~/components/organisms/UserProfile.vue'
 import { Vue, Component } from 'vue-property-decorator'
 import { User, getUser, blankUser } from '~/common/user'
 import { Page, getPage } from '~/common/page'
+import Loading from '~/components/atoms/Loading.vue'
 
 @Component({
   components: {
     UserProfile,
-    PageBox
+    PageBox,
+    Loading
   }
 })
 export default class extends Vue {
   user: User = blankUser
   pages: Page[] = []
+  isLoading: boolean = true
 
   get isOwner() {
     return this.$store.getters['user/isMyId'](this.$route.params.id)
   }
 
   async created() {
-    this.user = await getUser(this.$route.params.id)
+    try {
+      this.isLoading = true
+      this.user = await getUser(this.$route.params.id)
 
-    if (this.user.data.likes.length === 0) {
-      return
-    }
+      if (this.user.data.likes.length === 0) {
+        return
+      }
 
-    this.user.data.likes.forEach(pageId => {
-      getPage(pageId).then((page: Page) => {
-        this.pages.push(page)
+      this.user.data.likes.forEach(pageId => {
+        getPage(pageId).then((page: Page) => {
+          this.pages.push(page)
+        })
       })
-    })
+    } catch (e) {
+      console.log(e)
+    } finally {
+      this.isLoading = false
+    }
   }
 }
 </script>

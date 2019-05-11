@@ -71,7 +71,7 @@ export default class extends Vue {
       return
     }
     // this.notLoginTimeline = (await this.$axios.get('/recentpages')).data.data
-    console.log(this.notLoginTimeline)
+    // console.log(this.notLoginTimeline)
   }
 
   get isLogin() {
