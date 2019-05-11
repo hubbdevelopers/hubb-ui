@@ -13,7 +13,7 @@ export interface UserData {
   image: string
   followingUsers: string[]
   followers: string[]
-  likeCount: number
+  likes: string[]
   createdAt: TimeStamp
 }
 
@@ -29,7 +29,7 @@ export const blankUser = {
     image: '',
     followingUsers: [],
     followers: [],
-    likeCount: 0,
+    likes: [],
     createdAt: null
   }
 }

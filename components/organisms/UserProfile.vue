@@ -84,7 +84,7 @@ export default class extends Vue {
   }
 
   get likeCount() {
-    return this.user.data.likeCount
+    return this.user.data.likes.length
   }
 
   get isOwner() {
@@ -99,7 +99,7 @@ export default class extends Vue {
     this.$store
       .dispatch('user/followUser', this.user.id)
       .then(() => {
-        this.user.data.followerCount++
+        this.user.data.followers.push(this.user.id)
       })
       .catch(err => {
         console.log(err)
@@ -110,7 +110,11 @@ export default class extends Vue {
     this.$store
       .dispatch('user/unfollowUser', this.user.id)
       .then(() => {
-        this.user.data.followerCount--
+        this.user.data.followingUsers = this.user.data.followingUsers.filter(
+          id => {
+            return id !== this.user.id
+          }
+        )
       })
       .catch(err => {
         console.log(err)

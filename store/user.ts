@@ -500,25 +500,17 @@ export const actions: ActionTree<UsersState, RootState> = {
   likePage({ state, dispatch }, pageId) {
     return new Promise(async (resolve, reject) => {
       try {
-        const batch = db.batch()
-
-        const userRef = db.collection('users').doc(state.id)
-        batch.update(userRef, {
-          likeCount: firebase.firestore.FieldValue.increment(1)
-        })
-
-        const pageRef = db
+        await db
           .collection('users')
           .doc(state.id)
           .collection('likes')
           .doc()
-        batch.set(pageRef, {
-          from: state.id,
-          pageId: pageId,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
+          .set({
+            from: state.id,
+            pageId: pageId,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
 
-        await batch.commit()
         dispatch('fetchUser')
         resolve()
       } catch (e) {
@@ -531,13 +523,6 @@ export const actions: ActionTree<UsersState, RootState> = {
   unlikePage({ state, dispatch }, pageId) {
     return new Promise(async (resolve, reject) => {
       try {
-        const batch = db.batch()
-
-        const userRef = db.collection('users').doc(state.id)
-        batch.update(userRef, {
-          likeCount: firebase.firestore.FieldValue.increment(-1)
-        })
-
         const pageQuery = await db
           .collection('users')
           .doc(state.id)
@@ -545,11 +530,10 @@ export const actions: ActionTree<UsersState, RootState> = {
           .where('pageId', '==', pageId)
           .get()
 
-        pageQuery.forEach(doc => {
-          batch.delete(doc.ref)
+        pageQuery.forEach(async doc => {
+          await doc.ref.delete()
         })
 
-        await batch.commit()
         dispatch('fetchUser')
         resolve()
       } catch (e) {
@@ -646,9 +630,7 @@ export const getters: GetterTree<UsersState, RootState> = {
   getUser: (state): User => {
     return {
       id: state.id,
-      data: state.data,
-      followers: state.followers,
-      followingUsers: state.followingUsers
+      data: state.data
     }
   },
 
@@ -671,7 +653,7 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   getLikeCount: state => {
-    return state.data.likeCount
+    return state.data.likes.length
   },
 
   isMyId: state => (id: string): boolean => {
@@ -715,7 +697,7 @@ export const getters: GetterTree<UsersState, RootState> = {
   },
 
   isLikedPage: state => (pageId: string): boolean => {
-    return state.data.likePages ? state.data.likePages.includes(pageId) : false
+    return state.data.likes ? state.data.likes.includes(pageId) : false
   },
 
   getTimeline: state => {

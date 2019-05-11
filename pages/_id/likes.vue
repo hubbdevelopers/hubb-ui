@@ -45,11 +45,11 @@ export default class extends Vue {
   async created() {
     this.user = await getUser(this.$route.params.id)
 
-    if (!this.user.data.likePages || this.user.data.likePages.length === 0) {
+    if (this.user.data.likes.length === 0) {
       return
     }
 
-    this.user.data.likePages.forEach(pageId => {
+    this.user.data.likes.forEach(pageId => {
       getPage(pageId).then((page: Page) => {
         this.pages.push(page)
       })

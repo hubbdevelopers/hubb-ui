@@ -124,6 +124,16 @@ exports.createPage = functions
         const pageId = snap.id
         console.log('create page', pageId, page)
 
+        // ページドキュメントに空のいいねコレクションを作成
+        await db
+          .collection('pages')
+          .doc(pageId)
+          .collection('likes')
+          .doc('DATA')
+          .set({
+            likedBy: []
+          })
+
         if (page && !page.isDraft) {
           if (page.ownerType === 'user') {
             const user = await db
@@ -142,7 +152,6 @@ exports.createPage = functions
                 .collectionGroup('follows')
                 .where('to', '==', user.id)
                 .get()
-              //const query = await user.ref.collection('followers').get()
               query.forEach(
                 async (doc): Promise<void> => {
                   if (doc.exists) {
@@ -292,14 +301,21 @@ exports.likePage = functions
         console.log('likePage', snap, context.params.id)
         const data = snap.data()
         if (data) {
-          const pageRef = db
+          await db
             .collection('pages')
             .doc(data.pageId)
             .collection('likes')
             .doc('DATA')
-          pageRef.set({
-            likedBy: admin.firestore.FieldValue.arrayUnion(data.from)
-          })
+            .update({
+              likedBy: admin.firestore.FieldValue.arrayUnion(data.from)
+            })
+
+          await db
+            .collection('users')
+            .doc(context.params.userId)
+            .update({
+              likes: admin.firestore.FieldValue.arrayUnion(data.pageId)
+            })
         }
       } catch (e) {
         console.log(e)
@@ -319,14 +335,21 @@ exports.unlikePage = functions
         console.log('unlikePage', snap, context.params.id)
         const data = snap.data()
         if (data) {
-          const pageRef = db
+          await db
             .collection('pages')
             .doc(data.pageId)
             .collection('likes')
             .doc('DATA')
-          pageRef.set({
-            likedBy: admin.firestore.FieldValue.arrayRemove(data.from)
-          })
+            .update({
+              likedBy: admin.firestore.FieldValue.arrayRemove(data.from)
+            })
+
+          await db
+            .collection('users')
+            .doc(context.params.userId)
+            .update({
+              likes: admin.firestore.FieldValue.arrayRemove(data.pageId)
+            })
         }
       } catch (e) {
         console.log(e)
