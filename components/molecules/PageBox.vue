@@ -3,7 +3,7 @@
     <div class="is-clearfix">
       <div class="is-pulled-left left-area">
         <n-link :to="link">
-          <h1 class="is-size-4">
+          <h1 class="is-size-5">
             {{ page.data.name }}
           </h1>
         </n-link>
@@ -35,16 +35,18 @@
             />
           </n-link>
         </figure>
-        <div class="likes-comments">
-          <span class="likes">
-            <i class="far fa-heart" />
-            {{ likeCount }}
-          </span>
-          <span class="comments">
-            <i class="far fa-comment" />
-            {{ comments.length }}
-          </span>
-        </div>
+        <template v-if="!isTimeline">
+          <div class="likes-comments">
+            <span class="likes">
+              <i class="far fa-heart" />
+              {{ likeCount }}
+            </span>
+            <span class="comments">
+              <i class="far fa-comment" />
+              {{ comments.length }}
+            </span>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -68,6 +70,7 @@ export default class extends Vue {
   })
   readonly user!: User
   @Prop({ required: true }) readonly page!: Page
+  @Prop({ default: false }) readonly isTimeline!: boolean
   comments: Comment[] = []
 
   createdUser: User = blankUser
@@ -92,7 +95,7 @@ export default class extends Vue {
   }
 
   get likeCount(): number {
-    return this.page.data.likedBy ? this.page.data.likedBy.length : 0
+    return this.page.likedBy ? this.page.likedBy.length : 0
   }
 
   async created() {

@@ -17,7 +17,7 @@
                 :key="page.id"
                 class="column is-three-fifths is-offset-one-fifth"
               >
-                <page-box :page="page" />
+                <page-box :page="page" :is-timeline="true" />
               </div>
             </div>
           </div>

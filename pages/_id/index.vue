@@ -2,7 +2,7 @@
   <div>
     <loading :is-loading="isLoading" />
     <mypage
-      v-if="!loading"
+      v-if="!isLoading"
       :user="user"
       :pages="pages"
       :communities="communities"

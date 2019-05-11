@@ -1,5 +1,6 @@
 import firebase from 'firebase'
 import { TimeStamp } from 'firebase/firebase-firestore'
+import { getUser } from './user'
 const db = firebase.firestore()
 
 export interface Page {
@@ -15,8 +16,8 @@ export interface PageData {
   content: string
   isDraft: boolean
   image: string
-  likedBy: string[]
   createdAt: TimeStamp
+  updatedAt: TimeStamp
 }
 
 export const blankPage = {
@@ -28,62 +29,10 @@ export const blankPage = {
     content: '',
     isDraft: true,
     image: '',
-    likedBy: [],
-    createdAt: null
+    createdAt: null,
+    updatedAt: null
   },
   likedBy: []
-}
-
-export async function getPages(
-  ownerId: string,
-  ownertType: string,
-  isOwner: boolean
-): Promise<Page[]> {
-  try {
-    if (isOwner) {
-      const query = await db
-        .collection('pages')
-        .where('ownerType', '==', ownertType)
-        .where('ownerId', '==', ownerId)
-        .get()
-
-      return query.docs.map(
-        (doc): Page => {
-          const temp = Object.assign({}, blankPage.data)
-          return {
-            id: doc.id,
-            likedBy: [],
-            data: Object.assign(temp, doc.data())
-          }
-        }
-      )
-    } else {
-      const query = await db
-        .collection('pages')
-        .where('isDraft', '==', false)
-        .where('ownerType', '==', ownertType)
-        .where('ownerId', '==', ownerId)
-        .get()
-
-      if (query.size > 0) {
-        return query.docs.map(
-          (doc): Page => {
-            const temp = Object.assign({}, blankPage.data)
-            return {
-              id: doc.id,
-              data: Object.assign(temp, doc.data()),
-              likedBy: []
-            }
-          }
-        )
-      }
-    }
-
-    return []
-  } catch (e) {
-    console.log(e)
-    return []
-  }
 }
 
 export async function getPage(id: string): Promise<Page> {
@@ -116,5 +65,62 @@ export async function getPage(id: string): Promise<Page> {
   } catch (e) {
     console.log(e)
     return blankPage
+  }
+}
+
+export async function getPages(
+  ownerId: string,
+  ownertType: string,
+  isOwner: boolean
+): Promise<Page[]> {
+  try {
+    if (isOwner) {
+      const query = await db
+        .collection('pages')
+        .where('ownerType', '==', ownertType)
+        .where('ownerId', '==', ownerId)
+        .get()
+
+      const pageIds: string[] = query.docs.map(
+        (doc): string => {
+          return doc.id
+        }
+      )
+
+      const pages: Page[] = []
+      pageIds.forEach(
+        async (id): Promise<void> => {
+          pages.push(await getPage(id))
+        }
+      )
+
+      return pages
+    } else {
+      console.log('!!!!!!!!')
+      const query = await db
+        .collection('pages')
+        .where('isDraft', '==', false)
+        .where('ownerType', '==', ownertType)
+        .where('ownerId', '==', ownerId)
+        .get()
+
+      const pageIds: string[] = query.docs.map(
+        (doc): string => {
+          return doc.id
+        }
+      )
+
+      const pages: Page[] = []
+      pageIds.forEach(
+        async (id): Promise<void> => {
+          pages.push(await getPage(id))
+        }
+      )
+
+      return pages
+    }
+  } catch (e) {
+    console.log(e)
+    return []
   }
 }
