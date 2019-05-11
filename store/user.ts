@@ -68,7 +68,10 @@ export const actions: ActionTree<UsersState, RootState> = {
         await db
           .collection('users')
           .doc(authData.user!.uid)
-          .set({ createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+          .set({
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
 
         commit('updateId', authData.user!.uid)
         resolve()
@@ -143,7 +146,11 @@ export const actions: ActionTree<UsersState, RootState> = {
         await db
           .collection('users')
           .doc(state.id)
-          .set({ accountId: accountId, name: name })
+          .set({
+            accountId: accountId,
+            name: name,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
         dispatch('fetchUser')
         resolve()
       } catch (e) {
@@ -165,7 +172,8 @@ export const actions: ActionTree<UsersState, RootState> = {
           homepage: homepage,
           twitter: twitter,
           facebook: facebook,
-          instagram: instagram
+          instagram: instagram,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }
         await db
           .collection('users')
@@ -195,7 +203,10 @@ export const actions: ActionTree<UsersState, RootState> = {
         await db
           .collection('users')
           .doc(state.id)
-          .update({ image: url })
+          .update({
+            image: url,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
         commit('updateImage', url)
         resolve()
       } catch (e) {
@@ -213,7 +224,8 @@ export const actions: ActionTree<UsersState, RootState> = {
           ownerId: state.id,
           ownerType: 'user',
           isDraft: true,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }
         const doc = await db.collection('pages').add(param)
         dispatch('fetchPages')
