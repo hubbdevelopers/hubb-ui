@@ -2,11 +2,13 @@
   <div class="is-clearfix page-box">
     <div class="is-clearfix">
       <div class="is-pulled-left left-area">
-        <n-link :to="link">
-          <h1 class="is-size-5">
-            {{ page.data.name }}
-          </h1>
-        </n-link>
+        <div class="name">
+          <n-link :to="link">
+            <h1 class="is-size-5">
+              {{ page.data.name }}
+            </h1>
+          </n-link>
+        </div>
         <span v-if="page.data.isDraft" class="is-size-7 has-text-danger"
           >下書き</span
         >
@@ -171,5 +173,11 @@ a:hover {
 
 .likes {
   margin-right: 5px;
+}
+
+.name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>
