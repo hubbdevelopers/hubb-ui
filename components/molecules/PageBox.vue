@@ -3,8 +3,13 @@
     <div class="is-clearfix">
       <div class="is-pulled-left left-area">
         <n-link :to="link">
-          <h1 class="is-size-4">{{ page.data.name }}</h1>
+          <h1 class="is-size-4">
+            {{ page.data.name }}
+          </h1>
         </n-link>
+        <span v-if="page.data.isDraft" class="is-size-7 has-text-danger"
+          >下書き</span
+        >
         <div class="content">
           <p>{{ parsedContent }}</p>
         </div>

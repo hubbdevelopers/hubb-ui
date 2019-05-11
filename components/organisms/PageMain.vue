@@ -38,6 +38,7 @@
           :like-count="likeCount"
           @like-page="likePage"
           @unlike-page="unlikePage"
+          v-if="!page.data.isDraft"
         />
       </div>
     </div>

@@ -14,7 +14,11 @@
             @click-ellipsis="showConfigModal"
           />
           <hr />
-          <page-comment :page="page" :is-login="isLogin" />
+          <page-comment
+            :page="page"
+            :is-login="isLogin"
+            v-if="!page.data.isDraft"
+          />
         </div>
       </div>
     </div>
