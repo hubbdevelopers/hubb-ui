@@ -16,17 +16,16 @@
       </div>
       <n-link to="/i/login/forget">パスワードを忘れた方はこちら</n-link>
     </div>
+    <div class="has-text-danger is-size-7 error">{{ errMsg }}</div>
 
     <div class="buttons">
-      <div class="buttons">
-        <app-button @click="login" :disabled="$v.$invalid" type="primary"
-          >ログイン</app-button
-        >
+      <app-button @click="login" :disabled="$v.$invalid" type="primary"
+        >ログイン</app-button
+      >
 
-        <app-button @click="$router.push('/i/signup')"
-          >新規登録ページへ</app-button
-        >
-      </div>
+      <app-button @click="$router.push('/i/signup')"
+        >新規登録ページへ</app-button
+      >
     </div>
 
     <!--div>
@@ -58,8 +57,10 @@ import AppButton from '~/components/atoms/AppButton.vue'
 export default class extends Vue {
   email = ''
   password = ''
+  errMsg = ''
 
   async login() {
+    this.errMsg = ''
     const param = {
       email: this.email,
       password: this.password
@@ -71,6 +72,16 @@ export default class extends Vue {
         await this.$store.dispatch('user/initUser')
         this.$router.push('/')
       })
+      .catch(e => {
+        if (e.code === 'auth/user-not-found') {
+          this.errMsg = 'メールアドレスまたはパスワードが正しくありません'
+        }
+      })
   }
 }
 </script>
+<style lang="scss" scoped>
+.error {
+  margin-bottom: 10px;
+}
+</style>
