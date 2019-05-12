@@ -1,6 +1,5 @@
 import firebase from 'firebase'
 import { TimeStamp } from 'firebase/firebase-firestore'
-import { getUser } from './user'
 const db = firebase.firestore()
 
 export interface Page {
@@ -79,6 +78,7 @@ export async function getPages(
         .collection('pages')
         .where('ownerType', '==', ownertType)
         .where('ownerId', '==', ownerId)
+        .orderBy('createdAt', 'desc')
         .get()
 
       const pageIds: string[] = query.docs.map(
@@ -101,6 +101,7 @@ export async function getPages(
         .where('isDraft', '==', false)
         .where('ownerType', '==', ownertType)
         .where('ownerId', '==', ownerId)
+        .orderBy('createdAt', 'desc')
         .get()
 
       const pageIds: string[] = query.docs.map(

@@ -20,7 +20,7 @@
                 <page-box :page="page" :is-timeline="true" />
               </div>
             </div>
-            <div class="has-text-centered">
+            <div v-else class="has-text-centered">
               <span
                 >まだタイムラインがありません<br />新しいページを作成しましょう</span
               >
