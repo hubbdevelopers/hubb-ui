@@ -77,14 +77,12 @@
 <script lang="ts">
 import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
 import NewPageModal from '~/components/organisms/NewPageModal.vue'
-import AppButton from '~/components/atoms/AppButton.vue'
 import { Vue, Component } from 'vue-property-decorator'
 
 @Component({
   components: {
     NewPageModal,
-    ImageIconLink,
-    AppButton
+    ImageIconLink
   }
 })
 export default class extends Vue {

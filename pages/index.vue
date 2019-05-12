@@ -1,9 +1,9 @@
 <template>
   <section class="section">
     <div class="container">
+      <new-page-modal :showModal="showNewPageModal" @close="closeModal" />
       <template v-if="isLogin">
         <div class="columns">
-          {{ $store.state.user.user }}
           <div class="column is-one-third is-hidden-mobile">
             <user-profile
               :user="$store.getters['user/getUser']"
@@ -11,13 +11,23 @@
             />
           </div>
           <div class="column">
-            <div class="columns is-multiline">
+            <div v-if="timeline.length > 0" class="columns is-multiline">
               <div
                 v-for="page in timeline"
                 :key="page.id"
                 class="column is-three-fifths is-offset-one-fifth"
               >
                 <page-box :page="page" :is-timeline="true" />
+              </div>
+            </div>
+            <div class="has-text-centered">
+              <span
+                >まだタイムラインがありません<br />新しいページを作成しましょう</span
+              >
+              <div class="new-page-button">
+                <app-button @click="showModal" type="primary"
+                  >新規作成</app-button
+                >
               </div>
             </div>
           </div>
@@ -33,7 +43,7 @@
             <div class="columns is-multiline">
               <div
                 v-for="page in notLoginTimeline"
-                :key="page.ID"
+                :key="page.id"
                 class="column is-three-fifths is-offset-one-fifth"
               >
                 <page-box :pageId="page.ID" />
@@ -48,16 +58,20 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import NewPageModal from '~/components/organisms/NewPageModal.vue'
 import LoginBox from '~/components/organisms/LoginBox.vue'
 import PageBox from '~/components/molecules/PageBox.vue'
 import UserProfile from '~/components/organisms/UserProfile.vue'
 import { Page } from '~/common/page'
+import AppButton from '~/components/atoms/AppButton.vue'
 
 @Component({
   components: {
     UserProfile,
     LoginBox,
-    PageBox
+    PageBox,
+    NewPageModal,
+    AppButton
   }
 })
 export default class extends Vue {
@@ -65,6 +79,8 @@ export default class extends Vue {
   password: string = ''
   config: string = ''
   notLoginTimeline: Page[] = []
+  showNav = false
+  showNewPageModal = false
 
   async created() {
     if (this.isLogin) {
@@ -83,5 +99,16 @@ export default class extends Vue {
   get timeline() {
     return this.$store.getters['user/getTimeline']
   }
+  showModal() {
+    this.showNewPageModal = true
+  }
+  closeModal() {
+    this.showNewPageModal = false
+  }
 }
 </script>
+<style lang="scss" scoped>
+.new-page-button {
+  margin-top: 10px;
+}
+</style>
