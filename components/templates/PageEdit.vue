@@ -23,7 +23,6 @@
             v-model="content"
             use-custom-image-handler
           />
-          {{ content }}
           <div class="box image">
             <div class="is-size-5">メイン画像を選択</div>
             <croppa

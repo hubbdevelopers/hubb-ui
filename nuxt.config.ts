@@ -86,8 +86,8 @@ module.exports = {
   },
 
   manifest: {
-    name: 'My Awesome App',
-    lang: 'fa',
+    name: 'Hubb',
+    lang: 'ja',
     // eslint-disable-next-line @typescript-eslint/camelcase
     gcm_sender_id: '103953800507'
   },

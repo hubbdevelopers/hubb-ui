@@ -1,7 +1,7 @@
 {
   "name": "hubb-ui",
   "version": "1.0.0",
-  "description": "Nuxt.js project",
+  "description": "Hubb project",
   "author": "kimura.m <k422756@gmail.com>",
   "private": true,
   "scripts": {

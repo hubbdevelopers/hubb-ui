@@ -17,10 +17,6 @@ export interface UserData {
   createdAt: TimeStamp
 }
 
-export interface FollowUser {
-  id: string
-}
-
 export const blankUser = {
   id: '',
   data: {

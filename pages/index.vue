@@ -93,7 +93,6 @@ export default class extends Vue {
       return
     }
     this.notLoginTimeline = await getNotLoginTimeline()
-    console.log(this.notLoginTimeline)
   }
 
   get isLogin() {

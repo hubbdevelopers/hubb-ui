@@ -13,7 +13,6 @@
         <div v-if="!$v.newPageName.maxLength" class="has-text-danger">
           ページ名は50文字まで使用できます
         </div>
-        {{ $v }}
       </modal-card-body>
       <modal-card-footer
         @close="close"
