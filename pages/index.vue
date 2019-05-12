@@ -42,7 +42,7 @@
           <div class="column">
             <div class="columns is-multiline">
               <div class="column box is-three-fifths is-offset-one-fifth">
-                Hubb へようこそ!<br />Hubb はテキスト投稿サービスです。<br />まずは<n-link
+                Hubb へようこそ!<br />Hubb は記事投稿サービスです。<br />まずは<n-link
                   to="i/signup"
                   >新規登録</n-link
                 >へ!
