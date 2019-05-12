@@ -21,19 +21,10 @@
           </div>
 
           <div class="has-text-centered">
-            <button
-              @click="login"
-              v-bind:disabled="$v.email.$invalid || $v.password.$invalid"
-              id="submit"
-              class="button is-primary"
+            <app-button @click="login" :disabled="$v.$invalid" type="primary"
+              >ログイン</app-button
             >
-              ログイン
-            </button>
           </div>
-
-          <!--div>
-              <button class="button is-link" id="google_submit" @click='googleAuth'>Google</button>
-          </div-->
         </div>
       </div>
     </div>

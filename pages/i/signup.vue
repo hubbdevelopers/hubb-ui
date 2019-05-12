@@ -26,14 +26,9 @@
           </div>
 
           <div class="has-text-centered">
-            <button
-              @click="signup"
-              v-bind:disabled="$v.$invalid"
-              id="submit"
-              class="button is-primary"
+            <app-button @click="signup" :disabled="$v.$invalid" type="primary"
+              >新規登録</app-button
             >
-              新規登録
-            </button>
           </div>
         </div>
       </div>

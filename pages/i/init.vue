@@ -29,17 +29,10 @@
             <p class="help">日本語入力可能</p>
           </div>
 
-          <div class="field">
-            <div class="control">
-              <button
-                @click="submit"
-                v-bind:disabled="$v.accountId.$invalid || $v.name.$invalid"
-                id="submit"
-                class="button is-primary"
-              >
-                設定変更
-              </button>
-            </div>
+          <div class="has-text-centered">
+            <app-button @click="submit" :disabled="$v.$invalid" type="primary"
+              >設定変更</app-button
+            >
           </div>
         </div>
       </div>

@@ -5,18 +5,17 @@
     </div>
     <div class="navbar-brand">
       <n-link class="navbar-item" to="/">
-        <img src="~/assets/images/logo.png" alt="Hubb logo" />
+        <img src="~/assets/images/Hubb.png" alt="Hubb logo" />
       </n-link>
       <div v-if="isLogin" class="navbar-item">
-        <button
+        <a
           @click="showModal"
-          class="button is-primary is-outlined is-small"
+          v-if="isLogin"
+          class="navbar-item has-text-white has-text-weight-semibold"
         >
-          <span class="icon">
-            <i class="fas fa-pencil-alt" />
-          </span>
-          <span>新規ページ</span>
-        </button>
+          <span class="icon"><i class="fas fa-pencil-alt"/></span
+          ><span>新規ページ作成</span>
+        </a>
       </div>
       <div
         @click="showNav = !showNav"
@@ -39,32 +38,38 @@
         <n-link
           :to="`/${$store.state.user.id}`"
           v-if="isLogin"
-          class="navbar-item"
+          class="navbar-item has-text-white has-text-weight-semibold"
         >
-          <i class="fas fa-user" /> マイページ
+          <span><i class="fas fa-user"/></span> マイページ
         </n-link>
         <n-link
           :to="`/${$store.state.user.id}/settings`"
           v-if="isLogin"
-          class="navbar-item"
+          class="navbar-item has-text-white has-text-weight-semibold"
         >
-          <i class="fas fa-sliders-h" /> 設定
+          <span class="icon"><i class="fas fa-sliders-h"/></span> 設定
         </n-link>
-        <a @click="logout" v-if="isLogin" class="navbar-item">
-          <i class="fas fa-sign-out-alt" /> ログアウト
+        <a
+          @click="logout"
+          v-if="isLogin"
+          class="navbar-item has-text-white has-text-weight-semibold"
+        >
+          <span class="icon"><i class="fas fa-sign-out-alt"/></span> ログアウト
         </a>
-        <div v-if="!isLogin" class="navbar-item">
-          <div class="field is-grouped">
-            <p class="control">
-              <app-button @click="$router.push('/i/login')" type="primary"
-                >ログイン</app-button
-              >
-              <app-button @click="$router.push('/i/signup')"
-                >新規登録</app-button
-              >
-            </p>
-          </div>
-        </div>
+        <n-link
+          v-if="!isLogin"
+          :to="`/i/login`"
+          class="navbar-item has-text-white has-text-weight-semibold"
+          ><span class="icon"><i class="fas fa-sign-in-alt"/></span>
+          ログイン</n-link
+        >
+        <n-link
+          v-if="!isLogin"
+          :to="`/i/signup`"
+          class="navbar-item has-text-white has-text-weight-semibold"
+          ><span class="icon"><i class="fas fa-user-plus"/></span>
+          新規登録</n-link
+        >
       </div>
     </div>
   </nav>
@@ -109,4 +114,9 @@ export default class extends Vue {
   }
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.navbar,
+.navbar-menu {
+  background-color: #fbac94;
+}
+</style>

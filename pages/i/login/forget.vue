@@ -16,19 +16,10 @@
           </div>
 
           <div class="has-text-centered">
-            <button
-              @click="send"
-              :disabled="$v.email.$invalid"
-              id="submit"
-              class="button is-primary"
+            <app-button @click="send" :disabled="$v.$invalid" type="primary"
+              >送信</app-button
             >
-              送信
-            </button>
           </div>
-
-          <!--div>
-              <button class="button is-link" id="google_submit" @click='googleAuth'>Google</button>
-          </div-->
         </div>
       </div>
     </div>
