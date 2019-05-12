@@ -96,7 +96,6 @@ export async function getPages(
 
       return pages
     } else {
-      console.log('!!!!!!!!')
       const query = await db
         .collection('pages')
         .where('isDraft', '==', false)
@@ -119,6 +118,35 @@ export async function getPages(
 
       return pages
     }
+  } catch (e) {
+    console.log(e)
+    return []
+  }
+}
+
+export async function getNotLoginTimeline(): Promise<Page[]> {
+  try {
+    const query = await db
+      .collection('pages')
+      .where('isDraft', '==', false)
+      .orderBy('createdAt', 'desc')
+      .limit(50)
+      .get()
+
+    const pageIds: string[] = query.docs.map(
+      (doc): string => {
+        return doc.id
+      }
+    )
+
+    const pages: Page[] = []
+    pageIds.forEach(
+      async (id): Promise<void> => {
+        pages.push(await getPage(id))
+      }
+    )
+
+    return pages
   } catch (e) {
     console.log(e)
     return []

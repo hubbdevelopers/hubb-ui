@@ -41,12 +41,18 @@
           </div>
           <div class="column">
             <div class="columns is-multiline">
+              <div class="column box is-three-fifths is-offset-one-fifth">
+                Hubb へようこそ!<br />Hubb はテキスト投稿サービスです。<br />まずは<n-link
+                  to="i/signup"
+                  >新規登録</n-link
+                >へ!
+              </div>
               <div
                 v-for="page in notLoginTimeline"
                 :key="page.id"
                 class="column is-three-fifths is-offset-one-fifth"
               >
-                <page-box :pageId="page.ID" />
+                <page-box :page="page" :is-timeline="true" />
               </div>
             </div>
           </div>
@@ -62,7 +68,7 @@ import NewPageModal from '~/components/organisms/NewPageModal.vue'
 import LoginBox from '~/components/organisms/LoginBox.vue'
 import PageBox from '~/components/molecules/PageBox.vue'
 import UserProfile from '~/components/organisms/UserProfile.vue'
-import { Page } from '~/common/page'
+import { Page, getNotLoginTimeline } from '~/common/page'
 import AppButton from '~/components/atoms/AppButton.vue'
 
 @Component({
@@ -86,8 +92,8 @@ export default class extends Vue {
     if (this.isLogin) {
       return
     }
-    // this.notLoginTimeline = (await this.$axios.get('/recentpages')).data.data
-    // console.log(this.notLoginTimeline)
+    this.notLoginTimeline = await getNotLoginTimeline()
+    console.log(this.notLoginTimeline)
   }
 
   get isLogin() {
