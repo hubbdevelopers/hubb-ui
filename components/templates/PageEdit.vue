@@ -7,19 +7,23 @@
             <label class="label">ページ名</label>
             <div class="control">
               <input
-                v-model="page.data.name"
+                v-model="name"
                 class="input"
                 type="text"
                 placeholder="Text input"
               />
             </div>
+            <div v-if="!$v.name.maxLength" class="has-text-danger">
+              ページ名は50文字まで使用できます
+            </div>
           </div>
 
           <vue-editor
             @imageAdded="handleImageAdded"
-            v-model="page.data.content"
+            v-model="content"
             use-custom-image-handler
           />
+          {{ content }}
           <div class="box image">
             <div class="is-size-5">メイン画像を選択</div>
             <croppa
@@ -32,6 +36,7 @@
           <div class="has-text-centered">
             <div>
               <app-button
+                :disabled="$v.$invalid"
                 @click="saveContent(false)"
                 :width="250"
                 type="primary"
@@ -40,6 +45,7 @@
             </div>
             <div>
               <app-button
+                :disabled="$v.$invalid"
                 v-if="page.data.isDraft"
                 @click="saveContent(true)"
                 :width="250"
@@ -54,14 +60,21 @@
   </section>
 </template>
 <script lang="ts">
+import { required, maxLength } from 'vuelidate/lib/validators'
 import { storage } from '~/plugins/firebase'
 import { VueEditor } from 'vue2-editor'
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { Page } from '~/common/page'
 import uuidv1 from 'uuid/v1'
 import AppButton from '~/components/atoms/AppButton.vue'
 
 @Component({
+  validations: {
+    name: {
+      required,
+      maxLength: maxLength(50)
+    }
+  },
   components: {
     VueEditor,
     AppButton
@@ -72,14 +85,23 @@ export default class extends Vue {
   @Prop({ required: true }) readonly canEdit!: boolean
 
   myCroppa: string = ''
+  name = ''
+  content = ''
+  image = ''
+  @Watch('page', { immediate: true, deep: true })
+  onPageChanged(page: Page) {
+    this.name = page.data.name
+    this.content = page.data.content
+    this.image = page.data.image
+  }
 
   async saveContent(isDraft = false) {
     const param = {
-      id: this.$route.params.pageId || '',
+      id: this.$route.params.pageId,
       isDraft: isDraft,
-      name: this.page.data.name || '',
-      content: this.page.data.content || '',
-      image: this.page.data.image || ''
+      name: this.name,
+      content: this.content,
+      image: this.image
     }
     await this.$store.dispatch('user/updatePage', param)
     this.$router.push(`/${this.$store.state.user.id}/${this.page.id}`)
@@ -105,7 +127,7 @@ export default class extends Vue {
       .put(file)
       .then(() => {
         imageRef.getDownloadURL().then(url => {
-          this.page.data.image = url
+          this.image = url
         })
       })
       .catch(e => {

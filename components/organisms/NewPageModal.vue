@@ -2,7 +2,7 @@
   <div :class="{ 'is-active': showModal }" class="modal">
     <div @click="close" class="modal-background" />
     <div class="modal-card">
-      <modal-card-header @close="close">ページ追加</modal-card-header>
+      <modal-card-header @close="close">ページ作成</modal-card-header>
       <modal-card-body>
         <div class="field">
           <label class="label">ページ名</label>
@@ -10,12 +10,16 @@
             <input v-model="newPageName" class="input" type="text" />
           </div>
         </div>
+        <div v-if="!$v.newPageName.maxLength" class="has-text-danger">
+          ページ名は50文字まで使用できます
+        </div>
+        {{ $v }}
       </modal-card-body>
       <modal-card-footer
         @close="close"
         @submit="createPage"
         :can-submit="!($v.newPageName.$invalid || isCreating)"
-        >追加</modal-card-footer
+        >作成</modal-card-footer
       >
     </div>
   </div>
@@ -67,7 +71,7 @@ export default {
   validations: {
     newPageName: {
       required,
-      maxLength: maxLength(20)
+      maxLength: maxLength(50)
     }
   }
 }
