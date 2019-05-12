@@ -5,10 +5,7 @@
     </div>
     <div class="navbar-brand">
       <n-link class="navbar-item" to="/">
-        <img
-          src="~/assets/images/logo.png"
-          alt="Bulma: a modern CSS framework based on Flexbox"
-        />
+        <img src="~/assets/images/logo.png" alt="Hubb logo" />
       </n-link>
       <div v-if="isLogin" class="navbar-item">
         <button
@@ -112,3 +109,4 @@ export default class extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped></style>
