@@ -43,7 +43,7 @@ export async function getPage(id: string): Promise<Page> {
     if (doc.exists) {
       let likedBy: string[] = []
       const likedByDoc = await doc.ref
-        .collection('likes')
+        .collection('liked')
         .doc('DATA')
         .get()
 

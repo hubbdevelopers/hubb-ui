@@ -128,10 +128,21 @@ exports.createPage = functions
         await db
           .collection('pages')
           .doc(pageId)
-          .collection('likes')
+          .collection('liked')
           .doc('DATA')
           .set({
             likedBy: []
+          })
+
+        // ページドキュメントに空の集計用コレクションを作成
+        await db
+          .collection('pages')
+          .doc(pageId)
+          .collection('stats')
+          .doc('DATA')
+          .set({
+            likedCount: 0,
+            pageId: pageId
           })
 
         if (page && !page.isDraft) {
@@ -276,6 +287,35 @@ exports.deletePage = functions
                   }
                 }
               )
+
+              // 投稿をユーザーのいいね一覧から削除
+              const query2 = await db
+                .collection('users')
+                .where('likes', 'array-contains', pageId)
+                .get()
+              query2.forEach(
+                async (doc): Promise<void> => {
+                  if (doc.exists) {
+                    doc.ref.update(
+                      'likes',
+                      admin.firestore.FieldValue.arrayRemove(pageId)
+                    )
+                  }
+                }
+              )
+
+              // 投稿をいいねコレクションを削除
+              const query3 = await db
+                .collectionGroup('likes')
+                .where('pageId', '==', pageId)
+                .get()
+              query3.forEach(
+                async (doc): Promise<void> => {
+                  if (doc.exists) {
+                    doc.ref.delete()
+                  }
+                }
+              )
             }
             //ファイル削除
             await bucket.deleteFiles({
@@ -295,19 +335,29 @@ exports.likePage = functions
   })
   .firestore.document('users/{userId}/likes/{id}')
   .onCreate(
-    // ページにいいねしたユーザーを追加する
     async (snap, context): Promise<void> => {
       try {
         console.log('likePage', snap, context.params.id)
         const data = snap.data()
         if (data) {
+          // ページにいいねしたユーザーを追加する
           await db
             .collection('pages')
             .doc(data.pageId)
-            .collection('likes')
+            .collection('liked')
             .doc('DATA')
             .update({
               likedBy: admin.firestore.FieldValue.arrayUnion(data.from)
+            })
+
+          // 集計用コレクションに値を書き込む
+          await db
+            .collection('pages')
+            .doc(data.pageId)
+            .collection('stats')
+            .doc('DATA')
+            .update({
+              likedCount: admin.firestore.FieldValue.increment(1)
             })
 
           await db
@@ -329,19 +379,29 @@ exports.unlikePage = functions
   })
   .firestore.document('users/{userId}/likes/{id}')
   .onDelete(
-    // ページからいいねしたユーザーを削除する
     async (snap, context): Promise<void> => {
       try {
         console.log('unlikePage', snap, context.params.id)
         const data = snap.data()
         if (data) {
+          // ページからいいねしたユーザーを削除する
           await db
             .collection('pages')
             .doc(data.pageId)
-            .collection('likes')
+            .collection('liked')
             .doc('DATA')
             .update({
               likedBy: admin.firestore.FieldValue.arrayRemove(data.from)
+            })
+
+          // 集計用コレクションに値を書き込む
+          await db
+            .collection('pages')
+            .doc(data.pageId)
+            .collection('stats')
+            .doc('DATA')
+            .update({
+              likedCount: admin.firestore.FieldValue.increment(-1)
             })
 
           await db
