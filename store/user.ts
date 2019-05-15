@@ -351,7 +351,6 @@ export const actions: ActionTree<UsersState, RootState> = {
             type: 'user',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           })
-        dispatch('fetchFollowingUsers')
         resolve()
       } catch (e) {
         reject(e)
@@ -373,7 +372,7 @@ export const actions: ActionTree<UsersState, RootState> = {
           await doc.ref.delete()
         })
 
-        dispatch('fetchFollowingUsers')
+        dispatch('fetchUser')
         resolve()
       } catch (e) {
         reject(e)

@@ -80,8 +80,9 @@ a:hover {
 }
 
 .user-box {
-  box-shadow: 1px 1px 2px gray;
+  box-shadow: 0 2px 3px rgba($black, 0.1), 0 0 0 1px rgba($black, 0.1);
   padding: 5px 10px;
+  border-radius: 5px;
 }
 
 .image-icon {

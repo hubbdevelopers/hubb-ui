@@ -1,5 +1,5 @@
 <template>
-  <div class="is-clearfix page-box">
+  <div class="page-box">
     <div class="is-clearfix">
       <div class="is-pulled-left left-area">
         <div class="name">
@@ -22,7 +22,7 @@
           class="page-owner-info"
         />
       </div>
-      <div class="is-pulled-right">
+      <div class="is-pulled-right right-area has-text-centered">
         <figure class="image is-96x96">
           <n-link :to="link">
             <img
@@ -125,15 +125,19 @@ a:hover {
 }
 
 .page-box {
-  max-width: 360px;
+  width: 100%;
   position: relative;
-  box-shadow: 1px 1px 2px gray;
-  margin-top: 1px;
+  box-shadow: 0 2px 3px rgba($black, 0.1), 0 0 0 1px rgba($black, 0.1);
   padding: 5px 10px;
+  border-radius: 5px;
 }
 
 .left-area {
   width: 70%;
+}
+
+.right-area {
+  width: 30%;
 }
 
 .content {
@@ -161,11 +165,6 @@ a:hover {
   -webkit-line-clamp: 1;
 }
 
-.page-owner-info {
-  position: absolute;
-  bottom: 5px;
-}
-
 .likes-comments {
   font-size: 12px;
   margin-top: 5px;
@@ -179,5 +178,10 @@ a:hover {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.image {
+  padding: 5px;
+  margin: 0 auto;
 }
 </style>
