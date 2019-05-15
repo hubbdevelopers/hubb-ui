@@ -14,32 +14,26 @@
         <p class="is-size-7 has-text-weight-light">{{ user.data.accountId }}</p>
       </div>
       <div v-if="!isOwner" class="is-pulled-right follow-button-area">
-        <button
-          v-if="isFollowingUser"
-          @click="unFollow"
-          class="button is-primary follow-button"
-        >
-          フォロー中
-        </button>
-        <button
-          v-else
-          @click="follow"
-          class="button is-primary is-outlined follow-button"
-        >
-          フォローする
-        </button>
+        <profile-follow-button
+          v-if="!isOwner"
+          :is-following-user="isFollowingUser"
+          @follow="follow"
+          @unfollow="unfollow"
+        />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import ImageIconLink from '~/components/atoms/ImageIconLink.vue'
+import ProfileFollowButton from '~/components/atoms/ProfileFollowButton.vue'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { User } from '~/common/user'
 
 @Component({
   components: {
-    ImageIconLink
+    ImageIconLink,
+    ProfileFollowButton
   }
 })
 export default class extends Vue {
@@ -60,7 +54,7 @@ export default class extends Vue {
     })
   }
 
-  unFollow() {
+  unfollow() {
     this.$store.dispatch('user/unfollowUser', this.user.id).catch(err => {
       console.log(err)
       window.alert('error')

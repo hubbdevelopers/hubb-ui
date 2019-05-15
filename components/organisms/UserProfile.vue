@@ -75,6 +75,10 @@ import { User } from '~/common/user'
 export default class extends Vue {
   @Prop({ required: true }) readonly user!: User
 
+  // TODO Storeをリアルタイムで更新する
+  followed = false
+  unfollwed = false
+
   get followingCount() {
     return this.user.data.followingUsers.length
   }
@@ -100,6 +104,7 @@ export default class extends Vue {
       .dispatch('user/followUser', this.user.id)
       .then(() => {
         this.user.data.followers.push(this.user.id)
+        this.followed = true
       })
       .catch(err => {
         console.log(err)
@@ -115,6 +120,7 @@ export default class extends Vue {
             return id !== this.user.id
           }
         )
+        this.unfollwed = true
       })
       .catch(err => {
         console.log(err)

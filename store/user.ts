@@ -337,7 +337,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  followUser({ dispatch, state }, followingId) {
+  followUser({ commit, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
         await db
@@ -351,6 +351,9 @@ export const actions: ActionTree<UsersState, RootState> = {
             type: 'user',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           })
+
+        commit('addFollowing', followingId)
+        //dispatch('fetchUser')
         resolve()
       } catch (e) {
         reject(e)
@@ -358,7 +361,7 @@ export const actions: ActionTree<UsersState, RootState> = {
     })
   },
 
-  unfollowUser({ dispatch, state }, followingId) {
+  unfollowUser({ commit, state }, followingId) {
     return new Promise(async (resolve, reject) => {
       try {
         const followingQuery = await db
@@ -372,7 +375,8 @@ export const actions: ActionTree<UsersState, RootState> = {
           await doc.ref.delete()
         })
 
-        dispatch('fetchUser')
+        commit('deleteFollowing', followingId)
+        //dispatch('fetchUser')
         resolve()
       } catch (e) {
         reject(e)
@@ -486,6 +490,16 @@ export const mutations: MutationTree<UsersState> = {
 
   updateEmail(state, email) {
     state.email = email
+  },
+
+  addFollowing(state, followingId) {
+    state.data.followingUsers.push(followingId)
+  },
+
+  deleteFollowing(state, followingId) {
+    state.data.followingUsers = state.data.followingUsers.filter(f => {
+      return f !== followingId
+    })
   },
 
   clearUserState(state) {
