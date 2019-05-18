@@ -1,12 +1,15 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const tools = require('firebase-tools')
 admin.initializeApp(functions.config().firebase)
 const storage = admin.storage()
 const bucket = storage.bucket()
-
 const db = admin.firestore()
+
+import createOGP from './createOGP'
+exports.createOGP = createOGP
 
 exports.followUser = functions
   .runWith({

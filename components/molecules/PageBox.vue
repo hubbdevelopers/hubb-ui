@@ -88,9 +88,9 @@ export default class extends Vue {
   }
   get link() {
     if (this.page.data.ownerType === 'user') {
-      return '/' + this.page.data.ownerId + '/' + this.page.id
+      return '/' + this.page.data.ownerId + '/pages/' + this.page.id
     } else if (this.page.data.ownerType === 'community') {
-      return '/i/community/' + this.page.data.ownerId + '/' + this.page.id
+      return '/i/community/' + this.page.data.ownerId + '/pages/' + this.page.id
     } else {
       return '/'
     }

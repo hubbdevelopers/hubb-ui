@@ -103,7 +103,7 @@ export default class extends Vue {
       image: this.image
     }
     await this.$store.dispatch('user/updatePage', param)
-    this.$router.push(`/${this.$store.state.user.id}/${this.page.id}`)
+    this.$router.push(`/${this.$store.state.user.id}/pages/${this.page.id}`)
   }
   handleImageAdded(file, Editor, cursorLocation, resetUploader) {
     const storageRef = storage.ref()

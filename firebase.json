@@ -8,6 +8,10 @@
     ],
     "rewrites": [
       {
+        "source": "/*/pages/*",
+        "function": "createOGP"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
