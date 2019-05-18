@@ -107,7 +107,7 @@ export default class extends Vue {
   }
   handleImageAdded(file, Editor, cursorLocation, resetUploader) {
     const storageRef = storage.ref()
-    const imagePath = 'images/page/' + this.page.id + '/' + uuidv1()
+    const imagePath = 'pages/' + this.page.id + '/' + uuidv1()
     const imageRef = storageRef.child(imagePath)
 
     imageRef.put(file).then(() => {
@@ -119,7 +119,7 @@ export default class extends Vue {
   }
   handleCroppaFileChoose(file) {
     const storageRef = storage.ref()
-    const imagePath = 'images/page/' + this.page.id + '/main-image'
+    const imagePath = 'pages/' + this.page.id + '/main-image'
     const imageRef = storageRef.child(imagePath)
 
     imageRef

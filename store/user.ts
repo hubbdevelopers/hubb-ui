@@ -181,9 +181,7 @@ export const actions: ActionTree<UsersState, RootState> = {
 
   updateImage({ state, commit }, imageBlob) {
     return new Promise(async (resolve, reject) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const uuidv1 = require('uuid/v1')
-      const imagePath = 'images/user/' + state.id + '/' + uuidv1()
+      const imagePath = 'users/' + state.id + '/main-image'
       const imageRef = storageRef.child(imagePath)
 
       try {

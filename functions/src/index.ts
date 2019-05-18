@@ -322,7 +322,7 @@ exports.deletePage = functions
             }
             //ファイル削除
             await bucket.deleteFiles({
-              prefix: `images/page/${pageId}`
+              prefix: `pages/${pageId}`
             })
           }
         }
@@ -473,7 +473,7 @@ exports.deleteUser = functions
 
           //ファイル削除
           await bucket.deleteFiles({
-            prefix: `images/user/${userId}`
+            prefix: `users/${userId}`
           })
         }
       } catch (e) {
