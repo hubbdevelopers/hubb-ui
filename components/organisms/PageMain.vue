@@ -23,7 +23,18 @@
       </div>
     </div>
     <page-content :content="page.data.content" class="content" />
-
+    <div v-if="page.data.name !== ''" class="twitter">
+      <a
+        href="https://twitter.com/share?ref_src=twsrc%5Etfw"
+        class="twitter-share-button"
+        data-show-count="false"
+        >Tweet</a
+      ><script
+        async
+        src="https://platform.twitter.com/widgets.js"
+        charset="utf-8"
+      />
+    </div>
     <div class="columns is-mobile is-vcentered">
       <div class="column is-three-quarters">
         <page-owner-info
@@ -116,5 +127,8 @@ export default class extends Vue {
 .draft {
   background-color: yellow;
   margin-bottom: 15px;
+}
+.twitter {
+  margin: 20px 0;
 }
 </style>

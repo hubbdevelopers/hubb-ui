@@ -22,6 +22,15 @@ import Loading from '~/components/atoms/Loading.vue'
   components: {
     Page,
     Loading
+  },
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  head() {
+    return {
+      title:
+        (this as any).page.data.name !== ''
+          ? `${(this as any).page.data.name} | Hubb`
+          : 'Hubb'
+    }
   }
 })
 export default class extends Vue {
