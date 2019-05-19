@@ -5,6 +5,8 @@
         allowedTags: [
           'img',
           'iframe',
+          'h1',
+          'h2',
           'h3',
           'h4',
           'h5',
@@ -35,6 +37,7 @@
           'pre'
         ],
         allowedAttributes: {
+          a: ['href'],
           img: ['src'],
           iframe: ['src']
         },
