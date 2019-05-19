@@ -1,10 +1,10 @@
 <template>
-  <div class="page-box">
+  <section class="page-box">
     <div class="is-clearfix">
       <div class="is-pulled-left left-area">
         <div class="name">
           <n-link :to="link">
-            <h1 class="is-size-5">
+            <h1 class="">
               {{ page.data.name }}
             </h1>
           </n-link>
@@ -22,12 +22,13 @@
           class="page-owner-info"
         />
       </div>
-      <div class="is-pulled-right right-area has-text-centered">
-        <figure class="image is-96x96">
+      <div class="is-pulled-right right-area">
+        <figure class="image is-96x96 image-box">
           <n-link :to="link">
             <img
               v-if="page.data.image"
               v-bind:src="page.data.image"
+              class=" image-box"
               alt="ページ画像"
             />
             <img
@@ -51,7 +52,7 @@
         </template>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -138,16 +139,19 @@ a:hover {
 
 .right-area {
   width: 30%;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .content {
+  margin-top: 5px;
   overflow: hidden;
   word-wrap: break-word;
   width: 100%;
   p {
     font-size: 12px;
     height: 12px * 1.2 * 2;
-    line-height: 1.2;
+    line-height: 1.4;
     position: relative;
     &:before,
     &:after {
@@ -175,13 +179,12 @@ a:hover {
 }
 
 .name {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  font-size: 15px;
+  line-height: 20px;
 }
 
 .image {
-  padding: 5px;
-  margin: 0 auto;
+  padding: 10px;
+  margin: auto;
 }
 </style>
