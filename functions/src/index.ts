@@ -12,6 +12,7 @@ import createOGP from './createOGP'
 exports.createOGP = createOGP
 
 exports.followUser = functions
+  .region('asia-northeast1')
   .runWith({
     timeoutSeconds: 540
   })
@@ -67,6 +68,7 @@ exports.followUser = functions
   )
 
 exports.unfollowUser = functions
+  .region('asia-northeast1')
   .runWith({
     timeoutSeconds: 540
   })
@@ -116,6 +118,7 @@ exports.unfollowUser = functions
   )
 
 exports.createPage = functions
+  .region('asia-northeast1')
   .runWith({
     timeoutSeconds: 540
   })
@@ -189,6 +192,7 @@ exports.createPage = functions
   )
 
 exports.updatePage = functions
+  .region('asia-northeast1')
   .runWith({
     timeoutSeconds: 540
   })
@@ -241,6 +245,7 @@ exports.updatePage = functions
   )
 
 exports.deletePage = functions
+  .region('asia-northeast1')
   .runWith({
     timeoutSeconds: 540
   })
@@ -333,6 +338,7 @@ exports.deletePage = functions
   )
 
 exports.likePage = functions
+  .region('asia-northeast1')
   .runWith({
     timeoutSeconds: 540
   })
@@ -377,6 +383,7 @@ exports.likePage = functions
   )
 
 exports.unlikePage = functions
+  .region('asia-northeast1')
   .runWith({
     timeoutSeconds: 540
   })
@@ -420,20 +427,24 @@ exports.unlikePage = functions
     }
   )
 
-exports.withdrawUser = functions.auth.user().onDelete(
-  async (user): Promise<void> => {
-    try {
-      await db
-        .collection('users')
-        .doc(user.uid)
-        .delete()
-    } catch (e) {
-      console.log(e)
+exports.withdrawUser = functions
+  .region('asia-northeast1')
+  .auth.user()
+  .onDelete(
+    async (user): Promise<void> => {
+      try {
+        await db
+          .collection('users')
+          .doc(user.uid)
+          .delete()
+      } catch (e) {
+        console.log(e)
+      }
     }
-  }
-)
+  )
 
 exports.deleteUser = functions
+  .region('asia-northeast1')
   .runWith({
     timeoutSeconds: 540
   })

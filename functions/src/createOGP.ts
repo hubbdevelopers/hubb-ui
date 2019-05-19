@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const striptags = require('striptags')
 const db = admin.firestore()
 const OGP_IMG_WIDTH = 1200
@@ -44,7 +45,7 @@ const createHtml = (
 `
 }
 
-export default functions.https.onRequest(
+export default functions.region('asia-northeast1').https.onRequest(
   async (req, res): Promise<void> => {
     const [, ownerId, , pageId] = req.path.split('/')
 
