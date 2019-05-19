@@ -318,6 +318,8 @@ export const actions: ActionTree<UsersState, RootState> = {
           .collection('users')
           .doc(state.id)
           .collection('timeline')
+          .orderBy('createdAt', 'desc')
+          .limit(50)
           .get()
 
         const timeline: Page[] = snapshot.docs.map(
