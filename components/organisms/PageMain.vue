@@ -23,7 +23,7 @@
       </div>
     </div>
     <page-content :content="page.data.content" class="content" />
-    <div v-if="page.data.name !== ''" class="twitter">
+    <div v-if="page.data.name !== '' && !page.data.isDraft" class="twitter">
       <a
         href="https://twitter.com/share?ref_src=twsrc%5Etfw"
         class="twitter-share-button"
