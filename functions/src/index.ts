@@ -96,20 +96,28 @@ exports.unfollowUser = functions
           )
 
           // Userドキュメントのフォロー情報を削除
-          await db
+          const follower = await db
             .collection('users')
             .doc(data.from)
-            .update({
+            .get()
+
+          if (follower.exists) {
+            follower.ref.update({
               followingUsers: admin.firestore.FieldValue.arrayRemove(data.to)
             })
+          }
 
           // フォロー解除した相手のフォロワー情報を削除
-          await db
+          const following = await db
             .collection('users')
             .doc(data.to)
-            .update({
+            .get()
+
+          if (following.exists) {
+            following.ref.update({
               followers: admin.firestore.FieldValue.arrayRemove(data.from)
             })
+          }
         }
       } catch (e) {
         console.log(e)
