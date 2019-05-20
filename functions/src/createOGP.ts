@@ -45,7 +45,7 @@ const createHtml = (
 `
 }
 
-export default functions.region('asia-northeast1').https.onRequest(
+export default functions.https.onRequest(
   async (req, res): Promise<void> => {
     const [, ownerId, , pageId] = req.path.split('/')
 
