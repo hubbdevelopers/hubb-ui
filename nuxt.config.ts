@@ -42,9 +42,9 @@ module.exports = {
       { baseURL: process.env.BASE_URL || 'http://localhost:8080' }
     ],
     ['@nuxtjs/pwa', { icon: false }],
-    '@nuxtjs/style-resources'
+    '@nuxtjs/style-resources',
+    ['@nuxtjs/google-analytics', { id: process.env.GOOGLEANALYTICS_ID }]
   ],
-
   styleResources: {
     sass: ['~assets/css/main.scss']
   },
