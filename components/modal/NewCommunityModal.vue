@@ -78,21 +78,21 @@ export default {
     },
     // TODO
     checkCommunity() {
-      return new Promise(async (resolve, reject) => {
-        try {
-          const communities = await this.$axios.$get(
-            `communities?name=${this.newCommunityName}`
-          )
-          if (communities.data.length == 0) {
-            resolve()
-          } else {
-            reject('すでにコミュニティ名が使用されています')
-          }
-        } catch (e) {
-          console.log(e)
-          reject(e.message)
-        }
-      })
+      // return new Promise((resolve, reject) => {
+      //   try {
+      //     const communities = await this.$axios.$get(
+      //       `communities?name=${this.newCommunityName}`
+      //     )
+      //     if (communities.data.length == 0) {
+      //       resolve()
+      //     } else {
+      //       reject('すでにコミュニティ名が使用されています')
+      //     }
+      //   } catch (e) {
+      //     console.log(e)
+      //     reject(e.message)
+      //   }
+      // })
     }
   },
   validations: {
