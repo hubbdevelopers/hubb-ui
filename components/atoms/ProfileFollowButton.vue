@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!isOnwer">
     <button v-if="isFollowingUser" @click="unfollow" class="button is-primary">
       フォロー中
     </button>
@@ -12,6 +12,10 @@
 export default {
   props: {
     isFollowingUser: {
+      type: Boolean,
+      default: false
+    },
+    isOwner: {
       type: Boolean,
       default: false
     }

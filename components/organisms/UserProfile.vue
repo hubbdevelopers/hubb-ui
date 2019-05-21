@@ -42,6 +42,7 @@
       <profile-follow-button
         v-if="!isOwner"
         :is-following-user="isFollowingUser"
+        :is-owner="isOwner"
         @follow="follow"
         @unfollow="unfollow"
       />

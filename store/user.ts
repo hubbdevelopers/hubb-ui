@@ -338,6 +338,9 @@ export const actions: ActionTree<UsersState, RootState> = {
   },
 
   followUser({ commit, state }, followingId) {
+    if (state.id === followingId) {
+      return
+    }
     return new Promise(async (resolve, reject) => {
       try {
         await db
