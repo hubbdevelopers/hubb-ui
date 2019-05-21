@@ -1,6 +1,3 @@
-@import "~bulma/sass/utilities/initial-variables";
-$section-padding: 2rem 0.5rem;
-$primary:#FBAC94;
-$text: hsl(0, 0%, 45%);
-$button-color: hsl(0, 0%, 45%);
-@import "~bulma/bulma";
+body {
+  letter-spacing: 0.05rem;
+}

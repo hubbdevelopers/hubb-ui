@@ -4,7 +4,7 @@
       <div class="is-pulled-left left-area">
         <div class="name">
           <n-link :to="link">
-            <h1 class="">
+            <h1 class="has-text-weight-semibold">
               {{ page.data.name }}
             </h1>
           </n-link>
@@ -150,8 +150,8 @@ a:hover {
   width: 100%;
   p {
     font-size: 12px;
-    height: 12px * 1.2 * 2;
-    line-height: 1.4;
+    height: 12px * 1.4 * 2;
+    line-height: 1.5;
     position: relative;
     &:before,
     &:after {

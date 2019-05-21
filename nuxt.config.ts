@@ -46,15 +46,14 @@ module.exports = {
     ['@nuxtjs/google-analytics', { id: process.env.GOOGLEANALYTICS_ID }]
   ],
   styleResources: {
-    sass: ['~assets/css/main.scss']
+    sass: ['~assets/css/bulma-variables.scss', '~assets/css/main.scss']
   },
 
   css: [
     '@fortawesome/fontawesome-free-webfonts',
     '@fortawesome/fontawesome-free-webfonts/css/fa-brands.css',
     '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css',
-    '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css',
-    '~assets/css/default.css'
+    '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css'
   ],
 
   router: {},

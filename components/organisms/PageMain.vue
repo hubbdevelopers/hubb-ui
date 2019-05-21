@@ -22,7 +22,9 @@
         <app-ellipsis @click="clickEllipsis()" />
       </div>
     </div>
-    <page-content :content="page.data.content" class="content" />
+    <div class="content">
+      <page-content :content="page.data.content" />
+    </div>
     <div v-if="page.data.name !== '' && !page.data.isDraft" class="twitter">
       <a
         href="https://twitter.com/share?ref_src=twsrc%5Etfw"
@@ -122,7 +124,7 @@ export default class extends Vue {
 </script>
 <style lang="scss" scoped>
 .content {
-  margin-bottom: 40px;
+  margin: 20px 0 50px;
 }
 .draft {
   background-color: yellow;

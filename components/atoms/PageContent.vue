@@ -60,5 +60,6 @@ export default {
 <style lang="scss" scoped>
 .content {
   word-wrap: break-word;
+  line-height: 2;
 }
 </style>
