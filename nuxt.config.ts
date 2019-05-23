@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 require('dotenv').config()
+import firebase from 'firebase'
+import config from './firebase-setup/config'
 
 module.exports = {
   mode: 'spa',
@@ -43,8 +46,23 @@ module.exports = {
     ],
     ['@nuxtjs/pwa', { icon: false }],
     '@nuxtjs/style-resources',
-    ['@nuxtjs/google-analytics', { id: process.env.GOOGLEANALYTICS_ID }]
+    ['@nuxtjs/google-analytics', { id: process.env.GOOGLEANALYTICS_ID }],
+    '@nuxtjs/sitemap'
   ],
+
+  sitemap: {
+    hostname: process.env.HOST_NAME || 'https://example.com',
+    gzip: true,
+    routes() {
+      const firebaseApp = firebase.initializeApp(config)
+      const db = firebaseApp.firestore()
+      return db
+        .collection('users')
+        .get()
+        .then(users => users.docs.map(user => '/' + user.id))
+    }
+  },
+
   styleResources: {
     sass: ['~assets/css/bulma-variables.scss', '~assets/css/main.scss']
   },

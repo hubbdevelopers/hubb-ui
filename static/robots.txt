@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://hubb.dev/sitemap.xml.gz
