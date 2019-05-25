@@ -18,11 +18,7 @@
         </div>
 
         <div class="column">
-          <mypage-tab-area
-            :user="user"
-            :pages="pages"
-            :communities="communities"
-          />
+          <mypage-tab-area :user="user" :pages="pages" />
         </div>
       </div>
     </div>

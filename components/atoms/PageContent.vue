@@ -62,4 +62,11 @@ export default {
   word-wrap: break-word;
   line-height: 2;
 }
+
+.content /deep/ pre {
+  background-color: rgb(36, 36, 36);
+  color: white;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier,
+    monospace;
+}
 </style>

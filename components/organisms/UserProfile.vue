@@ -29,7 +29,10 @@
         />
         <profile-description>{{ user.data.description }}</profile-description>
 
-        <profile-birthday :birthday="user.data.birthday" />
+        <profile-birthday
+          v-if="user.data.birthday"
+          :birthday="user.data.birthday"
+        />
 
         <profile-followings-followers-likes
           :id="user.id"
