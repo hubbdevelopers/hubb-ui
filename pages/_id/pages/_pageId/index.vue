@@ -1,18 +1,40 @@
 <template>
   <div>
     <loading :is-loading="isLoading" />
-    <page
-      v-if="page"
-      :canEdit="isOwner"
-      :page="page"
-      :owner="owner"
-      :isDeleting="isDeleting"
-      @deletePage="deletePage"
+    <page>
+      <template v-slot:main>
+        <page-main
+          :page="page"
+          :owner="owner"
+          :is-user="true"
+          :is-community="false"
+          :can-edit="isOwner"
+          :is-login="isLogin"
+          :is-liked="isLiked"
+          @click-ellipsis="showConfigModal"
+        />
+      </template>
+      <template v-slot:bottom>
+        <page-comment
+          :page="page"
+          :is-login="isLogin"
+          v-if="!page.data.isDraft"
+        />
+      </template>
+    </page>
+    <page-config-modal
+      :is-active="isActiveConfigModal"
+      @close="closeConfigModal"
+      @delete-page="deletePage"
+      v-if="isOwner"
     />
   </div>
 </template>
 <script lang="ts">
 import Page from '~/components/templates/Page.vue'
+import PageMain from '~/components/organisms/PageMain.vue'
+import PageConfigModal from '~/components/organisms/PageConfigModal.vue'
+import PageComment from '~/components/organisms/PageComment.vue'
 import { Vue, Component } from 'vue-property-decorator'
 import { User, blankUser, getUser } from '~/common/user'
 import { Page as PageType, blankPage, getPage } from '~/common/page'
@@ -21,6 +43,9 @@ import Loading from '~/components/atoms/Loading.vue'
 @Component({
   components: {
     Page,
+    PageMain,
+    PageConfigModal,
+    PageComment,
     Loading
   },
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -38,6 +63,15 @@ export default class extends Vue {
   owner: User = blankUser
   isDeleting: boolean = false
   isLoading: boolean = true
+  isActiveConfigModal = false
+
+  get isLiked() {
+    return this.page.likedBy.includes(this.$store.state.user.id)
+  }
+
+  get isLogin() {
+    return this.$store.getters['user/isLogin']
+  }
 
   get isOwner() {
     return (
@@ -78,6 +112,13 @@ export default class extends Vue {
       .finally(() => {
         this.isDeleting = false
       })
+  }
+
+  showConfigModal() {
+    this.isActiveConfigModal = true
+  }
+  closeConfigModal() {
+    this.isActiveConfigModal = false
   }
 }
 </script>

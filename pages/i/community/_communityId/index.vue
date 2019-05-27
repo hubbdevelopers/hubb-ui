@@ -84,7 +84,7 @@
           <button @click="showNewPageModal = true" class="button is-primary">
             ページ追加
           </button>
-          <suggest-form v-on:enter="enter" />
+          <!-- <suggest-form v-on:enter="enter" /> -->
           <button
             v-bind:disabled="!formvalue"
             @click="addMember"
@@ -101,13 +101,11 @@
 import NewCommunityPageModal from '~/components/modal/NewCommunityPageModal'
 // import firebase from 'firebase/app'
 import { db } from '~/plugins/firebase'
-import SuggestForm from '~/components/SuggestForm.vue'
 import ListUserBox from '~/components/molecules/ListUserBox'
 import UserInvitationBox from '~/components/user/UserInvitationBox'
 
 export default {
   components: {
-    SuggestForm,
     NewCommunityPageModal,
     ListUserBox,
     UserInvitationBox

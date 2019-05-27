@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isOnwer">
+  <div v-if="!isOwner">
     <button v-if="isFollowingUser" @click="unfollow" class="button is-primary">
       フォロー中
     </button>

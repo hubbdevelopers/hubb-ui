@@ -26,7 +26,6 @@
           <div class="box image">
             <div class="is-size-5">メイン画像を選択</div>
             <croppa
-              :v-model="myCroppa"
               @file-choose="handleCroppaFileChoose"
               :width="100"
               :height="100"
@@ -45,11 +44,38 @@
             <div>
               <app-button
                 :disabled="$v.$invalid"
+                @click="
+                  $router.push(
+                    `/${$route.params.id}/pages/${$route.params.pageId}/preview`
+                  )
+                "
+                :width="250"
+                type="primary"
+                class="preview-button"
+                >プレビュー</app-button
+              >
+            </div>
+            <div>
+              <app-button
+                :disabled="$v.$invalid"
                 v-if="page.data.isDraft"
                 @click="saveContent(true)"
                 :width="250"
                 class="draft-button"
                 >下書きとして保存</app-button
+              >
+            </div>
+            <div>
+              <app-button
+                :disabled="$v.$invalid"
+                @click="
+                  $router.push(
+                    `/${$route.params.id}/pages/${$route.params.pageId}`
+                  )
+                "
+                :width="250"
+                class="back-button"
+                >戻る</app-button
               >
             </div>
           </div>
@@ -83,12 +109,33 @@ export default class extends Vue {
   @Prop({ required: true }) readonly page!: Page
   @Prop({ required: true }) readonly canEdit!: boolean
 
-  myCroppa: string = ''
-  name = ''
-  content = ''
-  image = ''
+  get name(): string {
+    return this.$store.state.page.name
+  }
+
+  set name(name: string) {
+    this.$store.dispatch('page/setName', name)
+  }
+
+  get content(): string {
+    return this.$store.state.page.content
+  }
+
+  set content(content: string) {
+    this.$store.dispatch('page/setContent', content)
+  }
+
+  get image(): string {
+    return this.$store.state.page.image
+  }
+
+  set image(image: string) {
+    this.$store.dispatch('page/setImage', image)
+  }
+
   @Watch('page', { immediate: true, deep: true })
   onPageChanged(page: Page) {
+    this.$store.dispatch('page/setPage', this.page)
     this.name = page.data.name
     this.content = page.data.content
     this.image = page.data.image
@@ -103,8 +150,11 @@ export default class extends Vue {
       image: this.image
     }
     await this.$store.dispatch('user/updatePage', param)
+    this.$store.dispatch('page/resetPage')
     this.$router.push(`/${this.$store.state.user.id}/pages/${this.page.id}`)
   }
+
+  // ページ内のイメージ
   handleImageAdded(file, Editor, cursorLocation, resetUploader) {
     const storageRef = storage.ref()
     const imagePath = 'pages/' + this.page.id + '/' + uuidv1()
@@ -117,6 +167,8 @@ export default class extends Vue {
       })
     })
   }
+
+  // メインイメージ
   handleCroppaFileChoose(file) {
     const storageRef = storage.ref()
     const imagePath = 'pages/' + this.page.id + '/main-image'
@@ -142,7 +194,9 @@ export default class extends Vue {
 .back {
   margin-top: 20px;
 }
-.draft-button {
+.draft-button,
+.preview-button,
+.back-button {
   margin-top: 10px;
 }
 </style>
