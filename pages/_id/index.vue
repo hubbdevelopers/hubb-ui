@@ -10,6 +10,7 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Vue, Component } from 'vue-property-decorator'
 import Mypage from '~/components/templates/MyPage.vue'
 import { User, getUser, blankUser } from '~/common/user'
@@ -20,6 +21,11 @@ import Loading from '~/components/atoms/Loading.vue'
   components: {
     Mypage,
     Loading
+  },
+  head() {
+    return {
+      title: `${(this as any).user.data.name} | Hubb`
+    }
   }
 })
 export default class extends Vue {
