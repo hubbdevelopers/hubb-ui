@@ -24,7 +24,7 @@ import Loading from '~/components/atoms/Loading.vue'
   },
   head() {
     return {
-      title: `${(this as any).user.data.name} | Hubb`
+      title: `${(this as any).user.data.name} - Hubb`
     }
   }
 })

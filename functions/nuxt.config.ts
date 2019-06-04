@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 require('dotenv').config()
+// import firebase from 'firebase'
+// import config from './firebase-setup/config'
 
 module.exports = {
   mode: 'universal',
+  /*
+   ** Headers of the page
+   */
   head: {
     title: 'Hubb',
     meta: [
@@ -17,7 +22,9 @@ module.exports = {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
-
+  /*
+   ** Customize the progress bar color
+   */
   loading: { color: '#3B8070' },
 
   plugins: [
@@ -33,10 +40,31 @@ module.exports = {
   modules: [
     '@nuxtjs/bulma',
     '@nuxtjs/dotenv',
+    // [
+    //   '@nuxtjs/axios',
+    //   { baseURL: process.env.BASE_URL || 'http://localhost:8081' }
+    // ],
+    // ['@nuxtjs/pwa', { icon: false }],
     '@nuxtjs/style-resources',
     ['@nuxtjs/google-analytics', { id: process.env.GOOGLEANALYTICS_ID }],
     '@nuxtjs/sitemap'
   ],
+
+  // sitemap: {
+  //   hostname: process.env.HOST_NAME || 'https://example.com',
+  //   gzip: true,
+  //   routes() {
+  //     // const firebaseApp = firebase.initializeApp(config)
+  //     // const db = firebaseApp.firestore()
+  //     // eslint-disable-next-line @typescript-eslint/no-var-requires
+  //     // const app = require('./plugins/firebase')
+  //     // const db = app.firestore()
+  //     // return db
+  //     //   .collection('users')
+  //     //   .get()
+  //     //   .then(users => users.docs.map(user => '/' + user.id))
+  //   }
+  // },
 
   styleResources: {
     sass: ['~assets/css/bulma-variables.scss', '~assets/css/main.scss']
@@ -48,6 +76,10 @@ module.exports = {
     '@fortawesome/fontawesome-free-webfonts/css/fa-regular.css',
     '@fortawesome/fontawesome-free-webfonts/css/fa-solid.css'
   ],
+
+  router: {},
+
+  buildDir: './functions/nuxt',
 
   /*
    ** Build configuration

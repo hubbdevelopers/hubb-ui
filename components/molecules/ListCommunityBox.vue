@@ -60,11 +60,11 @@ export default {
     }
   },
   async created() {
-    if (!Object.keys(this.community).length) {
-      this.community = (await this.$axios.$get(
-        `/communities/${this.communityId}`
-      )).data
-    }
+    // if (!Object.keys(this.community).length) {
+    //   this.community = (await this.$axios.$get(
+    //     `/communities/${this.communityId}`
+    //   )).data
+    // }
   },
   methods: {
     follow() {

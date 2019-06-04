@@ -31,6 +31,7 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Page from '~/components/templates/Page.vue'
 import PageMain from '~/components/organisms/PageMain.vue'
 import PageConfigModal from '~/components/organisms/PageConfigModal.vue'
@@ -48,13 +49,17 @@ import Loading from '~/components/atoms/Loading.vue'
     PageComment,
     Loading
   },
-  /* eslint-disable @typescript-eslint/no-explicit-any */
+  async asyncData({ params }) {
+    const page = await getPage(params.pageId)
+    return {
+      name: page.data.name,
+      content: page.data.content
+    }
+  },
   head() {
     return {
-      title:
-        (this as any).page.data.name !== ''
-          ? `${(this as any).page.data.name} | Hubb`
-          : 'Hubb'
+      title: `${(this as any).name} | Hubb`,
+      description: (this as any).content
     }
   }
 })
