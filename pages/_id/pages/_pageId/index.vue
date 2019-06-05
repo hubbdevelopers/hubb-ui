@@ -1,6 +1,5 @@
 <template>
   <div>
-    <loading :is-loading="isLoading" />
     <page>
       <template v-slot:main>
         <page-main
@@ -39,27 +38,31 @@ import PageComment from '~/components/organisms/PageComment.vue'
 import { Vue, Component } from 'vue-property-decorator'
 import { User, blankUser, getUser } from '~/common/user'
 import { Page as PageType, blankPage, getPage } from '~/common/page'
-import Loading from '~/components/atoms/Loading.vue'
+import striptags from 'striptags'
 
 @Component({
   components: {
     Page,
     PageMain,
     PageConfigModal,
-    PageComment,
-    Loading
+    PageComment
   },
   async asyncData({ params }) {
     const page = await getPage(params.pageId)
     return {
-      name: page.data.name,
-      content: page.data.content
+      page: page
     }
   },
   head() {
     return {
-      title: `${(this as any).name} | Hubb`,
-      description: (this as any).content
+      title: `${(this as any).page.data.name} | Hubb`,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: striptags((this as any).page.data.content)
+        }
+      ]
     }
   }
 })
@@ -67,7 +70,6 @@ export default class extends Vue {
   page: PageType = blankPage
   owner: User = blankUser
   isDeleting: boolean = false
-  isLoading: boolean = true
   isActiveConfigModal = false
 
   get isLiked() {
@@ -86,8 +88,7 @@ export default class extends Vue {
   }
   async created() {
     try {
-      this.isLoading = true
-      this.page = await getPage(this.$route.params.pageId)
+      // this.page = await getPage(this.$route.params.pageId)
       if (this.page.data.ownerType === 'user') {
         this.owner = await getUser(this.page.data.ownerId)
       } else if (this.page.data.ownerType === 'community') {
@@ -95,8 +96,6 @@ export default class extends Vue {
       }
     } catch (e) {
       console.log(e)
-    } finally {
-      this.isLoading = false
     }
   }
   deletePage() {

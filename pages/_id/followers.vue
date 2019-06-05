@@ -1,7 +1,6 @@
 <template>
   <section class="section">
     <div class="container">
-      <loading :is-loading="isLoading" />
       <div class="columns">
         <div class="column is-one-third">
           <user-profile v-if="user" :user="user" />
@@ -27,19 +26,16 @@ import ListUserBox from '~/components/molecules/ListUserBox.vue'
 import UserProfile from '~/components/organisms/UserProfile.vue'
 import { Vue, Component } from 'vue-property-decorator'
 import { User, getUser, blankUser } from '~/common/user'
-import Loading from '~/components/atoms/Loading.vue'
 
 @Component({
   components: {
     ListUserBox,
-    UserProfile,
-    Loading
+    UserProfile
   }
 })
 export default class extends Vue {
   user: User = blankUser
   followerUsers: User[] = []
-  isLoading: boolean = true
 
   get isOwner() {
     return this.$store.getters['user/isMyId'](this.$route.params.id)
@@ -47,7 +43,6 @@ export default class extends Vue {
 
   async created() {
     try {
-      this.isLoading = true
       this.user = await getUser(this.$route.params.id)
 
       if (this.user.data.followers.length === 0) {
@@ -61,8 +56,6 @@ export default class extends Vue {
       })
     } catch (e) {
       console.log(e)
-    } finally {
-      this.isLoading = false
     }
   }
 }

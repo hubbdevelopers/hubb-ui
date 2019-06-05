@@ -89,7 +89,6 @@ export default class extends Vue {
   showNewPageModal = false
 
   async created() {
-    console.log('created')
     if (this.isLogin) {
       return
     }

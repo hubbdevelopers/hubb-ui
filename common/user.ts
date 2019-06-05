@@ -1,5 +1,4 @@
 import firebase from 'firebase'
-import { TimeStamp } from 'firebase/firebase-firestore'
 const db = firebase.firestore()
 
 export interface User {
@@ -14,7 +13,8 @@ export interface UserData {
   followingUsers: string[]
   followers: string[]
   likes: string[]
-  createdAt: TimeStamp
+  createdAt: string
+  updatedAt: string
 }
 
 export const blankUser = {
@@ -26,7 +26,8 @@ export const blankUser = {
     followingUsers: [],
     followers: [],
     likes: [],
-    createdAt: null
+    createdAt: '',
+    updatedAt: ''
   }
 }
 
@@ -42,10 +43,15 @@ export async function getUser(id: string): Promise<User> {
       .get()
 
     if (doc.exists) {
+      const data = doc.data()
+      if (data) {
+        // data.createdAt = data.createdAt.toDate()
+        data.updatedAt = data.updatedAt.toDate()
+      }
       const temp = Object.assign({}, blankUser.data)
       const user: User = {
         id: id,
-        data: Object.assign(temp, doc.data())
+        data: Object.assign(temp, data)
       }
       return user
     }

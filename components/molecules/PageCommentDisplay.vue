@@ -10,13 +10,13 @@
 
     <div class="media-content">
       <div class="content">
-        <p>
+        <div>
           <strong>{{ user.data.name }}</strong>
           <br />
           {{ comment.data.text }}
           <br />
           <text-how-many-time-ago :date="comment.data.createdAt" />
-        </p>
+        </div>
       </div>
     </div>
     <div v-if="isMyComment" class="media-right">

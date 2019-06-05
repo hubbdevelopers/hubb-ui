@@ -64,6 +64,13 @@ import AppButton from '~/components/atoms/AppButton.vue'
     name: {
       required
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    if (from.path !== '/i/signup') {
+      next('/')
+    } else {
+      next()
+    }
   }
 })
 export default class extends Vue {

@@ -1,17 +1,17 @@
 <template>
   <div>
-    <p>
+    <div>
       フォロー:
       <nuxt-link :to="'/' + id + '/followings'">{{ followingCount }}</nuxt-link>
-    </p>
-    <p>
+    </div>
+    <div>
       フォロワー:
       <nuxt-link :to="'/' + id + '/followers'">{{ followerCount }}</nuxt-link>
-    </p>
-    <p>
+    </div>
+    <div>
       いいね:
       <nuxt-link :to="'/' + id + '/likes'">{{ likeCount }}</nuxt-link>
-    </p>
+    </div>
   </div>
 </template>
 <script>

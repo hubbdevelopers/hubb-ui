@@ -1,4 +1,3 @@
-import { TimeStamp } from 'firebase/firebase-firestore'
 import { db } from '~/plugins/firebase'
 
 export interface Page {
@@ -14,8 +13,8 @@ export interface PageData {
   content: string
   isDraft: boolean
   image: string
-  createdAt: TimeStamp
-  updatedAt: TimeStamp
+  createdAt: string
+  updatedAt: string
 }
 
 export const blankPage = {
@@ -27,8 +26,8 @@ export const blankPage = {
     content: '',
     isDraft: true,
     image: '',
-    createdAt: null,
-    updatedAt: null
+    createdAt: '',
+    updatedAt: ''
   },
   likedBy: []
 }
@@ -52,12 +51,20 @@ export async function getPage(id: string): Promise<Page> {
           likedBy = data.likedBy
         }
       }
+      const data = doc.data()
+      if (data) {
+        data.createdAt = data.createdAt.toDate()
+        data.updatedAt = data.updatedAt.toDate()
+      }
+
       const temp = Object.assign({}, blankPage.data)
-      return {
+      const ret = {
         likedBy: likedBy,
         id: doc.id,
-        data: Object.assign(temp, doc.data())
+        data: Object.assign(temp, data)
       }
+
+      return ret
     }
     return blankPage
   } catch (e) {
