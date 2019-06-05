@@ -18,7 +18,7 @@ export default {
       type: Boolean,
       default: false
     },
-    ownerId: {
+    userId: {
       type: String,
       required: true
     },
@@ -30,7 +30,7 @@ export default {
   computed: {
     link() {
       if (this.isUser) {
-        return `/${this.ownerId}`
+        return `/${this.userId}`
       } else if (this.isCommunity) {
         return '/' // TODO
       } else {

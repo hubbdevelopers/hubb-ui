@@ -34,8 +34,8 @@ exports.followUser = functions
 
           const query = await db
             .collection('pages')
-            .where('ownerId', '==', data.to)
-            .where('ownerType', '==', 'user')
+            .where('userId', '==', data.to)
+            .where('pageType', '==', 'user')
             .get()
 
           query.docs.forEach(
@@ -88,7 +88,7 @@ exports.unfollowUser = functions
             .collection('users')
             .doc(data.from)
             .collection('timeline')
-            .where('ownerId', '==', data.to)
+            .where('userId', '==', data.to)
             .get()
 
           timelineQuery.forEach(
@@ -162,10 +162,10 @@ exports.createPage = functions
           })
 
         if (page && !page.isDraft) {
-          if (page.ownerType === 'user') {
+          if (page.pageType === 'user') {
             const user = await db
               .collection('users')
-              .doc(page.ownerId)
+              .doc(page.userId)
               .get()
             if (user.exists) {
               // 投稿を自分のタイムラインに追加
@@ -215,10 +215,10 @@ exports.updatePage = functions
 
         console.log('update page', pageId, page)
         if (page && !page.isDraft) {
-          if (page.ownerType === 'user') {
+          if (page.pageType === 'user') {
             const user = await db
               .collection('users')
-              .doc(page.ownerId)
+              .doc(page.userId)
               .get()
             if (user.exists) {
               // 投稿を自分のタイムラインに更新
@@ -275,10 +275,10 @@ exports.deletePage = functions
             token: functions.config().api.token
           })
 
-          if (page.ownerType === 'user') {
+          if (page.pageType === 'user') {
             const user = await db
               .collection('users')
-              .doc(page.ownerId)
+              .doc(page.userId)
               .get()
             if (user.exists) {
               // 投稿を自分のタイムラインから削除
@@ -469,8 +469,8 @@ exports.deleteUser = functions
           // 自分のページを全削除
           const pageQuery = await db
             .collection('pages')
-            .where('ownerType', '==', 'user')
-            .where('ownerId', '==', userId)
+            .where('pageType', '==', 'user')
+            .where('userId', '==', userId)
             .get()
 
           pageQuery.forEach(

@@ -189,8 +189,8 @@ export const actions: ActionTree<UsersState, RootState> = {
     try {
       const param = {
         name: pageName,
-        ownerId: state.id,
-        ownerType: 'user',
+        userId: state.id,
+        pageType: 'user',
         isDraft: true,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -262,8 +262,8 @@ export const actions: ActionTree<UsersState, RootState> = {
     try {
       const query = await db
         .collection('pages')
-        .where('ownerType', '==', 'user')
-        .where('ownerId', '==', state.id)
+        .where('pageType', '==', 'user')
+        .where('userId', '==', state.id)
         .get()
 
       if (query.size > 0) {

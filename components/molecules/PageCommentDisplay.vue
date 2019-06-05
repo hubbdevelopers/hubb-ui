@@ -1,7 +1,7 @@
 <template>
   <article v-if="comment" class="media">
     <image-icon-link
-      :ownerId="user.id"
+      :userId="user.id"
       :image="user.data.image"
       :isUser="true"
       :isCommunity="false"

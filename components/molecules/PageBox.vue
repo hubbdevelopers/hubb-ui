@@ -88,10 +88,10 @@ export default class extends Vue {
     return span.textContent || span.innerText
   }
   get link() {
-    if (this.page.data.ownerType === 'user') {
-      return '/' + this.page.data.ownerId + '/pages/' + this.page.id
-    } else if (this.page.data.ownerType === 'community') {
-      return '/i/community/' + this.page.data.ownerId + '/pages/' + this.page.id
+    if (this.page.data.pageType === 'user') {
+      return '/' + this.page.data.userId + '/pages/' + this.page.id
+    } else if (this.page.data.pageType === 'community') {
+      return '/i/community/' + this.page.data.userId + '/pages/' + this.page.id
     } else {
       return '/'
     }
@@ -105,7 +105,7 @@ export default class extends Vue {
     try {
       this.comments = await getCommentsByPageId(this.page.id)
       if (this.user.id === '') {
-        this.createdUser = await getUser(this.page.data.ownerId)
+        this.createdUser = await getUser(this.page.data.userId)
       }
     } catch (e) {
       console.log(e)

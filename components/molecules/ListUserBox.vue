@@ -3,7 +3,7 @@
     <div class="is-clearfix main">
       <div class="is-pulled-left image-icon">
         <image-icon-link
-          :ownerId="user.id"
+          :userId="user.id"
           :image="user.data.image"
           :isUser="true"
           :isCommunity="false"

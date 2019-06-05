@@ -19,11 +19,11 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "ownerId",
+          "fieldPath": "pageType",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "ownerType",
+          "fieldPath": "userId",
           "order": "ASCENDING"
         },
         {

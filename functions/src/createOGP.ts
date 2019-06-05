@@ -8,14 +8,14 @@ const OGP_IMG_WIDTH = 1200
 const OGP_IMG_HEIGHT = 630
 
 const createHtml = (
-  ownerId: string,
+  userId: string,
   pageId: string,
   pageName: string,
   pageImage: string,
   pageContent: string
 ): string => {
   const SITEURL = 'https://hubb.dev'
-  const PAGEURL = `${SITEURL}/${ownerId}/pages/${pageId}`
+  const PAGEURL = `${SITEURL}/${userId}/pages/${pageId}`
   const TITLE = `${pageName} | Hubb`
   return `<!DOCTYPE html>
 <html>
@@ -39,7 +39,7 @@ const createHtml = (
     <meta name="twitter:description" content="${pageContent}">
   </head>
   <body>
-    <script type="text/javascript">window.location="/${ownerId}/pages_/${pageId}";</script>
+    <script type="text/javascript">window.location="/${userId}/pages_/${pageId}";</script>
   </body>
 </html>
 `
@@ -47,7 +47,7 @@ const createHtml = (
 
 export default functions.https.onRequest(
   async (req, res): Promise<void> => {
-    const [, ownerId, , pageId] = req.path.split('/')
+    const [, userId, , pageId] = req.path.split('/')
 
     const page = await db
       .collection('pages')
@@ -59,7 +59,7 @@ export default functions.https.onRequest(
       const pageName = data ? data.name : ''
       const pageImage = data ? data.image : ''
       const pageContent = data ? striptags(data.content).slice(0, 120) : ''
-      const html = createHtml(ownerId, pageId, pageName, pageImage, pageContent)
+      const html = createHtml(userId, pageId, pageName, pageImage, pageContent)
       console.log(html)
       res.set('Cache-Control', 'public, max-age=600, s-maxage=600')
       res.status(200).end(html)

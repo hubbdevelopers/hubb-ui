@@ -41,7 +41,7 @@ export default class extends Vue {
   async createComment({ pageId, text }) {
     try {
       await this.$store.dispatch('user/createComment', {
-        ownereId: this.page.data.ownerId,
+        ownereId: this.page.data.userId,
         pageId: pageId,
         text: text
       })

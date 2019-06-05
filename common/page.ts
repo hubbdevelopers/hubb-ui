@@ -8,8 +8,8 @@ export interface Page {
 
 export interface PageData {
   name: string
-  ownerType: string
-  ownerId: string
+  pageType: string
+  userId: string
   content: string
   isDraft: boolean
   image: string
@@ -21,8 +21,8 @@ export const blankPage = {
   id: '',
   data: {
     name: '',
-    ownerType: '',
-    ownerId: '',
+    pageType: '',
+    userId: '',
     content: '',
     isDraft: true,
     image: '',
@@ -74,7 +74,7 @@ export async function getPage(id: string): Promise<Page> {
 }
 
 export async function getPages(
-  ownerId: string,
+  userId: string,
   ownertType: string,
   isOwner: boolean
 ): Promise<Page[]> {
@@ -82,8 +82,8 @@ export async function getPages(
     if (isOwner) {
       const query = await db
         .collection('pages')
-        .where('ownerType', '==', ownertType)
-        .where('ownerId', '==', ownerId)
+        .where('pageType', '==', ownertType)
+        .where('userId', '==', userId)
         .orderBy('createdAt', 'desc')
         .get()
 
@@ -105,8 +105,8 @@ export async function getPages(
       const query = await db
         .collection('pages')
         .where('isDraft', '==', false)
-        .where('ownerType', '==', ownertType)
-        .where('ownerId', '==', ownerId)
+        .where('pageType', '==', ownertType)
+        .where('userId', '==', userId)
         .orderBy('createdAt', 'desc')
         .get()
 

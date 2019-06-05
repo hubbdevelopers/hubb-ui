@@ -82,16 +82,15 @@ export default class extends Vue {
 
   get isOwner() {
     return (
-      this.$store.getters['user/isMyId'](this.page.data.ownerId) &&
-      this.page.data.ownerType === 'user'
+      this.$store.getters['user/isMyId'](this.page.data.userId) &&
+      this.page.data.pageType === 'user'
     )
   }
   async created() {
     try {
-      // this.page = await getPage(this.$route.params.pageId)
-      if (this.page.data.ownerType === 'user') {
-        this.owner = await getUser(this.page.data.ownerId)
-      } else if (this.page.data.ownerType === 'community') {
+      if (this.page.data.pageType === 'user') {
+        this.owner = await getUser(this.page.data.userId)
+      } else if (this.page.data.pageType === 'community') {
         // TODO
       }
     } catch (e) {

@@ -1,11 +1,6 @@
 <template>
   <div>
-    <mypage
-      v-if="!isLoading"
-      :user="user"
-      :pages="pages"
-      :communities="communities"
-    />
+    <mypage :user="user" :pages="pages" :communities="communities" />
   </div>
 </template>
 <script lang="ts">
@@ -47,11 +42,7 @@ export default class extends Vue {
 
   async created() {
     try {
-      //this.user = await getUser(this.$route.params.id)
       this.pages = await getPages(this.$route.params.id, 'user', this.isOwner)
-      // this.communities = (await this.$axios.$get(
-      //   `communities?userid=${this.user.ID}`
-      // )).data
     } catch (e) {
       console.log(e)
     }

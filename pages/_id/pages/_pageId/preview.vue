@@ -1,6 +1,5 @@
 <template>
   <div>
-    <loading :is-loading="isLoading" />
     <page>
       <template v-slot:main>
         <page-main-preview

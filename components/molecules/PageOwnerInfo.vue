@@ -2,7 +2,7 @@
   <div class="is-clearfix">
     <div class="is-inline-block is-pulled-left">
       <image-icon-link
-        :ownerId="ownerId"
+        :userId="userId"
         :image="owner.data.image"
         :isUser="isUser"
         :isCommunity="isCommunity"
@@ -33,7 +33,7 @@ export default class extends Vue {
   @Prop({ default: false }) readonly isUser!: boolean
   @Prop({ default: false }) readonly isCommunity!: boolean
 
-  get ownerId() {
+  get userId() {
     return this.owner.id
   }
 }

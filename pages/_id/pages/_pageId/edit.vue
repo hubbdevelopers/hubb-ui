@@ -16,8 +16,8 @@ export default class extends Vue {
 
   get isOwner() {
     return (
-      this.$store.getters['user/isMyId'](this.page.data.ownerId) &&
-      this.page.data.ownerType === 'user'
+      this.$store.getters['user/isMyId'](this.page.data.userId) &&
+      this.page.data.pageType === 'user'
     )
   }
   async created() {
