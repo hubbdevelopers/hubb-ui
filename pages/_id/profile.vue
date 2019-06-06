@@ -100,7 +100,10 @@ import Croppa from 'vue-croppa'
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import PageEdit from '~/components/templates/PageEdit.vue'
 import AppButton from '~/components/atoms/AppButton.vue'
+import meta from '~/mixins/userMeta'
+
 @Component({
+  mixins: [meta],
   components: {
     PageEdit,
     AppButton

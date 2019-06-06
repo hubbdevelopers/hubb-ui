@@ -55,6 +55,11 @@ import AppButton from '~/components/atoms/AppButton.vue'
       minLength: minLength(8),
       maxLength: maxLength(20)
     }
+  },
+  head() {
+    return {
+      title: '新規登録'
+    }
   }
 })
 export default class extends Vue {

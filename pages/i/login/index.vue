@@ -50,6 +50,11 @@ import AppButton from '~/components/atoms/AppButton.vue'
       required,
       minLength: minLength(8)
     }
+  },
+  head() {
+    return {
+      title: 'ログイン'
+    }
   }
 })
 export default class extends Vue {

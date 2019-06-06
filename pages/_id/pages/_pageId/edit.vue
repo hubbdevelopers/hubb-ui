@@ -5,8 +5,10 @@
 import { Vue, Component } from 'vue-property-decorator'
 import PageEdit from '~/components/templates/PageEdit.vue'
 import { Page, blankPage, getPage } from '~/common/page'
+import meta from '~/mixins/pageMeta'
 
 @Component({
+  mixins: [meta],
   components: {
     PageEdit
   }

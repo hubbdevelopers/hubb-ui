@@ -71,6 +71,11 @@ import AppButton from '~/components/atoms/AppButton.vue'
     } else {
       next()
     }
+  },
+  head() {
+    return {
+      meta: [{ name: 'robots', content: 'noindex' }]
+    }
   }
 })
 export default class extends Vue {

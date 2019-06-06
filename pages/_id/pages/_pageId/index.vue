@@ -37,33 +37,16 @@ import PageConfigModal from '~/components/organisms/PageConfigModal.vue'
 import PageComment from '~/components/organisms/PageComment.vue'
 import { Vue, Component } from 'vue-property-decorator'
 import { User, blankUser, getUser } from '~/common/user'
-import { Page as PageType, blankPage, getPage } from '~/common/page'
-import striptags from 'striptags'
+import { Page as PageType, blankPage } from '~/common/page'
+import meta from '~/mixins/pageMeta'
 
 @Component({
+  mixins: [meta],
   components: {
     Page,
     PageMain,
     PageConfigModal,
     PageComment
-  },
-  async asyncData({ params }) {
-    const page = await getPage(params.pageId)
-    return {
-      page: page
-    }
-  },
-  head() {
-    return {
-      title: `${(this as any).page.data.name} | Hubb`,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: striptags((this as any).page.data.content)
-        }
-      ]
-    }
   }
 })
 export default class extends Vue {

@@ -4,15 +4,45 @@ require('dotenv').config()
 module.exports = {
   mode: 'universal',
   head: {
-    title: 'Hubb',
+    titleTemplate: `%s | ${process.env.META_TITLE}`,
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
         hid: 'description',
         name: 'description',
-        content:
-          'Hubb はウェブベースの記事投稿サービスです。記事の投稿や閲覧を行うことができます。記事には文字の他に写真や動画を使用することができます。'
+        content: process.env.META_DESCRIPTION
+      },
+      {
+        hid: 'og:site_name',
+        property: 'og:site_name',
+        content: process.env.META_TITLE
+      },
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+      { hid: 'og:url', property: 'og:url', content: process.env.HOST_NAME },
+      { hid: 'og:image:width', property: 'og:image:width', content: 1200 },
+      { hid: 'og:image:height', property: 'og:image:height', content: 630 },
+      {
+        hid: 'og:title',
+        property: 'og:title',
+        content: process.env.META_TITLE
+      },
+      {
+        hid: 'og:description',
+        property: 'og:description',
+        content: process.env.META_DESCRIPTION
+      },
+      {
+        hid: 'og:image',
+        property: 'og:image',
+        content: process.env.META_SITE_IMAGE
+      },
+      { name: 'twitter:card', content: 'summary' },
+      { name: 'twitter:title', content: process.env.META_TITLE },
+      { name: 'twitter:image', content: process.env.META_SITE_IMAGE },
+      {
+        name: 'twitter:description',
+        content: process.env.META_DESCRIPTION
       }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]

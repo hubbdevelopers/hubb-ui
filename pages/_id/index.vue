@@ -7,30 +7,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Vue, Component } from 'vue-property-decorator'
 import Mypage from '~/components/templates/MyPage.vue'
-import { User, getUser, blankUser } from '~/common/user'
+import { User, blankUser } from '~/common/user'
 import { Page, getPages } from '~/common/page'
+import meta from '~/mixins/userMeta'
 
 @Component({
+  mixins: [meta],
   components: {
     Mypage
-  },
-  async asyncData({ params }) {
-    const user = await getUser(params.id)
-    return {
-      user: user
-    }
-  },
-  head() {
-    return {
-      title: `${(this as any).user.data.name} | Hubb`,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: (this as any).user.data.description
-        }
-      ]
-    }
   }
 })
 export default class extends Vue {

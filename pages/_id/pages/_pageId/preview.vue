@@ -30,21 +30,14 @@ import Page from '~/components/templates/Page.vue'
 import PageMainPreview from '~/components/organisms/PageMainPreview.vue'
 import AppButton from '~/components/atoms/AppButton.vue'
 import { Vue, Component } from 'vue-property-decorator'
+import meta from '~/mixins/pageMeta'
 
 @Component({
+  mixins: [meta],
   components: {
     Page,
     PageMainPreview,
     AppButton
-  },
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  head() {
-    return {
-      title:
-        this.$store.state.page.name !== ''
-          ? `${this.$store.state.page.name} | Hubb`
-          : 'Hubb'
-    }
   }
 })
 export default class extends Vue {}

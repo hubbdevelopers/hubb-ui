@@ -78,6 +78,12 @@ import AppButton from '~/components/atoms/AppButton.vue'
     PageBox,
     NewPageModal,
     AppButton
+  },
+  head() {
+    return {
+      title: process.env.META_TITLE,
+      titleTemplate: ''
+    }
   }
 })
 export default class extends Vue {

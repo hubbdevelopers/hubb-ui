@@ -27,8 +27,10 @@ import UserProfile from '~/components/organisms/UserProfile.vue'
 import { Vue, Component } from 'vue-property-decorator'
 import { User, getUser, blankUser } from '~/common/user'
 import { Page, getPage } from '~/common/page'
+import meta from '~/mixins/userMeta'
 
 @Component({
+  mixins: [meta],
   components: {
     UserProfile,
     PageBox

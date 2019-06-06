@@ -40,6 +40,11 @@ import AppButton from '~/components/atoms/AppButton.vue'
       required,
       email
     }
+  },
+  head() {
+    return {
+      title: 'パスワード再設定'
+    }
   }
 })
 export default class extends Vue {

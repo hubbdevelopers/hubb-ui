@@ -10,9 +10,6 @@ const storage = admin.storage()
 const bucket = storage.bucket()
 const db = admin.firestore()
 
-import createOGP from './createOGP'
-exports.createOGP = createOGP
-
 exports.followUser = functions
   .region('asia-northeast1')
   .runWith({
