@@ -55,7 +55,7 @@ module.exports = {
     '~/plugins/vuelidate',
     '~/plugins/auth',
     '~/plugins/croppa',
-    '~/plugins/moment',
+    '~/plugins/dayjs',
     '~/plugins/sanitize'
     //'~/plugins/fcm'
   ],

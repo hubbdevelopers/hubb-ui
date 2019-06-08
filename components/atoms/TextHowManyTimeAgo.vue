@@ -4,7 +4,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import PageOwnerInfo from '~/components/molecules/PageOwnerInfo.vue'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 @Component({
   components: {
@@ -12,10 +12,23 @@ import moment from 'moment'
   }
 })
 export default class extends Vue {
-  @Prop({ required: true }) readonly date!: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  @Prop({ required: true }) readonly date!: Record<string, any>
 
-  get howManyDaysAgo() {
-    return this.date ? moment(this.date).fromNow() : ''
+  get howManyDaysAgo(): string {
+    if (!this.date) {
+      return ''
+    }
+
+    if (this.date instanceof Date) {
+      return dayjs(this.date).fromNow()
+    }
+
+    if (typeof this.date['toDate'] === 'function') {
+      // TimeStamp
+      return dayjs(this.date.toDate()).fromNow()
+    }
+    return ''
   }
 }
 </script>

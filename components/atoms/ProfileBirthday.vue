@@ -7,7 +7,7 @@
   </p>
 </template>
 <script>
-import moment from 'moment'
+import dayjs from 'dayjs'
 export default {
   props: {
     birthday: {
@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     displayBirthday() {
-      return this.birthday ? moment(this.birthday).format('YYYY/MM/DD') : ''
+      return this.birthday ? dayjs(this.birthday).format('YYYY/MM/DD') : ''
     }
   }
 }
