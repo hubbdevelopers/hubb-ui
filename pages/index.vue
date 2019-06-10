@@ -1,63 +1,66 @@
 <template>
   <section class="section">
     <div class="container">
-      <new-page-modal :showModal="showNewPageModal" @close="closeModal" />
-      <template v-if="isLogin">
-        <div class="columns">
-          <div class="column is-one-third is-hidden-mobile">
-            <user-profile
-              :user="$store.getters['user/getUser']"
-              v-if="isLogin && accountId"
-            />
-          </div>
-          <div class="column">
-            <div v-if="timeline.length > 0" class="columns is-multiline">
-              <div
-                v-for="page in timeline"
-                :key="page.id"
-                class="column is-three-fifths is-offset-one-fifth"
-              >
-                <page-box :page="page" :is-timeline="true" />
-              </div>
+      <no-ssr>
+        <new-page-modal :showModal="showNewPageModal" @close="closeModal" />
+        <template v-if="isLogin">
+          <div class="columns">
+            <div class="column is-one-third is-hidden-mobile">
+              <user-profile
+                :user="$store.getters['user/getUser']"
+                v-if="isLogin && accountId"
+              />
             </div>
-            <div v-else class="has-text-centered">
-              <span
-                >まだタイムラインがありません<br />新しいページを作成しましょう</span
-              >
-              <div class="new-page-button">
-                <app-button @click="showModal" type="primary"
-                  >新規作成</app-button
+            <div class="column">
+              <div v-if="timeline.length > 0" class="columns is-multiline">
+                <div
+                  v-for="page in timeline"
+                  :key="page.id"
+                  class="column is-three-fifths is-offset-one-fifth"
                 >
+                  <page-box :page="page" :is-timeline="true" />
+                </div>
+              </div>
+              <div v-else class="has-text-centered">
+                <span
+                  >まだタイムラインがありません<br />新しいページを作成しましょう</span
+                >
+                <div class="new-page-button">
+                  <app-button @click="showModal" type="primary"
+                    >新規作成</app-button
+                  >
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
 
-      <template v-else>
-        <div class="columns">
-          <div class="column is-one-third is-hidden-mobile">
-            <login-box />
-          </div>
-          <div class="column">
-            <div class="columns is-multiline">
-              <div class="column box is-three-fifths is-offset-one-fifth">
-                Hubb へようこそ!<br />Hubb は記事投稿サービスです。<br />まずは<n-link
-                  to="i/signup"
-                  >新規登録</n-link
-                >へ!
-              </div>
-              <div
-                v-for="page in notLoginTimeline"
-                :key="page.id"
-                class="column is-three-fifths is-offset-one-fifth"
-              >
-                <page-box :page="page" :is-timeline="true" />
+        <template v-else>
+          <div class="columns">
+            <div class="column is-one-third is-hidden-mobile">
+              <login-box />
+            </div>
+            <div class="column">
+              <div class="columns is-multiline">
+                <div class="column box is-three-fifths is-offset-one-fifth">
+                  Hubb へようこそ!<br />Hubb は記事投稿サービスです。<br />まずは<n-link
+                    to="i/signup"
+                    >新規登録</n-link
+                  >へ!
+                </div>
+
+                <div
+                  v-for="page in notLoginTimeline"
+                  :key="page.id"
+                  class="column is-three-fifths is-offset-one-fifth"
+                >
+                  <page-box :page="page" :is-timeline="true" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
+      </no-ssr>
     </div>
   </section>
 </template>

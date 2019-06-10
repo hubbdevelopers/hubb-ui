@@ -1,6 +1,8 @@
 <template>
   <div>
-    <mypage :user="user" :pages="pages" :communities="communities" />
+    <no-ssr>
+      <mypage :user="user" :pages="pages" :communities="communities" />
+    </no-ssr>
   </div>
 </template>
 <script lang="ts">

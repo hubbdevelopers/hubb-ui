@@ -1,77 +1,80 @@
 <template>
   <nav class="navbar is-transparent">
-    <div v-if="isLogin">
-      <new-page-modal :showModal="showNewPageModal" @close="closeModal" />
-    </div>
-    <div class="navbar-brand">
-      <n-link class="navbar-item" to="/">
-        <img src="~/assets/images/Hubb.png" alt="Hubb logo" />
-      </n-link>
-      <div v-if="isLogin" class="navbar-item">
-        <a
-          @click="showModal"
-          v-if="isLogin"
-          class="navbar-item has-text-white has-text-weight-semibold"
+    <no-ssr>
+      <div v-if="isLogin">
+        <new-page-modal :showModal="showNewPageModal" @close="closeModal" />
+      </div>
+      <div class="navbar-brand">
+        <n-link class="navbar-item" to="/">
+          <img src="~/assets/images/Hubb.png" alt="Hubb logo" />
+        </n-link>
+        <div v-if="isLogin" class="navbar-item">
+          <a
+            @click="showModal"
+            v-if="isLogin"
+            class="navbar-item has-text-white has-text-weight-semibold"
+          >
+            <span class="icon"><i class="fas fa-pencil-alt"/></span
+            ><span>新規ページ作成</span>
+          </a>
+        </div>
+        <div
+          @click="showNav = !showNav"
+          :class="{ 'is-active': showNav }"
+          class="navbar-burger burger"
+          data-target="navbarExampleTransparentExample"
         >
-          <span class="icon"><i class="fas fa-pencil-alt"/></span
-          ><span>新規ページ作成</span>
-        </a>
+          <span />
+          <span />
+          <span />
+        </div>
       </div>
-      <div
-        @click="showNav = !showNav"
-        :class="{ 'is-active': showNav }"
-        class="navbar-burger burger"
-        data-target="navbarExampleTransparentExample"
-      >
-        <span />
-        <span />
-        <span />
-      </div>
-    </div>
 
-    <div
-      :class="{ 'is-active': showNav }"
-      id="navbarExampleTransparentExample"
-      class="navbar-menu"
-    >
-      <div class="navbar-end">
-        <n-link
-          :to="`/${$store.state.user.id}`"
-          v-if="isLogin"
-          class="navbar-item has-text-white has-text-weight-semibold"
-        >
-          <span><i class="fas fa-user"/></span> マイページ
-        </n-link>
-        <n-link
-          :to="`/${$store.state.user.id}/settings`"
-          v-if="isLogin"
-          class="navbar-item has-text-white has-text-weight-semibold"
-        >
-          <span class="icon"><i class="fas fa-sliders-h"/></span> 設定
-        </n-link>
-        <a
-          @click="logout"
-          v-if="isLogin"
-          class="navbar-item has-text-white has-text-weight-semibold"
-        >
-          <span class="icon"><i class="fas fa-sign-out-alt"/></span> ログアウト
-        </a>
-        <n-link
-          v-if="!isLogin"
-          :to="`/i/login`"
-          class="navbar-item has-text-white has-text-weight-semibold"
-          ><span class="icon"><i class="fas fa-sign-in-alt"/></span>
-          ログイン</n-link
-        >
-        <n-link
-          v-if="!isLogin"
-          :to="`/i/signup`"
-          class="navbar-item has-text-white has-text-weight-semibold"
-          ><span class="icon"><i class="fas fa-user-plus"/></span>
-          新規登録</n-link
-        >
+      <div
+        :class="{ 'is-active': showNav }"
+        id="navbarExampleTransparentExample"
+        class="navbar-menu"
+      >
+        <div class="navbar-end">
+          <n-link
+            :to="`/${$store.state.user.id}`"
+            v-if="isLogin"
+            class="navbar-item has-text-white has-text-weight-semibold"
+          >
+            <span><i class="fas fa-user"/></span> マイページ
+          </n-link>
+          <n-link
+            :to="`/${$store.state.user.id}/settings`"
+            v-if="isLogin"
+            class="navbar-item has-text-white has-text-weight-semibold"
+          >
+            <span class="icon"><i class="fas fa-sliders-h"/></span> 設定
+          </n-link>
+          <a
+            @click="logout"
+            v-if="isLogin"
+            class="navbar-item has-text-white has-text-weight-semibold"
+          >
+            <span class="icon"><i class="fas fa-sign-out-alt"/></span>
+            ログアウト
+          </a>
+          <n-link
+            v-if="!isLogin"
+            :to="`/i/login`"
+            class="navbar-item has-text-white has-text-weight-semibold"
+            ><span class="icon"><i class="fas fa-sign-in-alt"/></span>
+            ログイン</n-link
+          >
+          <n-link
+            v-if="!isLogin"
+            :to="`/i/signup`"
+            class="navbar-item has-text-white has-text-weight-semibold"
+            ><span class="icon"><i class="fas fa-user-plus"/></span>
+            新規登録</n-link
+          >
+        </div>
       </div>
-    </div>
+    </no-ssr>
   </nav>
 </template>
 <script lang="ts">
