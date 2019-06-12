@@ -1,6 +1,10 @@
 <template>
   <span class="icon has-text-success">
-    <a :href="'https://instagram.com/' + instagramId" target="_blank">
+    <a
+      :href="'https://instagram.com/' + instagramId"
+      target="_blank"
+      style="color: #c63f60;"
+    >
       <i class="fab fa-instagram" />
     </a>
   </span>
@@ -15,8 +19,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-.fa-instagram {
-  color: #c63f60;
-}
-</style>

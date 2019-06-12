@@ -6,7 +6,7 @@
 <script>
 export default {}
 </script>
-<style lang="scss" scoped>
+<style scoped>
 div {
   margin: 5px 0;
   white-space: pre-wrap;

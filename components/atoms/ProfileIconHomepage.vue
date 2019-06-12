@@ -1,7 +1,7 @@
 <template>
   <span class="icon has-text-success">
     <a :href="url" target="_blank">
-      <i class="fas fa-home" />
+      <i class="fas fa-home" style="color: #2dc987;" />
     </a>
   </span>
 </template>
@@ -15,8 +15,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-.fa-home {
-  color: #2dc987;
-}
-</style>
