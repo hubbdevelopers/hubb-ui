@@ -1,6 +1,5 @@
-import firebase from 'firebase'
 import { TimeStamp } from 'firebase/firebase-firestore'
-const db = firebase.firestore()
+import { db } from '~/plugins/firebase'
 
 export interface Comment {
   id: string

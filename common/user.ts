@@ -1,5 +1,4 @@
-import firebase from 'firebase'
-const db = firebase.firestore()
+import { db } from '~/plugins/firebase'
 
 export interface User {
   id: string

@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { auth, storage } from '~/plugins/firebase'
-import firebase from 'firebase'
+import { db, auth, storage } from '~/plugins/firebase'
+import firebase from 'firebase/app'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { User, UserData, blankUser } from '~/common/user'
 import { Page, PageData } from '~/common/page'
-const db = firebase.firestore()
 const storageRef = storage.ref()
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
